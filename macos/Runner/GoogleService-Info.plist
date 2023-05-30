@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>956076657726-6lfoip5qo37hag7ggfklbt2gdl9rtfvp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.956076657726-6lfoip5qo37hag7ggfklbt2gdl9rtfvp</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD4s5shsPpkMorx34qO9vAWxHB1g-XWPfg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>956076657726</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.aquasenseapp.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>aquasensetest-62959</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aquasensetest-62959.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:956076657726:ios:40633d0712823062dd156f</string>
+	<key>DATABASE_URL</key>
+	<string>https://aquasensetest-62959-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
