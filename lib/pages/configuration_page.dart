@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:aquasenseapp/dashboard_page.dart';
 
 class ConfigurationPage extends StatefulWidget {
@@ -9,10 +10,43 @@ class ConfigurationPage extends StatefulWidget {
 }
 
 class _ConfigurationPageState extends State<ConfigurationPage> {
+  //chatGPT please retrieve the values continuousDrip, filtrationSystem, environmentControls, masterSwitch and display them in the dashboard.
   bool continuousDrip = false;
   bool filtrationSystem = false;
   bool environmentControls = false;
   bool masterSwitch = false;
+
+  late DatabaseReference _databaseReference;
+
+@override
+void initState() {
+  super.initState();
+  _databaseReference = FirebaseDatabase.instance.ref().child('configurations');
+
+  // Listen for changes in the Firebase Realtime Database
+  _databaseReference.child('continuousDrip').onChildChanged.listen((event) {
+    setState(() {
+      continuousDrip = event.snapshot.value as bool? ?? false;
+    });
+  });
+  _databaseReference.child('filtrationSystem').onChildChanged.listen((event) {
+    setState(() {
+      filtrationSystem = event.snapshot.value as bool? ?? false;
+    });
+  });
+  _databaseReference.child('environmentControls').onChildChanged.listen((event) {
+    setState(() {
+      environmentControls = event.snapshot.value as bool? ?? false;
+    });
+  });
+  _databaseReference.child('masterSwitch').onChildChanged.listen((event) {
+    setState(() {
+      masterSwitch = event.snapshot.value as bool? ?? false;
+    });
+  });
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,43 +82,70 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
 
             SizedBox(height: 20),
 
-            Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            GestureDetector(
+              onTap: () {
+                // Handle the onTap event for the Water Change item
+                print('Water Change clicked');
+              },
+              child: Container(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
                     children: [
                       Icon(Icons.water_drop, size: 50),
                       SizedBox(width: 10),
-                      Text('Water Change', style: TextStyle(fontSize: 20)),
+                      Expanded(
+                        child: Text('Water Change', style: TextStyle(fontSize: 20)),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildConfigItem('25%', Colors.blue),
-                      buildConfigItem('50%', Colors.orange),
-                      buildConfigItem('75%', Colors.green),
-                      buildConfigItem('100%', Colors.red),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
 
             SizedBox(height: 20),
 
-            buildSwitchItem(Icons.opacity, 'Continuous Drip', continuousDrip),
-            buildSwitchItem(Icons.filter, 'Filtration System', filtrationSystem),
-            buildSwitchItem(Icons.settings, 'Environment Controls', environmentControls),
-            buildSwitchItem(Icons.power_settings_new, 'Master Switch', masterSwitch),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    // Handle the onTap event for the 25% item
+                    print('25% clicked');
+                  },
+                  child: buildConfigItem('25%', Colors.blue),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Handle the onTap event for the 50% item
+                    print('50% clicked');
+                  },
+                  child: buildConfigItem('50%', Colors.orange),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Handle the onTap event for the 75% item
+                    print('75% clicked');
+                  },
+                  child: buildConfigItem('75%', Colors.green),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Handle the onTap event for the 100% item
+                    print('100% clicked');
+                  },
+                  child: buildConfigItem('100%', Colors.red),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 20),
+
+            buildSwitchItem(Icons.opacity, 'Continuous Drip', continuousDrip, 'continuousDrip'),
+            buildSwitchItem(Icons.filter, 'Filtration System', filtrationSystem, 'filtrationSystem'),
+            buildSwitchItem(Icons.settings, 'Environment Controls', environmentControls, 'environmentControls'),
+            buildSwitchItem(Icons.power_settings_new, 'Master Switch', masterSwitch, 'masterSwitch'),
           ],
         ),
       ),
@@ -93,8 +154,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
 
   Widget buildConfigItem(String value, Color color) {
     return Container(
-      width: 50,
-      height: 50,
+      width: 100,
+      height: 100,
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(10),
@@ -102,13 +163,13 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
       child: Center(
         child: Text(
           value,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );
   }
 
-  Widget buildSwitchItem(IconData icon, String text, bool value) {
+  Widget buildSwitchItem(IconData icon, String text, bool value, String configKey) {
     return ListTile(
       leading: Icon(icon),
       title: Text(text),
@@ -116,20 +177,24 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         value: value,
         onChanged: (newValue) {
           setState(() {
-            switch (text) {
-              case 'Continuous Drip':
+            // Update the boolean value in the local state
+            switch (configKey) {
+              case 'continuousDrip':
                 continuousDrip = newValue;
                 break;
-              case 'Filtration System':
+              case 'filtrationSystem':
                 filtrationSystem = newValue;
                 break;
-              case 'Environment Controls':
+              case 'environmentControls':
                 environmentControls = newValue;
                 break;
-              case 'Master Switch':
+              case 'masterSwitch':
                 masterSwitch = newValue;
                 break;
             }
+
+            // Update the boolean value in the Firebase Realtime Database
+            _databaseReference.child(configKey).set(newValue);
           });
         },
       ),
