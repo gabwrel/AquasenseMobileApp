@@ -68,17 +68,18 @@ class _DashboardPageState extends State<DashboardPage> {
     super.dispose();
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: // Set the desired height here
-     AppBar(
-      toolbarHeight: 80,
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 80,
+        backgroundColor: Colors.white,
         leading: Builder(
           builder: (BuildContext context) {
             return Center(
               child: IconButton(
-                icon: const Icon(Icons.menu, size: 30),
+                icon: const Icon(Icons.menu, size: 30, color: Colors.blue),
                 onPressed: () {
                   Scaffold.of(context).openDrawer();
                 },
@@ -87,21 +88,21 @@ Widget build(BuildContext context) {
           },
         ),
         flexibleSpace: Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 40),
-          child: Image.asset(
-            'assets/images/logo2.png',
-            height: 80,
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 40),
+            child: Image.asset(
+              'assets/images/logo2.png',
+              height: 80,
+            ),
           ),
         ),
-      ),
         actions: [
           Center(
             child: Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: IconButton(
-                icon: const Icon(Icons.refresh, size: 30),
+                icon: const Icon(Icons.refresh, size: 30, color: Colors.blue),
                 onPressed: () {
                   // TODO: Implement refresh functionality
                 },
@@ -165,14 +166,15 @@ Widget build(BuildContext context) {
             Text(
               'DASHBOARD',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 48,
                 fontWeight: FontWeight.bold,
                 color: Colors.blue,
               ),
             ),
+            Divider(color: Colors.blue),
             SizedBox(height: 8),
             Text(
-              'Water Parameters',
+              'WATER PARAMETERS',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.black,
@@ -220,9 +222,10 @@ Widget build(BuildContext context) {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
+            Divider(color: Colors.blue),
             Text(
-              'Environment Controls',
+              'ENVIRONMENT CONTROLS',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.black,
@@ -249,9 +252,10 @@ Widget build(BuildContext context) {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
+            Divider(color: Colors.blue),
             Text(
-              'Filtration System',
+              'FILTRATION SYSTEM',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.black,
