@@ -68,36 +68,45 @@ class _DashboardPageState extends State<DashboardPage> {
     super.dispose();
   }
 
-  @override
- Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: // Set the desired height here
+     AppBar(
+      toolbarHeight: 80,
         leading: Builder(
           builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+            return Center(
+              child: IconButton(
+                icon: const Icon(Icons.menu, size: 30),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              ),
             );
           },
         ),
         flexibleSpace: Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40),
-            child: Image.asset(
-              'assets/images/logo2.png',
-              height: 80,
-            ),
+        alignment: Alignment.center,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: Image.asset(
+            'assets/images/logo2.png',
+            height: 80,
           ),
         ),
+      ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              // TODO: Implement refresh functionality
-            },
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: IconButton(
+                icon: const Icon(Icons.refresh, size: 30),
+                onPressed: () {
+                  // TODO: Implement refresh functionality
+                },
+              ),
+            ),
           ),
         ],
       ),
