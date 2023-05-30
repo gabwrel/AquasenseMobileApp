@@ -46,19 +46,19 @@ class _MyAppState extends State<MyApp> {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home, color: Colors.blue,),
               label: 'Dashboard',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.settings, color: Colors.blue,),
               label: 'Maintenance',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.check_circle_outline),
+              icon: Icon(Icons.check_circle_outline, color: Colors.blue,),
               label: 'Test Now',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart),
+              icon: Icon(Icons.bar_chart, color: Colors.blue,),
               label: 'Configuration',
             ),
           ],
