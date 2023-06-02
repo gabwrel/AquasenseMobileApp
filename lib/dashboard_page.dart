@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+
 class DashboardPage extends StatefulWidget {
+  const DashboardPage ({super.key});
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
@@ -24,7 +26,8 @@ class _DashboardPageState extends State<DashboardPage> {
     databaseRef.child('pH').onValue.listen((event) {
       if (event.snapshot.value != null) {
         setState(() {
-          pH = event.snapshot.value.toString();
+          double phValue = double.parse(event.snapshot.value.toString());
+          pH = phValue.toStringAsFixed(2);
         });
       }
     });
@@ -194,7 +197,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 SizedBox(width: 16),
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.opacity,
+                    icon: Icons.waves_outlined,
                     title: 'Water Level',
                     value: '$waterLevel',
                   ),
@@ -215,7 +218,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 SizedBox(width: 16),
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.waves_outlined,
+                    icon: Icons.blur_on,
                     title: 'Water Turbidity',
                     value: '$waterTurbidity', // Placeholder value, replace with actual data
                   ),
@@ -310,7 +313,7 @@ class BoxItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 24),
+            Icon(icon, size: 36),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -319,14 +322,14 @@ class BoxItem extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     value,
-                    style: const TextStyle(fontSize: 12),
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
