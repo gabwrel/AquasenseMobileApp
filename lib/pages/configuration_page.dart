@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -19,23 +17,31 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   @override
   void initState() {
     super.initState();
-    _databaseReference = FirebaseDatabase.instance.reference().child('configurations');
+    _databaseReference = FirebaseDatabase.instance.ref().child('configurations');
 
     fetchConfigurationsValues();
   }
 
   void fetchConfigurationsValues() {
-    _databaseReference.child('pH_setting').once().then((DataSnapshot snapshot) {
+    _databaseReference.child('pH_setting').onValue.listen(( event) {
+      var dataSnapshot = event.snapshot;
       setState(() {
-        pHSetting = (snapshot.value as num?)?.toDouble();
+        pHSetting = (dataSnapshot.value as num?)?.toDouble();
       });
-    } as FutureOr Function(DatabaseEvent value));
+    }, onError: (Object? error) {
+      // Handle error if necessary
+      print(error);
+    });
 
-    _databaseReference.child('temperature_setting').once().then((DataSnapshot snapshot) {
+    _databaseReference.child('temperature_setting').onValue.listen(( event) {
+      var dataSnapshot = event.snapshot;
       setState(() {
-        temperatureSetting = (snapshot.value as num?)?.toDouble();
+        temperatureSetting = (dataSnapshot.value as num?)?.toDouble();
       });
-    } as FutureOr Function(DatabaseEvent value));
+    }, onError: (Object? error) {
+      // Handle error if necessary
+      print(error);
+    });
   }
 
   @override
@@ -97,6 +103,13 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                       onChangeEnd: (value) {
                         _databaseReference.child('pH_setting').set(pHSetting);
                       },
+                    ),
+                  ),
+                  Text(
+                    '${pHSetting?.toStringAsFixed(2) ?? '0.00'}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
                 ],
