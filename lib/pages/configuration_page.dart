@@ -23,7 +23,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   }
 
   void fetchConfigurationsValues() {
-    _databaseReference.child('pH_setting').onValue.listen(( event) {
+    _databaseReference.child('pH_setting').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
         pHSetting = (dataSnapshot.value as num?)?.toDouble();
@@ -33,7 +33,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
       print(error);
     });
 
-    _databaseReference.child('temperature_setting').onValue.listen(( event) {
+    _databaseReference.child('temperature_setting').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
         temperatureSetting = (dataSnapshot.value as num?)?.toDouble();
@@ -91,13 +91,13 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   Text('pH Level'),
                   Expanded(
                     child: Slider(
-                      value: mapValueToSlider(pHSetting),
+                      value: pHSetting ?? 0.0,
                       min: 0,
                       max: 14,
                       divisions: 140,
                       onChanged: (value) {
                         setState(() {
-                          pHSetting = mapSliderToValue(value);
+                          pHSetting = value;
                         });
                       },
                       onChangeEnd: (value) {
@@ -122,25 +122,29 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   Icon(Icons.thermostat),
                   SizedBox(width: 8.0),
                   Text('Temperature'),
-                  IconButton(
-                    icon: Icon(Icons.remove),
-                    onPressed: () => _updateTemperature(false),
+                  Expanded(
+                    child: Slider(
+                      value: temperatureSetting ?? 25.0,
+                      min: 20,
+                      max: 32,
+                      divisions: 120,
+                      onChanged: (value) {
+                        setState(() {
+                          temperatureSetting = value;
+                        });
+                      },
+                      onChangeEnd: (value) {
+                        _databaseReference.child('temperature_setting').set(temperatureSetting);
+                      },
+                    ),
                   ),
-                  Text('${temperatureSetting ?? 0}°C'),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () => _updateTemperature(true),
+                  Text(
+                    '${temperatureSetting?.toStringAsFixed(2) ?? '0.00'}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.pets),
-                  SizedBox(width: 8.0),
-                  Text('Feeding Time'),
                 ],
               ),
             ),
@@ -148,25 +152,5 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         ),
       ),
     );
-  }
-
-  double mapValueToSlider(double? value) {
-    if (value != null) {
-      return (value - 0) * (14 - 0) / (14 - 0) + 0;
-    }
-    return 0.0;
-  }
-
-  double mapSliderToValue(double value) {
-    return (value - 0) * (14 - 0) / (14 - 0) + 0;
-  }
-
-  void _updateTemperature(bool increment) {
-    setState(() {
-      if (temperatureSetting != null) {
-        temperatureSetting = increment ? temperatureSetting! + 1 : temperatureSetting! - 1;
-        _databaseReference.child('temperature_setting').set(temperatureSetting);
-      }
-    });
   }
 }
