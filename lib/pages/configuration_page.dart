@@ -90,7 +90,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   SizedBox(width: 8.0),
                   Text('pH Level'),
                   Expanded(
-                    child: Slider(
+                    child: SliderVerticalWidget(
                       value: pHSetting ?? 0.0,
                       min: 0,
                       max: 14,
@@ -153,4 +153,108 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
       ),
     );
   }
+}
+
+class SliderVerticalWidget extends StatefulWidget {
+  final double value;
+  final double min;
+  final double max;
+  final int divisions;
+  final ValueChanged<double>? onChanged;
+  final ValueChanged<double>? onChangeEnd;
+
+  SliderVerticalWidget({
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.divisions,
+    this.onChanged,
+    this.onChangeEnd,
+  });
+
+  @override
+  _SliderVerticalWidgetState createState() => _SliderVerticalWidgetState();
+}
+
+class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
+  late double value;
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double min = widget.min;
+    final double max = widget.max;
+
+    return SliderTheme(
+      data: SliderTheme.of(context).copyWith(
+        trackHeight: 80,
+        thumbShape: SliderComponentShape.noOverlay,
+        overlayShape: SliderComponentShape.noOverlay,
+        valueIndicatorShape: SliderComponentShape.noOverlay,
+        trackShape: RectangularSliderTrackShape(),
+        activeTickMarkColor: Colors.transparent,
+        inactiveTickMarkColor: Colors.transparent,
+      ),
+      child: Container(
+        height: 360,
+        child: Column(
+          children: [
+            buildSideLabel(max),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Stack(
+                children: [
+                  RotatedBox(
+                    quarterTurns: 3,
+                    child: Slider(
+                      value: value,
+                      min: min,
+                      max: max,
+                      divisions: widget.divisions,
+                      label: value.round().toString(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          value = newValue;
+                        });
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(newValue);
+                        }
+                      },
+                      onChangeEnd: (newValue) {
+                        if (widget.onChangeEnd != null) {
+                          widget.onChangeEnd!(newValue);
+                        }
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      '${value.round()}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            buildSideLabel(min),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildSideLabel(double value) => Text(
+        value.round().toString(),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      );
 }
