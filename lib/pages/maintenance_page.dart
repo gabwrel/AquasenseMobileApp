@@ -61,12 +61,12 @@ class _MaintenancePageState extends State<MaintenancePage> {
         appBar: AppBar(
           toolbarHeight: 80,
           backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.blue),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+          // leading: IconButton(
+          //   icon: Icon(Icons.arrow_back, color: Colors.blue),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
