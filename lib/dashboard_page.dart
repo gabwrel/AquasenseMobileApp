@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:aquasenseapp/stored_data_page.dart' as stored;
+import 'package:aquasenseapp/database_helper.dart' as aquasense_helper;
+import 'package:intl/intl.dart';
 
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage ({super.key});
+  const DashboardPage({Key? key}) : super(key: key);
+
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
@@ -16,43 +20,43 @@ class _DashboardPageState extends State<DashboardPage> {
   String waterTurbidity = '';
 
   late DatabaseReference databaseRef;
+  final aquasense_helper.DatabaseHelper _databaseHelper = aquasense_helper.DatabaseHelper();
 
   @override
   void initState() {
     super.initState();
     initializeFirebase();
-    databaseRef = FirebaseDatabase.instance.ref();
+    databaseRef = FirebaseDatabase.instance.reference();
 
     databaseRef.child('pH').onValue.listen((event) {
       if (event.snapshot.value != null) {
-        setState(() {
-          double phValue = double.parse(event.snapshot.value.toString());
-          pH = phValue.toStringAsFixed(2);
-        });
+        double phValue = double.parse(event.snapshot.value.toString());
+        String formattedDateTime = _getFormattedDateTime();
+        _storeDataLocally('pH', phValue.toStringAsFixed(2), formattedDateTime);
       }
     });
 
     databaseRef.child('waterLevel').onValue.listen((event) {
       if (event.snapshot.value != null) {
-        setState(() {
-          waterLevel = event.snapshot.value.toString();
-        });
+        String waterLevelValue = event.snapshot.value.toString();
+        String formattedDateTime = _getFormattedDateTime();
+        _storeDataLocally('waterLevel', waterLevelValue, formattedDateTime);
       }
     });
 
     databaseRef.child('waterTemp').onValue.listen((event) {
       if (event.snapshot.value != null) {
-        setState(() {
-          waterTemp = event.snapshot.value.toString();
-        });
+        double waterTempValue = double.parse(event.snapshot.value.toString());
+        String formattedDateTime = _getFormattedDateTime();
+        _storeDataLocally('waterTemp', waterTempValue.toString(), formattedDateTime);
       }
     });
 
     databaseRef.child('waterTurbidity').onValue.listen((event) {
       if (event.snapshot.value != null) {
-        setState(() {
-          waterTurbidity = event.snapshot.value.toString();
-        });
+        double waterTurbidityValue = double.parse(event.snapshot.value.toString());
+        String formattedDateTime = _getFormattedDateTime();
+        _storeDataLocally('waterTurbidity', waterTurbidityValue.toString(), formattedDateTime);
       }
     });
   }
@@ -65,12 +69,31 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  String _getFormattedDateTime() {
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+  }
+
+  void _storeDataLocally(String parameter, String value, String dateTime) {
+    Map<String, dynamic> row = {
+      'parameter': parameter,
+      'value': value,
+      'dateTime': dateTime,
+    };
+    _databaseHelper.insert(row);
+  }
+
+  void _navigateToStoredDataPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => stored.StoredDataPage()),
+    );
+  }
+
   @override
   void dispose() {
     databaseRef.onValue.drain();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +235,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: BoxItem(
                     icon: Icons.thermostat_outlined,
                     title: 'Temperature',
-                    value: '$waterTemp', // Placeholder value, replace with actual data
+                    value: '$waterTemp',
                   ),
                 ),
                 SizedBox(width: 16),
@@ -220,7 +243,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: BoxItem(
                     icon: Icons.blur_on,
                     title: 'Water Turbidity',
-                    value: '$waterTurbidity', // Placeholder value, replace with actual data
+                    value: '$waterTurbidity',
                   ),
                 ),
               ],
@@ -240,9 +263,10 @@ class _DashboardPageState extends State<DashboardPage> {
               children: [
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.lightbulb,
+                    icon: Icons.lightbulb ,
+                    iconColor: Colors.yellow,
                     title: 'Lighting',
-                    value: '--', // Placeholder value, replace with actual data
+                    value: '--',
                   ),
                 ),
                 SizedBox(width: 16),
@@ -250,7 +274,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: BoxItem(
                     icon: Icons.restaurant,
                     title: 'Feeding',
-                    value: '--', // Placeholder value, replace with actual data
+                    value: '--',
                   ),
                 ),
               ],
@@ -272,7 +296,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: BoxItem(
                     icon: Icons.whatshot,
                     title: 'Heater',
-                    value: '--', // Placeholder value, replace with actual data
+                    value: '--',
                   ),
                 ),
                 SizedBox(width: 16),
@@ -280,7 +304,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: BoxItem(
                     icon: Icons.lightbulb,
                     title: 'UV Lamp',
-                    value: '--', // Placeholder value, replace with actual data
+                    value: '--',
                   ),
                 ),
               ],
@@ -288,6 +312,10 @@ class _DashboardPageState extends State<DashboardPage> {
             SizedBox(height: 16),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToStoredDataPage,
+        child: Icon(Icons.storage),
       ),
     );
   }
@@ -297,12 +325,14 @@ class BoxItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final String value;
+  final Color? iconColor; 
 
   const BoxItem({
     Key? key,
     required this.icon,
     required this.title,
     required this.value,
+    this.iconColor,
   }) : super(key: key);
 
   @override
@@ -313,7 +343,7 @@ class BoxItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 36),
+            Icon(icon, size: 36, color: iconColor),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -329,7 +359,10 @@ class BoxItem extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     value,
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
