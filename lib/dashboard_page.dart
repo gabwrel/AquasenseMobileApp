@@ -128,7 +128,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
         flexibleSpace: Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: const EdgeInsets.only(top: 40),
+            padding: const EdgeInsets.only(top: 20),
             child: Image.asset(
               'assets/images/logo2.png',
               height: 80,
@@ -225,6 +225,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.opacity,
+                    iconColor: Color.fromRGBO(139, 211, 235, 1),
                     title: 'pH Level',
                     value: '$pH',
                   ),
@@ -233,6 +234,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.waves_outlined,
+                    iconColor: Color.fromRGBO(22, 52, 224, 1),
                     title: 'Water Level',
                     value: '$waterLevel',
                   ),
@@ -246,6 +248,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.thermostat_outlined,
+                    iconColor: Color.fromRGBO(218, 0, 0, 1),
                     title: 'Temperature',
                     value: '$waterTemp',
                   ),
@@ -254,14 +257,15 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.blur_on,
+                    iconColor: Color.fromRGBO(87, 55, 19, 1),
                     title: 'Water Turbidity',
                     value: '$waterTurbidity',
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8),
-            Divider(color: Colors.blue),
+            SizedBox(height: 16),
+            Divider(color: Colors.blue, height: 20),
             Text(
               'ENVIRONMENT CONTROLS',
               style: TextStyle(
@@ -270,13 +274,13 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
               ),
             ),
             SizedBox(height: 16),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: BoxItem(
                     icon: Icons.lightbulb ,
-                    iconColor: Colors.yellow,
+                    iconColor: Color.fromRGBO(245, 222, 16, 1),
                     title: 'Lighting',
                     value: '--',
                   ),
@@ -285,14 +289,15 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.restaurant,
+                    iconColor: Colors.green,
                     title: 'Feeding',
                     value: '--',
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8),
-            Divider(color: Colors.blue),
+            const SizedBox(height: 8),
+            Divider(color: Colors.blue, height: 20),
             Text(
               'FILTRATION SYSTEM',
               style: TextStyle(
