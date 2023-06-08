@@ -295,6 +295,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.whatshot,
+                    iconColor: Colors.red,
                     title: 'Heater',
                     value: '--',
                   ),
@@ -303,6 +304,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.lightbulb,
+                    iconColor: Colors.purple,
                     title: 'UV Lamp',
                     value: '--',
                   ),
