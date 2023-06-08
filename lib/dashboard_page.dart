@@ -29,36 +29,48 @@ class _DashboardPageState extends State<DashboardPage> {
     databaseRef = FirebaseDatabase.instance.reference();
 
     databaseRef.child('pH').onValue.listen((event) {
-      if (event.snapshot.value != null) {
-        double phValue = double.parse(event.snapshot.value.toString());
-        String formattedDateTime = _getFormattedDateTime();
-        _storeDataLocally('pH', phValue.toStringAsFixed(2), formattedDateTime);
-      }
+  if (event.snapshot.value != null) {
+    double phValue = double.parse(event.snapshot.value.toString());
+    setState(() {
+      pH = phValue.toStringAsFixed(2);
     });
+    String formattedDateTime = _getFormattedDateTime();
+    _storeDataLocally('pH', pH, formattedDateTime);
+  }
+});
 
-    databaseRef.child('waterLevel').onValue.listen((event) {
-      if (event.snapshot.value != null) {
-        String waterLevelValue = event.snapshot.value.toString();
-        String formattedDateTime = _getFormattedDateTime();
-        _storeDataLocally('waterLevel', waterLevelValue, formattedDateTime);
-      }
+databaseRef.child('waterLevel').onValue.listen((event) {
+  if (event.snapshot.value != null) {
+    String waterLevelValue = event.snapshot.value.toString();
+    setState(() {
+      waterLevel = waterLevelValue;
     });
+    String formattedDateTime = _getFormattedDateTime();
+    _storeDataLocally('waterLevel', waterLevel, formattedDateTime);
+  }
+});
 
-    databaseRef.child('waterTemp').onValue.listen((event) {
-      if (event.snapshot.value != null) {
-        double waterTempValue = double.parse(event.snapshot.value.toString());
-        String formattedDateTime = _getFormattedDateTime();
-        _storeDataLocally('waterTemp', waterTempValue.toString(), formattedDateTime);
-      }
+databaseRef.child('waterTemp').onValue.listen((event) {
+  if (event.snapshot.value != null) {
+    double waterTempValue = double.parse(event.snapshot.value.toString());
+    setState(() {
+      waterTemp = waterTempValue.toString();
     });
+    String formattedDateTime = _getFormattedDateTime();
+    _storeDataLocally('waterTemp', waterTemp, formattedDateTime);
+  }
+});
 
-    databaseRef.child('waterTurbidity').onValue.listen((event) {
-      if (event.snapshot.value != null) {
-        double waterTurbidityValue = double.parse(event.snapshot.value.toString());
-        String formattedDateTime = _getFormattedDateTime();
-        _storeDataLocally('waterTurbidity', waterTurbidityValue.toString(), formattedDateTime);
-      }
+databaseRef.child('waterTurbidity').onValue.listen((event) {
+  if (event.snapshot.value != null) {
+    double waterTurbidityValue = double.parse(event.snapshot.value.toString());
+    setState(() {
+      waterTurbidity = waterTurbidityValue.toString();
     });
+    String formattedDateTime = _getFormattedDateTime();
+    _storeDataLocally('waterTurbidity', waterTurbidity, formattedDateTime);
+  }
+});
   }
 
   Future<void> initializeFirebase() async {
