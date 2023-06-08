@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:aquasenseapp/dashboard_page.dart';
 
 class ConfigurationPage extends StatefulWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
@@ -48,23 +49,27 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 80,
+        backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DashboardPage()),
+            );
           },
         ),
-        title: Text('Configuration'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Expanded(child: Container()), // Add an expanded container to push the image to the right
+            Image.asset(
               'assets/images/logo2.png',
-              width: 30,
-              height: 30,
+              height: 80, // Adjust the logo height as needed
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       body: Center(
         child: Column(
@@ -182,6 +187,12 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
   @override
   void initState() {
     super.initState();
+    value = widget.value;
+  }
+
+  @override
+  void didUpdateWidget(SliderVerticalWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
     value = widget.value;
   }
 
