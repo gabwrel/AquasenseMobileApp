@@ -81,13 +81,39 @@ class _WaterChangePageState extends State<WaterChangePage> {
     ],
   ),
 ),
-      body: Center(
-        child: isLoading
-            ? SpinKitCircle(
-                color: Colors.blue,
-                size: 50.0,
-              )
-            : null, // Show the spinner only if isLoading is true
+      body: Column(
+        children: [
+          Expanded(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 150),
+                  Image.asset(
+                    'assets/images/aquassist.png',
+                    height: 170,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Initializing Water Change',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 28,
+                    ),
+                  ),
+                  SizedBox(height: 230),
+                  isLoading
+                      ? SpinKitCircle(
+                          color: Colors.red,
+                          size: 70.0,
+                        )
+                      : Container(),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

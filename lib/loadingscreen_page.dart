@@ -92,21 +92,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     'assets/images/aquassist.png',
                     height: 170,
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
+                  Text(
+                    'Testing Parameters',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 28,
+                    ),
+                  ),
+                  SizedBox(height: 230),
                   isLoading
                       ? SpinKitCircle(
                           color: Colors.red,
                           size: 70.0,
                         )
                       : Container(),
-                  SizedBox(height: 20),
-                  Text(
-                    'Testing Parameters',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
                 ],
               ),
             ),

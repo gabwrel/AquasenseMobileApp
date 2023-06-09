@@ -60,14 +60,14 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-            toolbarHeight: 80,
-            backgroundColor: Colors.white,
-            leading: IconButton(
+        toolbarHeight: 80,
+        backgroundColor: Colors.white,
+        leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
             Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MyApp()),
+              context,
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
           },
         ),
@@ -82,25 +82,24 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
           ],
         ),
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.settings),
-                ),
-                Text(
-                  'Configure',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
+            Text(
+              'CONFIGURATION',
+              style: TextStyle(
+                fontSize: 45,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
             ),
+            Divider(color: Colors.red),
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // Fix: Center the text horizontally
                 children: [
                   Icon(Icons.show_chart),
                   SizedBox(width: 8.0),
@@ -134,6 +133,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // Fix: Center the text horizontally
                 children: [
                   Icon(Icons.thermostat),
                   SizedBox(width: 8.0),
@@ -167,6 +167,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // Fix: Center the text horizontally
                 children: [
                   Icon(Icons.opacity),
                   SizedBox(width: 8.0),
