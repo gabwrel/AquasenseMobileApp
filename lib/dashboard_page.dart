@@ -14,6 +14,7 @@ class _DashboardPageState extends State<DashboardPage> {
   double? waterLevel;
   double? waterTemp;
   double? waterTurbidity;
+  double? phConfig; // Added phConfig variable
 
   late DatabaseReference databaseRef;
 
@@ -55,6 +56,15 @@ class _DashboardPageState extends State<DashboardPage> {
         double waterTurbidityValue = double.parse(event.snapshot.value.toString());
         setState(() {
           waterTurbidity = waterTurbidityValue;
+        });
+      }
+    });
+
+    databaseRef.child('PARAMETERS_CONFIG').child('ph_CONFIG').onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        double phConfigValue = double.parse(event.snapshot.value.toString());
+        setState(() {
+          phConfig = phConfigValue;
         });
       }
     });
@@ -194,6 +204,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     iconColor: Color.fromRGBO(139, 211, 235, 1),
                     title: 'pH Level',
                     value: pH?.toStringAsFixed(1) ?? '--',
+                    phValue: pH,
+                    phConfig: phConfig,
                   ),
                 ),
                 SizedBox(width: 16),
@@ -307,6 +319,8 @@ class BoxItem extends StatelessWidget {
   final String title;
   final String value;
   final Color? iconColor;
+  final double? phValue;
+  final double? phConfig;
 
   const BoxItem({
     Key? key,
@@ -314,11 +328,29 @@ class BoxItem extends StatelessWidget {
     required this.title,
     required this.value,
     this.iconColor,
+    this.phValue,
+    this.phConfig,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Calculate the pH difference
+    double? difference = phValue != null && phConfig != null ? (phValue! - phConfig!).abs() : null;
+
+    // Set the background color based on the pH difference
+    Color? backgroundColor;
+    if (difference != null) {
+      if (difference <= 1) {
+        backgroundColor = Colors.green; // Within +- 1
+      } else if (difference > 1.5 && difference < 1.99) {
+        backgroundColor = Colors.orange; // Within +- 1.5
+      } else if (difference >= 2) {
+        backgroundColor = Colors.red; // 2 or more
+      }
+    }
+
     return Card(
+      color: backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
@@ -333,8 +365,8 @@ class BoxItem extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                   const SizedBox(height: 2),
