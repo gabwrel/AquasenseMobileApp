@@ -1,114 +1,35 @@
 {
   "project_info": {
-    "project_number": "956076657726",
-    "firebase_url": "https://aquasensetest-62959-default-rtdb.firebaseio.com",
-    "project_id": "aquasensetest-62959",
-    "storage_bucket": "aquasensetest-62959.appspot.com"
+    "project_number": "701067318804",
+    "firebase_url": "https://aquasense-v1-default-rtdb.firebaseio.com",
+    "project_id": "aquasense-v1",
+    "storage_bucket": "aquasense-v1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:956076657726:android:1c08dc914dd9721cdd156f",
-        "android_client_info": {
-          "package_name": "com.example.aquasense"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "956076657726-h37n5fq9t5ha588dr9qe7kb6mruulk4d.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD0AlgluHt2Y_hOtauD8oMf82dPodKWfiE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "956076657726-h37n5fq9t5ha588dr9qe7kb6mruulk4d.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "956076657726-67ajltiqloghk5vspvrtat3q167u5g65.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.aquasense.RunnerTests"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:956076657726:android:43f18a1bef1b122cdd156f",
+        "mobilesdk_app_id": "1:701067318804:android:ba6332826bd5dd59ed7901",
         "android_client_info": {
           "package_name": "com.example.aquasenseapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "956076657726-h37n5fq9t5ha588dr9qe7kb6mruulk4d.apps.googleusercontent.com",
+          "client_id": "701067318804-s9ijb8mdvmfvokogg70ffup6lu3i9jrm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD0AlgluHt2Y_hOtauD8oMf82dPodKWfiE"
+          "current_key": "AIzaSyBb7rLYlbiO4clhUfeeMYJCkREleSA1_KE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "956076657726-h37n5fq9t5ha588dr9qe7kb6mruulk4d.apps.googleusercontent.com",
+              "client_id": "701067318804-s9ijb8mdvmfvokogg70ffup6lu3i9jrm.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "956076657726-67ajltiqloghk5vspvrtat3q167u5g65.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.aquasense.RunnerTests"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:956076657726:android:b0bc890a7f694612dd156f",
-        "android_client_info": {
-          "package_name": "it.softwarehouse.aquasenseapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "956076657726-h37n5fq9t5ha588dr9qe7kb6mruulk4d.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD0AlgluHt2Y_hOtauD8oMf82dPodKWfiE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "956076657726-h37n5fq9t5ha588dr9qe7kb6mruulk4d.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "956076657726-67ajltiqloghk5vspvrtat3q167u5g65.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.aquasense.RunnerTests"
-              }
             }
           ]
         }

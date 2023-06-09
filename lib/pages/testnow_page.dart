@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:aquasenseapp/dashboard_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:aquasenseapp/loadingscreen_page.dart';
+import 'package:aquasenseapp/main.dart';
 
 class TestNowPage extends StatelessWidget {
-  const TestNowPage({super.key});
+  const TestNowPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: Colors.white,
-        leading: IconButton(
+            toolbarHeight: 80,
+            backgroundColor: Colors.white,
+            leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => DashboardPage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
           },
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(child: Container()), // Add an expanded container to push the image to the right
+            Expanded(child: Container()),
             Image.asset(
               'assets/images/logo2.png',
-              height: 80, // Adjust the logo height as needed
+              height: 60,
             ),
           ],
         ),
@@ -36,7 +40,7 @@ class TestNowPage extends StatelessWidget {
             child: Center(
               child: Image.asset(
                 'assets/images/aquassist.png',
-                height: 170, // Increase the image height here
+                height: 170,
               ),
             ),
           ),
@@ -45,8 +49,7 @@ class TestNowPage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.red),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                 padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                   EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 ),
@@ -57,7 +60,11 @@ class TestNowPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                // TODO: Implement the "test now" functionality
+                pushValueToDatabase();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoadingScreen()),
+                );
               },
               child: Text(
                 'Test Now',
@@ -71,5 +78,12 @@ class TestNowPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void pushValueToDatabase() async {
+    await Firebase.initializeApp(); // Initialize Firebase
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref();
+    databaseReference.child('TRIGGERS').child('test_TRIGGER').set(1);
   }
 }

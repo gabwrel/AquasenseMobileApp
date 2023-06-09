@@ -2,51 +2,44 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  static final DatabaseHelper _instance = DatabaseHelper._();
+  static final DatabaseHelper instance = DatabaseHelper._();
   static Database? _database;
-
-  factory DatabaseHelper() {
-    return _instance;
-  }
 
   DatabaseHelper._();
 
-  static const String tableName = 'stored_data';
-  static const String columnId = 'id';
-  static const String columnParameter = 'parameter';
-  static const String columnValue = 'value';
-
   Future<Database> get database async {
     if (_database != null) return _database!;
-
-    _database = await initializeDatabase();
+    _database = await _initDatabase();
     return _database!;
   }
 
-  Future<Database> initializeDatabase() async {
-    final String path = join(await getDatabasesPath(), 'stored_data.db');
-
-    return openDatabase(
+  Future<Database> _initDatabase() async {
+    final String path = join(await getDatabasesPath(), 'my_database.db');
+    return await openDatabase(
       path,
       version: 1,
-      onCreate: (Database db, int version) {
-        return db.execute(
-          '''
-          CREATE TABLE $tableName(
-            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-            $columnParameter TEXT,
-            $columnValue TEXT
-          )
-          ''',
-        );
-      },
+      onCreate: _createDatabase,
     );
   }
 
-  Future<int> insert(Map<String, dynamic> row) async {
-    final Database db = await database;
-    return await db.insert(tableName, row);
+  Future<void> _createDatabase(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE sensor_data (
+        id INTEGER PRIMARY KEY,
+        parameter TEXT,
+        value TEXT,
+        dateTime TEXT
+      )
+    ''');
   }
 
-  // Add other database operations as needed
+  Future<List<Map<String, dynamic>>> fetchAllData() async {
+    final Database db = await instance.database;
+    return await db.query('sensor_data', orderBy: 'dateTime DESC');
+  }
+
+  Future<void> insert(Map<String, dynamic> data) async {
+    final Database db = await instance.database;
+    await db.insert('sensor_data', data);
+  }
 }

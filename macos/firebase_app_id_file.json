@@ -1,7 +1,7 @@
 {
   "file_generated_by": "FlutterFire CLI",
   "purpose": "FirebaseAppID & ProjectID for this Firebase app in this directory",
-  "GOOGLE_APP_ID": "1:956076657726:ios:40633d0712823062dd156f",
-  "FIREBASE_PROJECT_ID": "aquasensetest-62959",
-  "GCM_SENDER_ID": "956076657726"
+  "GOOGLE_APP_ID": "1:701067318804:ios:9d128872316aa940ed7901",
+  "FIREBASE_PROJECT_ID": "aquasense-v1",
+  "GCM_SENDER_ID": "701067318804"
 }

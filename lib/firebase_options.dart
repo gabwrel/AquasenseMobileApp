@@ -44,44 +44,44 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBCNV8Crefs5ah9aZF8nXe9c_oOU7_zPwU',
-    appId: '1:956076657726:web:a0a3ec42ac9bfcffdd156f',
-    messagingSenderId: '956076657726',
-    projectId: 'aquasensetest-62959',
-    authDomain: 'aquasensetest-62959.firebaseapp.com',
-    databaseURL: 'https://aquasensetest-62959-default-rtdb.firebaseio.com',
-    storageBucket: 'aquasensetest-62959.appspot.com',
-    measurementId: 'G-TTCYFHCHGH',
+    apiKey: 'AIzaSyCtIluNNVJDCv0pA-ruHaNnN2ZexIpo4x4',
+    appId: '1:701067318804:web:adbeabf6b3ce034ced7901',
+    messagingSenderId: '701067318804',
+    projectId: 'aquasense-v1',
+    authDomain: 'aquasense-v1.firebaseapp.com',
+    databaseURL: 'https://aquasense-v1-default-rtdb.firebaseio.com',
+    storageBucket: 'aquasense-v1.appspot.com',
+    measurementId: 'G-VYJBZDVRFP',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD0AlgluHt2Y_hOtauD8oMf82dPodKWfiE',
-    appId: '1:956076657726:android:43f18a1bef1b122cdd156f',
-    messagingSenderId: '956076657726',
-    projectId: 'aquasensetest-62959',
-    databaseURL: 'https://aquasensetest-62959-default-rtdb.firebaseio.com',
-    storageBucket: 'aquasensetest-62959.appspot.com',
+    apiKey: 'AIzaSyBb7rLYlbiO4clhUfeeMYJCkREleSA1_KE',
+    appId: '1:701067318804:android:ba6332826bd5dd59ed7901',
+    messagingSenderId: '701067318804',
+    projectId: 'aquasense-v1',
+    databaseURL: 'https://aquasense-v1-default-rtdb.firebaseio.com',
+    storageBucket: 'aquasense-v1.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD4s5shsPpkMorx34qO9vAWxHB1g-XWPfg',
-    appId: '1:956076657726:ios:fea24d9fd697aa69dd156f',
-    messagingSenderId: '956076657726',
-    projectId: 'aquasensetest-62959',
-    databaseURL: 'https://aquasensetest-62959-default-rtdb.firebaseio.com',
-    storageBucket: 'aquasensetest-62959.appspot.com',
-    iosClientId: '956076657726-mukeig0l14lpf3cmsqq3b0kostfg8poq.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAOCQ0yD8qgn4HA2Gv5suzaspaGYy2Q07c',
+    appId: '1:701067318804:ios:e1f08a1b31c0d093ed7901',
+    messagingSenderId: '701067318804',
+    projectId: 'aquasense-v1',
+    databaseURL: 'https://aquasense-v1-default-rtdb.firebaseio.com',
+    storageBucket: 'aquasense-v1.appspot.com',
+    iosClientId: '701067318804-dv7qjgiev4qnpen147ifjj869r2irbkl.apps.googleusercontent.com',
     iosBundleId: 'com.example.aquasenseapp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD4s5shsPpkMorx34qO9vAWxHB1g-XWPfg',
-    appId: '1:956076657726:ios:40633d0712823062dd156f',
-    messagingSenderId: '956076657726',
-    projectId: 'aquasensetest-62959',
-    databaseURL: 'https://aquasensetest-62959-default-rtdb.firebaseio.com',
-    storageBucket: 'aquasensetest-62959.appspot.com',
-    iosClientId: '956076657726-6lfoip5qo37hag7ggfklbt2gdl9rtfvp.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAOCQ0yD8qgn4HA2Gv5suzaspaGYy2Q07c',
+    appId: '1:701067318804:ios:9d128872316aa940ed7901',
+    messagingSenderId: '701067318804',
+    projectId: 'aquasense-v1',
+    databaseURL: 'https://aquasense-v1-default-rtdb.firebaseio.com',
+    storageBucket: 'aquasense-v1.appspot.com',
+    iosClientId: '701067318804-daqh6bgs8hhngqcut93fearseg1ctp5m.apps.googleusercontent.com',
     iosBundleId: 'com.example.aquasenseapp.RunnerTests',
   );
 }

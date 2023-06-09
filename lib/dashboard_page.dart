@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:aquasenseapp/stored_data_page.dart' as stored;
-import 'package:aquasenseapp/database_helper.dart' as aquasense_helper;
-import 'package:intl/intl.dart';
-
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -14,63 +10,54 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  String pH = '';
-  String waterLevel = '';
-  String waterTemp = '';
-  String waterTurbidity = '';
+  double? pH;
+  double? waterLevel;
+  double? waterTemp;
+  double? waterTurbidity;
 
   late DatabaseReference databaseRef;
-  final aquasense_helper.DatabaseHelper _databaseHelper = aquasense_helper.DatabaseHelper();
 
   @override
   void initState() {
     super.initState();
     initializeFirebase();
-    databaseRef = FirebaseDatabase.instance.reference();
+    databaseRef = FirebaseDatabase.instance.ref();
 
-    databaseRef.child('pH').onValue.listen((event) {
-  if (event.snapshot.value != null) {
-    double phValue = double.parse(event.snapshot.value.toString());
-    setState(() {
-      pH = phValue.toStringAsFixed(2);
+    databaseRef.child('SENSOR_DATA').child('ph').onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        double phValue = double.parse(event.snapshot.value.toString());
+        setState(() {
+          pH = phValue;
+        });
+      }
     });
-    String formattedDateTime = _getFormattedDateTime();
-    _storeDataLocally('pH', pH, formattedDateTime);
-  }
-});
 
-databaseRef.child('waterLevel').onValue.listen((event) {
-  if (event.snapshot.value != null) {
-    String waterLevelValue = event.snapshot.value.toString();
-    setState(() {
-      waterLevel = waterLevelValue;
+    databaseRef.child('SENSOR_DATA').child('waterLevel').onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        double waterLevelValue = double.parse(event.snapshot.value.toString());
+        setState(() {
+          waterLevel = waterLevelValue;
+        });
+      }
     });
-    String formattedDateTime = _getFormattedDateTime();
-    _storeDataLocally('waterLevel', waterLevel, formattedDateTime);
-  }
-});
 
-databaseRef.child('waterTemp').onValue.listen((event) {
-  if (event.snapshot.value != null) {
-    double waterTempValue = double.parse(event.snapshot.value.toString());
-    setState(() {
-      waterTemp = waterTempValue.toString();
+    databaseRef.child('SENSOR_DATA').child('waterTemp').onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        double waterTempValue = double.parse(event.snapshot.value.toString());
+        setState(() {
+          waterTemp = waterTempValue;
+        });
+      }
     });
-    String formattedDateTime = _getFormattedDateTime();
-    _storeDataLocally('waterTemp', waterTemp, formattedDateTime);
-  }
-});
 
-databaseRef.child('waterTurbidity').onValue.listen((event) {
-  if (event.snapshot.value != null) {
-    double waterTurbidityValue = double.parse(event.snapshot.value.toString());
-    setState(() {
-      waterTurbidity = waterTurbidityValue.toString();
+    databaseRef.child('SENSOR_DATA').child('waterTurbidity').onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        double waterTurbidityValue = double.parse(event.snapshot.value.toString());
+        setState(() {
+          waterTurbidity = waterTurbidityValue;
+        });
+      }
     });
-    String formattedDateTime = _getFormattedDateTime();
-    _storeDataLocally('waterTurbidity', waterTurbidity, formattedDateTime);
-  }
-});
   }
 
   Future<void> initializeFirebase() async {
@@ -81,29 +68,8 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
     }
   }
 
-  String _getFormattedDateTime() {
-    return DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-  }
-
-  void _storeDataLocally(String parameter, String value, String dateTime) {
-    Map<String, dynamic> row = {
-      'parameter': parameter,
-      'value': value,
-      'dateTime': dateTime,
-    };
-    _databaseHelper.insert(row);
-  }
-
-  void _navigateToStoredDataPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => stored.StoredDataPage()),
-    );
-  }
-
   @override
   void dispose() {
-    databaseRef.onValue.drain();
     super.dispose();
   }
 
@@ -128,7 +94,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
         flexibleSpace: Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 45),
             child: Image.asset(
               'assets/images/logo2.png',
               height: 80,
@@ -227,7 +193,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                     icon: Icons.opacity,
                     iconColor: Color.fromRGBO(139, 211, 235, 1),
                     title: 'pH Level',
-                    value: '$pH',
+                    value: pH?.toStringAsFixed(1) ?? '--',
                   ),
                 ),
                 SizedBox(width: 16),
@@ -236,7 +202,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                     icon: Icons.waves_outlined,
                     iconColor: Color.fromRGBO(22, 52, 224, 1),
                     title: 'Water Level',
-                    value: '$waterLevel',
+                    value: waterLevel?.toStringAsFixed(1) ?? '--',
                   ),
                 ),
               ],
@@ -250,7 +216,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                     icon: Icons.thermostat_outlined,
                     iconColor: Color.fromRGBO(218, 0, 0, 1),
                     title: 'Temperature',
-                    value: '$waterTemp',
+                    value: waterTemp?.toStringAsFixed(1) ?? '--',
                   ),
                 ),
                 SizedBox(width: 16),
@@ -259,7 +225,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
                     icon: Icons.blur_on,
                     iconColor: Color.fromRGBO(87, 55, 19, 1),
                     title: 'Water Turbidity',
-                    value: '$waterTurbidity',
+                    value: waterTurbidity?.toStringAsFixed(1) ?? '--',
                   ),
                 ),
               ],
@@ -279,7 +245,7 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
               children: [
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.lightbulb ,
+                    icon: Icons.lightbulb,
                     iconColor: Color.fromRGBO(245, 222, 16, 1),
                     title: 'Lighting',
                     value: '--',
@@ -332,10 +298,6 @@ databaseRef.child('waterTurbidity').onValue.listen((event) {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _navigateToStoredDataPage,
-        child: Icon(Icons.storage),
-      ),
     );
   }
 }
@@ -344,7 +306,7 @@ class BoxItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final String value;
-  final Color? iconColor; 
+  final Color? iconColor;
 
   const BoxItem({
     Key? key,

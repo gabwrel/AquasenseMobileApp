@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:aquasenseapp/main.dart';
+import 'package:aquasenseapp/pages/waterchange_page.dart';
 
 class MaintenancePage extends StatefulWidget {
   const MaintenancePage({Key? key}) : super(key: key);
@@ -9,43 +11,36 @@ class MaintenancePage extends StatefulWidget {
 }
 
 class _MaintenancePageState extends State<MaintenancePage> {
-  bool? continuousDrip;
-  bool? filtrationSystem;
-  bool? environmentControls;
-  bool? masterSwitch;
+  String? drip_MODE;
+  String? filtrationsystem_MODE;
+  String? master_TRIGGER;
 
   late DatabaseReference _databaseReference;
 
   @override
   void initState() {
     super.initState();
-    _databaseReference = FirebaseDatabase.instance.ref().child('maintenance');
+    _databaseReference = FirebaseDatabase.instance.ref();
 
     fetchMaintenanceValues();
   }
 
   void fetchMaintenanceValues() {
-    _databaseReference.child('continuousDrip').onValue.listen((event) {
+    _databaseReference.child('FILTRATION_SYSTEM').child('drip_MODE').onValue.listen((event) {
       setState(() {
-        continuousDrip = event.snapshot.value as bool?;
+        drip_MODE = event.snapshot.value.toString();
       });
     });
 
-    _databaseReference.child('filtrationSystem').onValue.listen((event) {
+    _databaseReference.child('FILTRATION_SYSTEM').child('filtrationsystem_MODE').onValue.listen((event) {
       setState(() {
-        filtrationSystem = event.snapshot.value as bool?;
+        filtrationsystem_MODE = event.snapshot.value.toString();
       });
     });
 
-    _databaseReference.child('environmentControls').onValue.listen((event) {
+    _databaseReference.child('TRIGGERS').child('master_TRIGGER').onValue.listen((event) {
       setState(() {
-        environmentControls = event.snapshot.value as bool?;
-      });
-    });
-
-    _databaseReference.child('masterSwitch').onValue.listen((event) {
-      setState(() {
-        masterSwitch = event.snapshot.value as bool?;
+        master_TRIGGER = event.snapshot.value.toString();
       });
     });
   }
@@ -58,26 +53,29 @@ class _MaintenancePageState extends State<MaintenancePage> {
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 80,
-          backgroundColor: Colors.white,
-          // leading: IconButton(
-          //   icon: Icon(Icons.arrow_back, color: Colors.blue),
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(child: Container()),
-              Image.asset(
-                'assets/images/logo2.png',
-                height: 60,
-              ),
-            ],
-          ),
+      appBar: AppBar(
+            toolbarHeight: 80,
+            backgroundColor: Colors.white,
+            leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.blue),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MyApp()),
+            );
+          },
         ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Expanded(child: Container()),
+            Image.asset(
+              'assets/images/logo2.png',
+              height: 60,
+            ),
+          ],
+        ),
+      ),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
           child: Center(
@@ -122,29 +120,53 @@ class _MaintenancePageState extends State<MaintenancePage> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              // Handle the onTap event for the 25% item
-                              print('25% clicked');
+                              _databaseReference
+                              .child('MAINTENANCE')
+                              .child('waterchange_LEVEL')
+                              .set(25);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => WaterChangePage()),
+                              );
                             },
                             child: buildConfigItem('25%', Colors.blue, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Handle the onTap event for the 50% item
-                              print('50% clicked');
+                                _databaseReference
+                                .child('MAINTENANCE')
+                                .child('waterchange_LEVEL')
+                                .set(50);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => WaterChangePage()),
+                              );
                             },
                             child: buildConfigItem('50%', Colors.green, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Handle the onTap event for the 75% item
-                              print('75% clicked');
+                              _databaseReference
+                              .child('MAINTENANCE')
+                              .child('waterchange_LEVEL')
+                              .set(75);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => WaterChangePage()),
+                              );
                             },
                             child: buildConfigItem('75%', Colors.orange, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Handle the onTap event for the 100% item
-                              print('100% clicked');
+                              _databaseReference
+                              .child('MAINTENANCE')
+                              .child('waterchange_LEVEL')
+                              .set(100);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => WaterChangePage()),
+                              );
                             },
                             child: buildConfigItem('100%', Colors.red, availableWidth * 0.2, availableHeight * 0.15),
                           ),
@@ -153,10 +175,9 @@ class _MaintenancePageState extends State<MaintenancePage> {
       
                       SizedBox(height: availableHeight * 0.05),
       
-                      buildSwitchItem(Icons.opacity, 'Continuous Drip', continuousDrip!, 'continuousDrip'),
-                      buildSwitchItem(Icons.filter, 'Filtration System', filtrationSystem!, 'filtrationSystem'),
-                      buildSwitchItem(Icons.settings, 'Environment Controls', environmentControls!, 'environmentControls'),
-                      buildSwitchItem(Icons.power_settings_new, 'Master Switch', masterSwitch!, 'masterSwitch'),
+                      buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE ?? "0", 'drip_MODE'),
+                      buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE ?? "0", 'filtrationsystem_MODE'),
+                      buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER ?? "0", 'master_TRIGGER'),
                     ],
                   ),
                 );
@@ -185,32 +206,33 @@ class _MaintenancePageState extends State<MaintenancePage> {
     );
   }
 
-  Widget buildSwitchItem(IconData icon, String text, bool value, String configKey) {
+  Widget buildSwitchItem(IconData icon, String text, String value, String configKey) {
     return ListTile(
       leading: Icon(icon),
       title: Text(text),
       trailing: Switch(
-        value: value,
+        value: value == "1",
         onChanged: (newValue) {
           setState(() {
-            // Update the boolean value in the local state
+            // Update the string value in the local state
             switch (configKey) {
-              case 'continuousDrip':
-                continuousDrip = newValue;
+              case 'drip_MODE':
+                drip_MODE = newValue ? "1" : "0";
                 break;
-              case 'filtrationSystem':
-                filtrationSystem = newValue;
+              case 'filtrationsystem_MODE':
+                filtrationsystem_MODE = newValue ? "1" : "0";
                 break;
-              case 'environmentControls':
-                environmentControls = newValue;
-                break;
-              case 'masterSwitch':
-                masterSwitch = newValue;
+              case 'master_TRIGGER':
+                master_TRIGGER = newValue ? "1" : "0";
                 break;
             }
 
-            // Update the boolean value in the Firebase Realtime Database
-            _databaseReference.child(configKey).set(newValue);
+            // Update the string value in the Firebase Realtime Database
+            if (configKey == 'master_TRIGGER') {
+              _databaseReference.child('TRIGGERS').child(configKey).set(newValue ? "1" : "0");
+            } else {
+              _databaseReference.child('FILTRATION_SYSTEM').child(configKey).set(newValue ? "1" : "0");
+            }
           });
         },
       ),

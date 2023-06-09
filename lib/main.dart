@@ -8,11 +8,12 @@ import 'package:aquasenseapp/pages/configuration_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -46,19 +47,19 @@ class _MyAppState extends State<MyApp> {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: Colors.blue,),
+              icon: Icon(Icons.home, color: Colors.blue),
               label: 'Dashboard',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings, color: Colors.blue,),
+              icon: Icon(Icons.settings, color: Colors.blue),
               label: 'Maintenance',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.check_circle_outline, color: Colors.blue,),
+              icon: Icon(Icons.check_circle_outline, color: Colors.blue),
               label: 'Test Now',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart, color: Colors.blue,),
+              icon: Icon(Icons.bar_chart, color: Colors.blue),
               label: 'Configuration',
             ),
           ],

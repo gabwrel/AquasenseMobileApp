@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:aquasenseapp/dashboard_page.dart';
+import 'package:aquasenseapp/main.dart';
 
 class ConfigurationPage extends StatefulWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
@@ -12,19 +12,20 @@ class ConfigurationPage extends StatefulWidget {
 class _ConfigurationPageState extends State<ConfigurationPage> {
   double? pHSetting;
   double? temperatureSetting;
+  double? turbiditySetting;
 
   late DatabaseReference _databaseReference;
 
   @override
   void initState() {
     super.initState();
-    _databaseReference = FirebaseDatabase.instance.ref().child('configurations');
+    _databaseReference = FirebaseDatabase.instance.ref().child('PARAMETERS_CONFIG');
 
     fetchConfigurationsValues();
   }
 
   void fetchConfigurationsValues() {
-    _databaseReference.child('pH_setting').onValue.listen((event) {
+    _databaseReference.child('ph_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
         pHSetting = (dataSnapshot.value as num?)?.toDouble();
@@ -34,10 +35,20 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
       print(error);
     });
 
-    _databaseReference.child('temperature_setting').onValue.listen((event) {
+    _databaseReference.child('temp_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
         temperatureSetting = (dataSnapshot.value as num?)?.toDouble();
+      });
+    }, onError: (Object? error) {
+      // Handle error if necessary
+      print(error);
+    });
+
+    _databaseReference.child('turbidity_CONFIG').onValue.listen((event) {
+      var dataSnapshot = event.snapshot;
+      setState(() {
+        turbiditySetting = (dataSnapshot.value as num?)?.toDouble();
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -49,24 +60,24 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: Colors.white,
-        leading: IconButton(
+            toolbarHeight: 80,
+            backgroundColor: Colors.white,
+            leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => DashboardPage()),
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MyApp()),
             );
           },
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(child: Container()), // Add an expanded container to push the image to the right
+            Expanded(child: Container()),
             Image.asset(
               'assets/images/logo2.png',
-              height: 80, // Adjust the logo height as needed
+              height: 60,
             ),
           ],
         ),
@@ -106,7 +117,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('pH_setting').set(pHSetting);
+                        _databaseReference.child('ph_CONFIG').set(pHSetting);
                       },
                     ),
                   ),
@@ -139,12 +150,45 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('temperature_setting').set(temperatureSetting);
+                        _databaseReference.child('temp_CONFIG').set(temperatureSetting);
                       },
                     ),
                   ),
                   Text(
                     '${temperatureSetting?.toStringAsFixed(2) ?? '0.00'}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Icon(Icons.opacity),
+                  SizedBox(width: 8.0),
+                  Text('Turbidity'),
+                  Expanded(
+                    child: Slider(
+                      value: turbiditySetting ?? 0.0,
+                      min: 0,
+                      max: 100,
+                      divisions: 100,
+                      onChanged: (value) {
+                        setState(() {
+                          turbiditySetting = value;
+                        });
+                      },
+                      onChangeEnd: (value) {
+                        _databaseReference.child('turbidity_CONFIG').set(turbiditySetting);
+                      },
+                    ),
+                  ),
+                  Text(
+                    '${turbiditySetting?.toStringAsFixed(2) ?? '0.00'}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
