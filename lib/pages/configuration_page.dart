@@ -19,7 +19,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   @override
   void initState() {
     super.initState();
-    _databaseReference = FirebaseDatabase.instance.reference().child('PARAMETERS_CONFIG');
+    _databaseReference = FirebaseDatabase.instance.ref().child('PARAMETERS_CONFIG');
 
     fetchConfigurationsValues();
   }
@@ -28,7 +28,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('ph_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        pHSetting = double.tryParse(dataSnapshot.value as String? ?? '');
+        pHSetting = double.tryParse(dataSnapshot.value as String? ?? '0.0');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -38,7 +38,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('temp_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        temperatureSetting = double.tryParse(dataSnapshot.value as String? ?? '');
+        temperatureSetting = double.tryParse(dataSnapshot.value as String? ?? '0.0');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -48,7 +48,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('turbidity_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        turbiditySetting = double.tryParse(dataSnapshot.value as String? ?? '');
+        turbiditySetting = double.tryParse(dataSnapshot.value as String? ?? '0.0');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -96,7 +96,6 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               ),
             ),
             Divider(color: Colors.red),
-            SizedBox(height: 16),
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
@@ -117,7 +116,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('ph_CONFIG').set(pHSetting?.toString() ?? '');
+                        _databaseReference.child('ph_CONFIG').set(pHSetting?.toString() ?? '0.0');
                       },
                     ),
                   ),
@@ -151,7 +150,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('temp_CONFIG').set(temperatureSetting?.toString() ?? '');
+                        _databaseReference.child('temp_CONFIG').set(temperatureSetting?.toString() ?? '0.0');
                       },
                     ),
                   ),
@@ -185,7 +184,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('turbidity_CONFIG').set(turbiditySetting?.toString() ?? '');
+                        _databaseReference.child('turbidity_CONFIG').set(turbiditySetting?.toString() ?? '0.0');
                       },
                     ),
                   ),
@@ -237,7 +236,7 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
   }
 
   @override
-  void didUpdateWidget(covariant SliderVerticalWidget oldWidget) {
+  void didUpdateWidget(SliderVerticalWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     value = widget.value;
   }
@@ -247,56 +246,71 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
     final double min = widget.min;
     final double max = widget.max;
 
-    // Define the color scheme based on 'ph_CONFIG' value ranges
-    Color getColor(double value) {
-      if (value >= 0 && value <= 3) {
-        return Colors.red;
-      } else if (value > 3 && value < 6) {
-        return Colors.orange;
-      } else if (value > 6 && value < 7.99) {
-        return Colors.green;
-      } else if (value >= 8 && value <= 11) {
-        return Colors.blue;
-      } else if (value > 11 && value <= 14) {
-        return Colors.purple;
-      }
-      return Colors.grey; // Default color for values outside the specified ranges
-    }
-
-    return Container(
-      width: 40, // Fixed width for the slider
-      child: Column(
-        children: [
-          Expanded(
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Slider(
-                value: value,
-                min: min,
-                max: max,
-                divisions: widget.divisions,
-                onChanged: (newValue) {
-                  setState(() {
-                    value = newValue;
-                  });
-                  widget.onChanged?.call(newValue);
-                },
-                onChangeEnd: (newValue) {
-                  widget.onChangeEnd?.call(newValue);
-                },
-                activeColor: getColor(value),
+    return SliderTheme(
+      data: SliderTheme.of(context).copyWith(
+        trackHeight: 80,
+        thumbShape: SliderComponentShape.noOverlay,
+        overlayShape: SliderComponentShape.noOverlay,
+        valueIndicatorShape: SliderComponentShape.noOverlay,
+        trackShape: RectangularSliderTrackShape(),
+        activeTickMarkColor: Colors.transparent,
+        inactiveTickMarkColor: Colors.transparent,
+      ),
+      child: Container(
+        height: 360,
+        child: Column(
+          children: [
+            buildSideLabel(max),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Stack(
+                children: [
+                  RotatedBox(
+                    quarterTurns: 3,
+                    child: Slider(
+                      value: value,
+                      min: min,
+                      max: max,
+                      divisions: widget.divisions,
+                      label: value.round().toString(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          value = newValue;
+                        });
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(newValue);
+                        }
+                      },
+                      onChangeEnd: (newValue) {
+                        if (widget.onChangeEnd != null) {
+                          widget.onChangeEnd!(newValue);
+                        }
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      '${value.round()}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          Text(
-            '${value.toStringAsFixed(2)}', // Display the current value
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            buildSideLabel(min),
+          ],
+        ),
       ),
     );
   }
+
+  Widget buildSideLabel(double value) => Text(
+        value.round().toString(),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      );
 }

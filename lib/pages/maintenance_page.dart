@@ -123,7 +123,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                               _databaseReference
                               .child('MAINTENANCE')
                               .child('waterchange_LEVEL')
-                              .set(25);
+                              .set('25');
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => WaterChangePage()),
