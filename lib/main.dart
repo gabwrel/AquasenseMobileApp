@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.check_circle_outline, color: Colors.blue),
-              label: 'Test Now',
+              label: 'Test',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart, color: Colors.blue),
