@@ -228,17 +228,52 @@ class SliderVerticalWidget extends StatefulWidget {
 
 class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
   late double value;
+  Color sliderColor = Colors.red;
 
   @override
   void initState() {
     super.initState();
     value = widget.value;
+    updateSliderColor();
   }
 
   @override
   void didUpdateWidget(SliderVerticalWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     value = widget.value;
+    updateSliderColor();
+  }
+
+  void updateSliderColor() {
+    if (value >= 0 && value <= 1) {
+      sliderColor = Color(0xFFFF0E00);
+    } else if (value > 1 && value <= 2) {
+      sliderColor = Color(0xFFFF7F00);
+    } else if (value > 2 && value <= 3) {
+      sliderColor = Color(0xFFFFC801);
+    } else if (value > 3 && value <= 4) {
+      sliderColor = Color(0xFFFEF200);
+    } else if (value > 4 && value <= 5) {
+      sliderColor = Color(0xFFE8F800);
+    } else if (value > 5 && value <= 6) {
+      sliderColor = Color(0xFFB3CC01);
+    } else if (value > 6 && value <= 7) {
+      sliderColor = Color(0xFF029700);
+    } else if (value > 7 && value <= 8) {
+      sliderColor = Color(0xFF00FFB1);
+    } else if (value > 8 && value <= 9) {
+      sliderColor = Color(0xFF00FFFB);
+    } else if (value > 9 && value <= 10) {
+      sliderColor = Color(0xFF00C0FF);
+    } else if (value > 10 && value <= 11) {
+      sliderColor = Color(0xFF0153FF);
+    } else if (value > 11 && value <= 12) {
+      sliderColor = Color(0xFF010CC6);
+    } else if (value > 12 && value <= 13) {
+      sliderColor = Color(0xFF8301C6);
+    } else if (value > 13) {
+      sliderColor = Color(0xFF480070);
+    }
   }
 
   @override
@@ -255,6 +290,7 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
         trackShape: RectangularSliderTrackShape(),
         activeTickMarkColor: Colors.transparent,
         inactiveTickMarkColor: Colors.transparent,
+        overlayColor: sliderColor.withOpacity(0.4),
       ),
       child: Container(
         height: 360,
@@ -276,6 +312,7 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
                       onChanged: (newValue) {
                         setState(() {
                           value = newValue;
+                          updateSliderColor();
                         });
                         if (widget.onChanged != null) {
                           widget.onChanged!(newValue);
@@ -286,6 +323,7 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
                           widget.onChangeEnd!(newValue);
                         }
                       },
+                      activeColor: sliderColor,
                     ),
                   ),
                   Center(

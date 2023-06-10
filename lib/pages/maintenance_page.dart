@@ -45,6 +45,43 @@ class _MaintenancePageState extends State<MaintenancePage> {
     });
   }
 
+  void handleWaterChange(String waterchangeLevel) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Text('Are you sure to perform $waterchangeLevel?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                _databaseReference
+                    .child('MAINTENANCE')
+                    .child('waterchange_LEVEL')
+                    .set(waterchangeLevel);
+                _databaseReference
+                    .child('TRIGGERS')
+                    .child('waterchange_TRIGGER')
+                    .set('1');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WaterChangePage()),
+                );
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -53,29 +90,29 @@ class _MaintenancePageState extends State<MaintenancePage> {
         return false;
       },
       child: Scaffold(
-      appBar: AppBar(
-            toolbarHeight: 80,
-            backgroundColor: Colors.white,
-            leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-          },
+        appBar: AppBar(
+          toolbarHeight: 80,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.blue),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyApp()),
+              );
+            },
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(child: Container()),
+              Image.asset(
+                'assets/images/logo2.png',
+                height: 60,
+              ),
+            ],
+          ),
         ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Expanded(child: Container()),
-            Image.asset(
-              'assets/images/logo2.png',
-              height: 60,
-            ),
-          ],
-        ),
-      ),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
           child: Center(
@@ -88,9 +125,9 @@ class _MaintenancePageState extends State<MaintenancePage> {
                   child: Column(
                     children: [
                       Image.asset('assets/images/logo2.png'), // Replace with the actual path of your logo
-      
+
                       SizedBox(height: availableHeight * 0.05),
-      
+
                       GestureDetector(
                         onTap: () {
                           // Handle the onTap event for the Water Change item
@@ -112,69 +149,41 @@ class _MaintenancePageState extends State<MaintenancePage> {
                           ),
                         ),
                       ),
-      
+
                       SizedBox(height: availableHeight * 0.05),
-      
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
                             onTap: () {
-                              _databaseReference
-                              .child('MAINTENANCE')
-                              .child('waterchange_LEVEL')
-                              .set('25');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => WaterChangePage()),
-                              );
+                              handleWaterChange('25');
                             },
                             child: buildConfigItem('25%', Colors.blue, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
-                                _databaseReference
-                                .child('MAINTENANCE')
-                                .child('waterchange_LEVEL')
-                                .set('50');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => WaterChangePage()),
-                              );
+                              handleWaterChange('50');
                             },
                             child: buildConfigItem('50%', Colors.green, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
-                              _databaseReference
-                              .child('MAINTENANCE')
-                              .child('waterchange_LEVEL')
-                              .set('75');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => WaterChangePage()),
-                              );
+                              handleWaterChange('75');
                             },
                             child: buildConfigItem('75%', Colors.orange, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
-                              _databaseReference
-                              .child('MAINTENANCE')
-                              .child('waterchange_LEVEL')
-                              .set('100');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => WaterChangePage()),
-                              );
+                              handleWaterChange('100');
                             },
                             child: buildConfigItem('100%', Colors.red, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                         ],
                       ),
-      
+
                       SizedBox(height: availableHeight * 0.05),
-      
+
                       buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE ?? "0", 'drip_MODE'),
                       buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE ?? "0", 'filtrationsystem_MODE'),
                       buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER ?? "0", 'master_TRIGGER'),

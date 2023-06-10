@@ -37,7 +37,7 @@ class _WaterChangePageState extends State<WaterChangePage> {
   void listenToValueChanges() async {
     await Firebase.initializeApp();
     DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref().child('MAINTENANCE').child('waterchange_LEVEL');
+        FirebaseDatabase.instance.ref().child('TRIGGERS').child('waterchange_TRIGGER');
     Stream<MyEvent> eventStream = databaseReference.onValue
         .map((event) => MyEvent(event.snapshot));
     _subscription = eventStream.listen((myEvent) {
