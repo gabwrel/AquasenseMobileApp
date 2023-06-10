@@ -28,7 +28,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('ph_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        pHSetting = (dataSnapshot.value as num?)?.toDouble();
+        pHSetting = double.tryParse(dataSnapshot.value as String? ?? '');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -38,7 +38,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('temp_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        temperatureSetting = (dataSnapshot.value as num?)?.toDouble();
+        temperatureSetting = double.tryParse(dataSnapshot.value as String? ?? '');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -48,7 +48,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('turbidity_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        turbiditySetting = (dataSnapshot.value as num?)?.toDouble();
+        turbiditySetting = double.tryParse(dataSnapshot.value as String? ?? '');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -99,7 +99,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Fix: Center the text horizontally
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.show_chart),
                   SizedBox(width: 8.0),
@@ -116,7 +116,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('ph_CONFIG').set(pHSetting);
+                        _databaseReference.child('ph_CONFIG').set(pHSetting?.toString() ?? '');
                       },
                     ),
                   ),
@@ -133,7 +133,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Fix: Center the text horizontally
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.thermostat),
                   SizedBox(width: 8.0),
@@ -150,7 +150,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('temp_CONFIG').set(temperatureSetting);
+                        _databaseReference.child('temp_CONFIG').set(temperatureSetting?.toString() ?? '');
                       },
                     ),
                   ),
@@ -167,7 +167,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Fix: Center the text horizontally
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.opacity),
                   SizedBox(width: 8.0),
@@ -184,7 +184,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('turbidity_CONFIG').set(turbiditySetting);
+                        _databaseReference.child('turbidity_CONFIG').set(turbiditySetting?.toString() ?? '');
                       },
                     ),
                   ),

@@ -84,6 +84,6 @@ class TestNowPage extends StatelessWidget {
     await Firebase.initializeApp(); // Initialize Firebase
     DatabaseReference databaseReference =
         FirebaseDatabase.instance.ref();
-    databaseReference.child('TRIGGERS').child('test_TRIGGER').set(1);
+    databaseReference.child('TRIGGERS').child('test_TRIGGER').set('1');
   }
 }

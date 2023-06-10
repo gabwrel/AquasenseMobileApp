@@ -40,7 +40,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         .map((event) => MyEvent(event.snapshot));
     _subscription = eventStream.listen((myEvent) {
       var value = myEvent.snapshot.value;
-      if (value == null || value == 0) {
+      if (value == null || value == '0') {
         setState(() {
           isLoading = false;
         });

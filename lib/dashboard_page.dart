@@ -340,9 +340,9 @@ class BoxItem extends StatelessWidget {
     // Set the background color based on the pH difference
     Color? backgroundColor;
     if (difference != null) {
-      if (difference <= 1) {
+      if (difference <= 1.01) {
         backgroundColor = Colors.green; // Within +- 1
-      } else if (difference > 1.5 && difference < 1.99) {
+      } else if (difference > 1.01 && difference < 1.99) {
         backgroundColor = Colors.orange; // Within +- 1.5
       } else if (difference >= 2) {
         backgroundColor = Colors.red; // 2 or more
@@ -365,7 +365,7 @@ class BoxItem extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 16 ,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
