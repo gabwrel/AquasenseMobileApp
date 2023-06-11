@@ -86,6 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(232, 255, 255, 255),
       appBar: AppBar(
         toolbarHeight: 80,
         backgroundColor: Colors.white,
@@ -116,7 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
             child: Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: IconButton(
-                icon: const Icon(Icons.refresh, size: 30, color: Colors.blue),
+                icon: const Icon(Icons.info_outline, size: 30, color: Colors.blue),
                 onPressed: () {
                   // TODO: Implement refresh functionality
                 },
@@ -129,16 +130,16 @@ class _DashboardPageState extends State<DashboardPage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Aquasense',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+                image: DecorationImage(
+                  image: AssetImage('assets/images/logo2.png'),
+                  fit: BoxFit.cover,
                 ),
+              ),
+              child: Container(
+                color: Colors.blue, // Background color
+                child: SizedBox(), // Empty SizedBox to remove the text
               ),
             ),
             ListTile(
@@ -177,16 +178,9 @@ class _DashboardPageState extends State<DashboardPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'DASHBOARD',
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
+            Image.asset('assets/images/DASHBOARD.png'),
             Divider(color: Colors.blue),
-            SizedBox(height: 8),
+            SizedBox(height: 4),
             Text(
               'WATER PARAMETERS',
               style: TextStyle(
@@ -350,9 +344,13 @@ class BoxItem extends StatelessWidget {
     }
 
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       color: backgroundColor,
+      elevation: 2.0,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -365,7 +363,7 @@ class BoxItem extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 16 ,
+                      fontSize: 16,
                       fontWeight: FontWeight.normal,
                     ),
                   ),

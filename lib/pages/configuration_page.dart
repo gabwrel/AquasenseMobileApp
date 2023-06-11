@@ -87,23 +87,15 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'CONFIGURATION',
-              style: TextStyle(
-                fontSize: 45,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-            Divider(color: Colors.red),
+            Image.asset('assets/images/CONFIGURATION.png', height: 80,),
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(2.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.show_chart),
+                  Icon(Icons.show_chart, color: Color.fromARGB(255, 0, 77, 211),),
                   SizedBox(width: 8.0),
-                  Text('pH Level'),
+                  Text('pH Level', style: TextStyle(fontSize: 20)),
                   Expanded(
                     child: SliderVerticalWidget(
                       value: pHSetting ?? 0.0,
@@ -124,20 +116,21 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                     '${pHSetting?.toStringAsFixed(2) ?? '0.00'}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 25,
                     ),
                   ),
                 ],
               ),
             ),
+            Divider(color: Colors.grey, thickness: 1.5,),
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.thermostat),
+                  Icon(Icons.thermostat, size: 30, color: Colors.red,),
                   SizedBox(width: 8.0),
-                  Text('Temperature'),
+                  Text('Temperature', style: TextStyle(fontSize: 20)),
                   Expanded(
                     child: Slider(
                       value: temperatureSetting ?? 25.0,
@@ -164,14 +157,15 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 ],
               ),
             ),
+            Divider(color: Colors.grey, thickness: 1.5,),
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.opacity),
+                  Icon(Icons.blur_on_rounded, size: 30, color: Colors.green ,),
                   SizedBox(width: 8.0),
-                  Text('Turbidity'),
+                  Text('Turbidity', style: TextStyle(fontSize: 20)),
                   Expanded(
                     child: Slider(
                       value: turbiditySetting ?? 0.0,
@@ -198,6 +192,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 ],
               ),
             ),
+            Divider(color: Colors.grey, thickness: 1.5,),
           ],
         ),
       ),
@@ -332,7 +327,7 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        fontSize: 30,
                       ),
                     ),
                   ),

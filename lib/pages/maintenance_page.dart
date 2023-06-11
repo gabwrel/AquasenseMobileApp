@@ -51,7 +51,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirmation'),
-          content: Text('Are you sure to perform $waterchangeLevel?'),
+          content: Text('Are you sure to initiate $waterchangeLevel% water change?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -124,7 +124,9 @@ class _MaintenancePageState extends State<MaintenancePage> {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      Image.asset('assets/images/logo2.png'), // Replace with the actual path of your logo
+                      SizedBox(height: 30,),
+                      Image.asset('assets/images/logo.png', height: 100,), // Replace with the actual path of your logo
+                      Image.asset('assets/images/MAINTENANCE.png', height: 80,), // Replace with the actual path of your logo
 
                       SizedBox(height: availableHeight * 0.05),
 
@@ -139,7 +141,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Row(
                               children: [
-                                Icon(Icons.water_drop, size: availableHeight * 0.075, color: Colors.blue,),
+                                Icon(Icons.water_drop, size: availableHeight * 0.075, color: Colors.blue),
                                 SizedBox(width: availableWidth * 0.06),
                                 Expanded(
                                   child: Text('Water Change', style: TextStyle(fontSize: availableHeight * 0.04, color: Colors.black)),
@@ -183,10 +185,13 @@ class _MaintenancePageState extends State<MaintenancePage> {
                       ),
 
                       SizedBox(height: availableHeight * 0.05),
-
-                      buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE ?? "0", 'drip_MODE'),
-                      buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE ?? "0", 'filtrationsystem_MODE'),
-                      buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER ?? "0", 'master_TRIGGER'),
+                      Divider(color: Colors.blue, thickness: 1,),
+                      buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE ?? "0", 'drip_MODE', Colors.blue),
+                      Divider(color: Colors.blue, thickness: 1,),
+                      buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE ?? "0", 'filtrationsystem_MODE', Colors.green),
+                      Divider(color: Colors.blue, thickness: 1,),
+                      buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER ?? "0", 'master_TRIGGER', Colors.red),
+                      Divider(color: Colors.blue, thickness: 1,),
                     ],
                   ),
                 );
@@ -215,10 +220,16 @@ class _MaintenancePageState extends State<MaintenancePage> {
     );
   }
 
-  Widget buildSwitchItem(IconData icon, String text, String value, String configKey) {
+  Widget buildSwitchItem(IconData icon, String text, String value, String configKey, Color iconColor) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(text),
+      leading: Icon(
+        icon,
+        color: iconColor,
+      ),
+      title: Text(
+        text,
+        style: TextStyle(fontSize: 18),
+      ),
       trailing: Switch(
         value: value == "1",
         onChanged: (newValue) {
