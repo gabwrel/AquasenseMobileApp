@@ -13,6 +13,8 @@ class MaintenancePage extends StatefulWidget {
 class _MaintenancePageState extends State<MaintenancePage> {
   String? drip_MODE;
   String? filtrationsystem_MODE;
+  String? drain_MODE;
+  String? source_MODE;
   String? master_TRIGGER;
 
   late DatabaseReference _databaseReference;
@@ -35,6 +37,18 @@ class _MaintenancePageState extends State<MaintenancePage> {
     _databaseReference.child('FILTRATION_SYSTEM').child('filtrationsystem_MODE').onValue.listen((event) {
       setState(() {
         filtrationsystem_MODE = event.snapshot.value.toString();
+      });
+    });
+
+    _databaseReference.child('MAINTENANCE').child('relayDrain_TRIGGER').onValue.listen((event) {
+      setState(() {
+        drain_MODE = event.snapshot.value.toString();
+      });
+    });
+
+    _databaseReference.child('MAINTENANCE').child('relaySource_TRIGGER').onValue.listen((event) {
+      setState(() {
+        source_MODE = event.snapshot.value.toString();
       });
     });
 
@@ -189,6 +203,10 @@ class _MaintenancePageState extends State<MaintenancePage> {
                       buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE ?? "0", 'drip_MODE', Colors.blue),
                       Divider(color: Colors.blue, thickness: 1,),
                       buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE ?? "0", 'filtrationsystem_MODE', Colors.green),
+                      Divider(color: Colors.blue, thickness: 1,),
+                      buildSwitchItem(Icons.adjust, 'Water Source', source_MODE ?? "0", 'source_MODE', Colors.blue),
+                      Divider(color: Colors.blue, thickness: 1,),
+                      buildSwitchItem(Icons.hourglass_bottom, 'Drain Valve', drain_MODE ?? "0", 'drain_MODE', Colors.blue),
                       Divider(color: Colors.blue, thickness: 1,),
                       buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER ?? "0", 'master_TRIGGER', Colors.red),
                       Divider(color: Colors.blue, thickness: 1,),
