@@ -11,11 +11,11 @@ class MaintenancePage extends StatefulWidget {
 }
 
 class _MaintenancePageState extends State<MaintenancePage> {
-  String? drip_MODE;
-  String? filtrationsystem_MODE;
-  String? drain_MODE;
-  String? source_MODE;
-  String? master_TRIGGER;
+  late String drip_MODE;
+  late String filtrationsystem_MODE;
+  late String relayDrain_TRIGGER;
+  late String relaySource_TRIGGER;
+  late String master_TRIGGER;
 
   late DatabaseReference _databaseReference;
 
@@ -28,31 +28,51 @@ class _MaintenancePageState extends State<MaintenancePage> {
   }
 
   void fetchMaintenanceValues() {
-    _databaseReference.child('FILTRATION_SYSTEM').child('drip_MODE').onValue.listen((event) {
+    _databaseReference
+        .child('FILTRATION_SYSTEM')
+        .child('drip_MODE')
+        .onValue
+        .listen((event) {
       setState(() {
         drip_MODE = event.snapshot.value.toString();
       });
     });
 
-    _databaseReference.child('FILTRATION_SYSTEM').child('filtrationsystem_MODE').onValue.listen((event) {
+    _databaseReference
+        .child('FILTRATION_SYSTEM')
+        .child('filtrationsystem_MODE')
+        .onValue
+        .listen((event) {
       setState(() {
         filtrationsystem_MODE = event.snapshot.value.toString();
       });
     });
 
-    _databaseReference.child('MAINTENANCE').child('relayDrain_TRIGGER').onValue.listen((event) {
+    _databaseReference
+        .child('MAINTENANCE')
+        .child('relayDrain_TRIGGER')
+        .onValue
+        .listen((event) {
       setState(() {
-        drain_MODE = event.snapshot.value.toString();
+        relayDrain_TRIGGER = event.snapshot.value.toString();
       });
     });
 
-    _databaseReference.child('MAINTENANCE').child('relaySource_TRIGGER').onValue.listen((event) {
+    _databaseReference
+        .child('MAINTENANCE')
+        .child('relaySource_TRIGGER')
+        .onValue
+        .listen((event) {
       setState(() {
-        source_MODE = event.snapshot.value.toString();
+        relaySource_TRIGGER = event.snapshot.value.toString();
       });
     });
 
-    _databaseReference.child('TRIGGERS').child('master_TRIGGER').onValue.listen((event) {
+    _databaseReference
+        .child('TRIGGERS')
+        .child('master_TRIGGER')
+        .onValue
+        .listen((event) {
       setState(() {
         master_TRIGGER = event.snapshot.value.toString();
       });
@@ -64,14 +84,14 @@ class _MaintenancePageState extends State<MaintenancePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmation'),
+          title: const Text('Confirmation'),
           content: Text('Are you sure to initiate $waterchangeLevel% water change?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
             TextButton(
               onPressed: () {
@@ -88,7 +108,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                   MaterialPageRoute(builder: (context) => WaterChangePage()),
                 );
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
           ],
         );
@@ -108,7 +128,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
           toolbarHeight: 80,
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.blue),
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
@@ -138,9 +158,9 @@ class _MaintenancePageState extends State<MaintenancePage> {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      SizedBox(height: 30,),
-                      Image.asset('assets/images/logo.png', height: 100,), // Replace with the actual path of your logo
-                      Image.asset('assets/images/MAINTENANCE.png', height: 80,), // Replace with the actual path of your logo
+                      const SizedBox(height: 30),
+                      Image.asset('assets/images/logo.png', height: 100), // Replace with the actual path of your logo
+                      Image.asset('assets/images/MAINTENANCE.png', height: 80), // Replace with the actual path of your logo
 
                       SizedBox(height: availableHeight * 0.05),
 
@@ -155,10 +175,10 @@ class _MaintenancePageState extends State<MaintenancePage> {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Row(
                               children: [
-                                Icon(Icons.water_drop, size: availableHeight * 0.075, color: Colors.blue),
+                                const Icon(Icons.water_drop, size: 50, color: Colors.blue),
                                 SizedBox(width: availableWidth * 0.06),
                                 Expanded(
-                                  child: Text('Water Change', style: TextStyle(fontSize: availableHeight * 0.04, color: Colors.black)),
+                                  child: Text('Water Change', style: TextStyle(fontSize: 30, color: Colors.black)),
                                 ),
                               ],
                             ),
@@ -173,43 +193,43 @@ class _MaintenancePageState extends State<MaintenancePage> {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              handleWaterChange('10');
+                            },
+                            child: buildConfigItem('10%', Colors.blue, availableWidth * 0.2, availableHeight * 0.15),
+                          ),
+                          GestureDetector(
+                            onTap: () {
                               handleWaterChange('25');
                             },
-                            child: buildConfigItem('25%', Colors.blue, availableWidth * 0.2, availableHeight * 0.15),
+                            child: buildConfigItem('25%', Colors.green, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
                               handleWaterChange('50');
                             },
-                            child: buildConfigItem('50%', Colors.green, availableWidth * 0.2, availableHeight * 0.15),
+                            child: buildConfigItem('50%', Colors.orange, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                           GestureDetector(
                             onTap: () {
                               handleWaterChange('75');
                             },
-                            child: buildConfigItem('75%', Colors.orange, availableWidth * 0.2, availableHeight * 0.15),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              handleWaterChange('100');
-                            },
-                            child: buildConfigItem('100%', Colors.red, availableWidth * 0.2, availableHeight * 0.15),
+                            child: buildConfigItem('75%', Colors.red, availableWidth * 0.2, availableHeight * 0.15),
                           ),
                         ],
                       ),
 
                       SizedBox(height: availableHeight * 0.05),
-                      Divider(color: Colors.blue, thickness: 1,),
-                      buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE ?? "0", 'drip_MODE', Colors.blue),
-                      Divider(color: Colors.blue, thickness: 1,),
-                      buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE ?? "0", 'filtrationsystem_MODE', Colors.green),
-                      Divider(color: Colors.blue, thickness: 1,),
-                      buildSwitchItem(Icons.adjust, 'Water Source', source_MODE ?? "0", 'source_MODE', Colors.blue),
-                      Divider(color: Colors.blue, thickness: 1,),
-                      buildSwitchItem(Icons.hourglass_bottom, 'Drain Valve', drain_MODE ?? "0", 'drain_MODE', Colors.blue),
-                      Divider(color: Colors.blue, thickness: 1,),
-                      buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER ?? "0", 'master_TRIGGER', Colors.red),
-                      Divider(color: Colors.blue, thickness: 1,),
+                      const Divider(color: Colors.blue, thickness: 1),
+                      buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE, 'drip_MODE', Colors.blue),
+                      const Divider(color: Colors.blue, thickness: 1),
+                      buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE, 'filtrationsystem_MODE', Colors.green),
+                      const Divider(color: Colors.blue, thickness: 1),
+                      buildSwitchItem(Icons.adjust, 'Water Source', relaySource_TRIGGER, 'relaySource_TRIGGER', Colors.blue),
+                      const Divider(color: Colors.blue, thickness: 1),
+                      buildSwitchItem(Icons.hourglass_bottom, 'Drain Valve', relayDrain_TRIGGER, 'relayDrain_TRIGGER', Colors.blue),
+                      const Divider(color: Colors.blue, thickness: 1),
+                      buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER, 'master_TRIGGER', Colors.red),
+                      const Divider(color: Colors.blue, thickness: 1),
                     ],
                   ),
                 );
@@ -246,7 +266,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       ),
       title: Text(
         text,
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
       trailing: Switch(
         value: value == "1",
@@ -259,6 +279,12 @@ class _MaintenancePageState extends State<MaintenancePage> {
                 break;
               case 'filtrationsystem_MODE':
                 filtrationsystem_MODE = newValue ? "1" : "0";
+                break;
+              case 'relaySource_TRIGGER':
+                relaySource_TRIGGER = newValue ? "1" : "0";
+                break;
+              case 'relayDrain_TRIGGER':
+                relayDrain_TRIGGER = newValue ? "1" : "0";
                 break;
               case 'master_TRIGGER':
                 master_TRIGGER = newValue ? "1" : "0";
