@@ -18,6 +18,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
   late String master_TRIGGER;
 
   late DatabaseReference _databaseReference;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -75,6 +76,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
         .listen((event) {
       setState(() {
         master_TRIGGER = event.snapshot.value.toString();
+        isLoading = false; // Data fetching is complete
       });
     });
   }
@@ -85,7 +87,8 @@ class _MaintenancePageState extends State<MaintenancePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmation'),
-          content: Text('Are you sure to initiate $waterchangeLevel% water change?'),
+          content:
+              Text('Are you sure to initiate $waterchangeLevel% water change?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -147,101 +150,145 @@ class _MaintenancePageState extends State<MaintenancePage> {
             ],
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
-          child: Center(
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                final availableWidth = constraints.maxWidth;
-                final availableHeight = constraints.maxHeight;
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(), // Show a loading indicator
+              )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
+                child: Center(
+                  child: LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      final availableWidth = constraints.maxWidth;
+                      final availableHeight = constraints.maxHeight;
 
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 30),
-                      Image.asset('assets/images/logo.png', height: 100), // Replace with the actual path of your logo
-                      Image.asset('assets/images/MAINTENANCE.png', height: 80), // Replace with the actual path of your logo
-
-                      SizedBox(height: availableHeight * 0.05),
-
-                      GestureDetector(
-                        onTap: () {
-                          // Handle the onTap event for the Water Change item
-                          print('Water Change clicked');
-                        },
-                        child: Container(
-                          width: availableWidth * 0.9,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 30),
+                            Image.asset('assets/images/logo.png', height: 100),
+                            Image.asset('assets/images/MAINTENANCE.png',
+                                height: 80),
+                            SizedBox(height: availableHeight * 0.05),
+                            GestureDetector(
+                              onTap: () {
+                                // Handle the onTap event for the Water Change item
+                                print('Water Change clicked');
+                              },
+                              child: Container(
+                                width: availableWidth * 0.9,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.water_drop,
+                                          size: 50, color: Colors.blue),
+                                      SizedBox(width: availableWidth * 0.06),
+                                      Expanded(
+                                        child: Text('Water Change',
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                color: Colors.black)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: availableHeight * 0.05),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                const Icon(Icons.water_drop, size: 50, color: Colors.blue),
-                                SizedBox(width: availableWidth * 0.06),
-                                Expanded(
-                                  child: Text('Water Change', style: TextStyle(fontSize: 30, color: Colors.black)),
+                                GestureDetector(
+                                  onTap: () {
+                                    handleWaterChange('10');
+                                  },
+                                  child: buildConfigItem(
+                                      '10%',
+                                      Colors.blue,
+                                      availableWidth * 0.2,
+                                      availableHeight * 0.15),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    handleWaterChange('25');
+                                  },
+                                  child: buildConfigItem(
+                                      '25%',
+                                      Colors.green,
+                                      availableWidth * 0.2,
+                                      availableHeight * 0.15),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    handleWaterChange('50');
+                                  },
+                                  child: buildConfigItem(
+                                      '50%',
+                                      Colors.orange,
+                                      availableWidth * 0.2,
+                                      availableHeight * 0.15),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    handleWaterChange('75');
+                                  },
+                                  child: buildConfigItem(
+                                      '75%',
+                                      Colors.red,
+                                      availableWidth * 0.2,
+                                      availableHeight * 0.15),
                                 ),
                               ],
                             ),
-                          ),
+                            SizedBox(height: availableHeight * 0.05),
+                            const Divider(color: Colors.blue, thickness: 1),
+                            buildSwitchItem(Icons.opacity, 'Continuous Drip',
+                                drip_MODE, 'drip_MODE', Colors.blue),
+                            const Divider(color: Colors.blue, thickness: 1),
+                            buildSwitchItem(
+                                Icons.filter,
+                                'Filtration System',
+                                filtrationsystem_MODE,
+                                'filtrationsystem_MODE',
+                                Colors.green),
+                            const Divider(color: Colors.blue, thickness: 1),
+                            buildSwitchItem(
+                                Icons.adjust,
+                                'Water Source',
+                                relaySource_TRIGGER,
+                                'relaySource_TRIGGER',
+                                Colors.blue),
+                            const Divider(color: Colors.blue, thickness: 1),
+                            buildSwitchItem(
+                                Icons.hourglass_bottom,
+                                'Drain Valve',
+                                relayDrain_TRIGGER,
+                                'relayDrain_TRIGGER',
+                                Colors.blue),
+                            const Divider(color: Colors.blue, thickness: 1),
+                            buildSwitchItem(
+                                Icons.power_settings_new,
+                                'Master Switch',
+                                master_TRIGGER,
+                                'master_TRIGGER',
+                                Colors.red),
+                            const Divider(color: Colors.blue, thickness: 1),
+                          ],
                         ),
-                      ),
-
-                      SizedBox(height: availableHeight * 0.05),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              handleWaterChange('10');
-                            },
-                            child: buildConfigItem('10%', Colors.blue, availableWidth * 0.2, availableHeight * 0.15),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              handleWaterChange('25');
-                            },
-                            child: buildConfigItem('25%', Colors.green, availableWidth * 0.2, availableHeight * 0.15),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              handleWaterChange('50');
-                            },
-                            child: buildConfigItem('50%', Colors.orange, availableWidth * 0.2, availableHeight * 0.15),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              handleWaterChange('75');
-                            },
-                            child: buildConfigItem('75%', Colors.red, availableWidth * 0.2, availableHeight * 0.15),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: availableHeight * 0.05),
-                      const Divider(color: Colors.blue, thickness: 1),
-                      buildSwitchItem(Icons.opacity, 'Continuous Drip', drip_MODE, 'drip_MODE', Colors.blue),
-                      const Divider(color: Colors.blue, thickness: 1),
-                      buildSwitchItem(Icons.filter, 'Filtration System', filtrationsystem_MODE, 'filtrationsystem_MODE', Colors.green),
-                      const Divider(color: Colors.blue, thickness: 1),
-                      buildSwitchItem(Icons.adjust, 'Water Source', relaySource_TRIGGER, 'relaySource_TRIGGER', Colors.blue),
-                      const Divider(color: Colors.blue, thickness: 1),
-                      buildSwitchItem(Icons.hourglass_bottom, 'Drain Valve', relayDrain_TRIGGER, 'relayDrain_TRIGGER', Colors.blue),
-                      const Divider(color: Colors.blue, thickness: 1),
-                      buildSwitchItem(Icons.power_settings_new, 'Master Switch', master_TRIGGER, 'master_TRIGGER', Colors.red),
-                      const Divider(color: Colors.blue, thickness: 1),
-                    ],
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
-        ),
+                ),
+              ),
       ),
     );
   }
 
-  Widget buildConfigItem(String value, Color color, double width, double height) {
+  Widget buildConfigItem(
+      String value, Color color, double width, double height) {
     return Container(
       width: width,
       height: height * 0.6,
@@ -252,13 +299,17 @@ class _MaintenancePageState extends State<MaintenancePage> {
       child: Center(
         child: Text(
           value,
-          style: TextStyle(fontSize: height * 0.25, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontSize: height * 0.25,
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
         ),
       ),
     );
   }
 
-  Widget buildSwitchItem(IconData icon, String text, String value, String configKey, Color iconColor) {
+  Widget buildSwitchItem(IconData icon, String text, String value,
+      String configKey, Color iconColor) {
     return ListTile(
       leading: Icon(
         icon,
@@ -293,9 +344,15 @@ class _MaintenancePageState extends State<MaintenancePage> {
 
             // Update the string value in the Firebase Realtime Database
             if (configKey == 'master_TRIGGER') {
-              _databaseReference.child('TRIGGERS').child(configKey).set(newValue ? "1" : "0");
+              _databaseReference
+                  .child('TRIGGERS')
+                  .child(configKey)
+                  .set(newValue ? "1" : "0");
             } else {
-              _databaseReference.child('FILTRATION_SYSTEM').child(configKey).set(newValue ? "1" : "0");
+              _databaseReference
+                  .child('FILTRATION_SYSTEM')
+                  .child(configKey)
+                  .set(newValue ? "1" : "0");
             }
           });
         },

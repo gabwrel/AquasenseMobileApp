@@ -36,17 +36,38 @@ class _LoadingScreenState extends State<LoadingScreen> {
     await Firebase.initializeApp();
     DatabaseReference databaseReference =
         FirebaseDatabase.instance.ref().child('TRIGGERS').child('test_TRIGGER');
-    Stream<MyEvent> eventStream = databaseReference.onValue
-        .map((event) => MyEvent(event.snapshot));
+    Stream<MyEvent> eventStream =
+        databaseReference.onValue.map((event) => MyEvent(event.snapshot));
     _subscription = eventStream.listen((myEvent) {
       var value = myEvent.snapshot.value;
       if (value == null || value == '0') {
         setState(() {
           isLoading = false;
         });
-        navigateToHome();
+        showCompleteDialog(); // Show the dialog before navigating back
       }
     });
+  }
+
+  void showCompleteDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Testing Complete'),
+          content: Text('Testing has been completed.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                navigateToHome();
+              },
+              child: Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void navigateToHome() {
@@ -65,6 +86,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
+            // You can choose whether to navigate back directly or not
+            // navigateToHome();
             Navigator.pop(context);
           },
         ),

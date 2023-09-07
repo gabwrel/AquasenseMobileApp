@@ -4,10 +4,12 @@ import 'package:aquasenseapp/dashboard_page.dart';
 import 'package:aquasenseapp/pages/maintenance_page.dart';
 import 'package:aquasenseapp/pages/testnow_page.dart';
 import 'package:aquasenseapp/pages/configuration_page.dart';
+import 'firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  initializeFirebaseMessaging();
   runApp(const MyApp());
 }
 
@@ -39,33 +41,41 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Firebase Demo',
       theme: ThemeData(
-        primaryColor: Colors.white,
+        primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
       ),
       home: Scaffold(
         body: _pages[_selectedIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: Colors.blue),
-              label: 'Dashboard',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings, color: Colors.blue),
-              label: 'Maintenance',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.check_circle_outline, color: Colors.blue),
-              label: 'Test',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart, color: Colors.blue),
-              label: 'Configuration',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.blue,
-          onTap: _onItemTapped,
+        bottomNavigationBar: Theme(
+          data: ThemeData(
+            canvasColor: Colors.blue, // Set the background color here
+          ),
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Dashboard',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Maintenance',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.check_circle_outline),
+                label: 'Test',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart),
+                label: 'Configuration',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor:
+                Colors.white, // White icon and text color for selected item
+            unselectedItemColor:
+                Colors.white, // White icon and text color for unselected items
+            onTap: _onItemTapped,
+          ),
         ),
       ),
     );

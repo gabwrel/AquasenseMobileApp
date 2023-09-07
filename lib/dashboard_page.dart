@@ -14,7 +14,7 @@ class _DashboardPageState extends State<DashboardPage> {
   double? waterLevel;
   double? waterTemp;
   double? waterTurbidity;
-  double? phConfig; // Added phConfig variable
+  double? phConfig;
 
   late DatabaseReference databaseRef;
 
@@ -33,7 +33,11 @@ class _DashboardPageState extends State<DashboardPage> {
       }
     });
 
-    databaseRef.child('SENSOR_DATA').child('waterLevel').onValue.listen((event) {
+    databaseRef
+        .child('SENSOR_DATA')
+        .child('waterLevel')
+        .onValue
+        .listen((event) {
       if (event.snapshot.value != null) {
         double waterLevelValue = double.parse(event.snapshot.value.toString());
         setState(() {
@@ -51,16 +55,25 @@ class _DashboardPageState extends State<DashboardPage> {
       }
     });
 
-    databaseRef.child('SENSOR_DATA').child('waterTurbidity').onValue.listen((event) {
+    databaseRef
+        .child('SENSOR_DATA')
+        .child('waterTurbidity')
+        .onValue
+        .listen((event) {
       if (event.snapshot.value != null) {
-        double waterTurbidityValue = double.parse(event.snapshot.value.toString());
+        double waterTurbidityValue =
+            double.parse(event.snapshot.value.toString());
         setState(() {
           waterTurbidity = waterTurbidityValue;
         });
       }
     });
 
-    databaseRef.child('PARAMETERS_CONFIG').child('ph_CONFIG').onValue.listen((event) {
+    databaseRef
+        .child('PARAMETERS_CONFIG')
+        .child('ph_CONFIG')
+        .onValue
+        .listen((event) {
       if (event.snapshot.value != null) {
         double phConfigValue = double.parse(event.snapshot.value.toString());
         setState(() {
@@ -117,7 +130,8 @@ class _DashboardPageState extends State<DashboardPage> {
             child: Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: IconButton(
-                icon: const Icon(Icons.info_outline, size: 30, color: Colors.blue),
+                icon: const Icon(Icons.info_outline,
+                    size: 30, color: Colors.blue),
                 onPressed: () {
                   // TODO: Implement refresh functionality
                 },
@@ -329,7 +343,9 @@ class BoxItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate the pH difference
-    double? difference = phValue != null && phConfig != null ? (phValue! - phConfig!).abs() : null;
+    double? difference = phValue != null && phConfig != null
+        ? (phValue! - phConfig!).abs()
+        : null;
 
     // Set the background color based on the pH difference
     Color? backgroundColor;

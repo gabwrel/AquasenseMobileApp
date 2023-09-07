@@ -11,9 +11,9 @@ class TestNowPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-            toolbarHeight: 80,
-            backgroundColor: Colors.white,
-            leading: IconButton(
+        toolbarHeight: 80,
+        backgroundColor: Colors.white,
+        leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
             Navigator.pushReplacement(
@@ -82,8 +82,7 @@ class TestNowPage extends StatelessWidget {
 
   void pushValueToDatabase() async {
     await Firebase.initializeApp(); // Initialize Firebase
-    DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref();
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     databaseReference.child('TRIGGERS').child('test_TRIGGER').set('1');
   }
 }

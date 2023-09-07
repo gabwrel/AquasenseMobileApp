@@ -54,6 +54,9 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        manifestPlaceholders = [
+            firebaseMessagingSenderId: "613467711290"]
     }
 
     buildTypes {
