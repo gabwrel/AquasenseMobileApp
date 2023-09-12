@@ -222,7 +222,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     icon: Icons.waves_outlined,
                     iconColor: Color.fromRGBO(22, 52, 224, 1),
                     title: 'Water Level',
-                    value: waterLevel?.toStringAsFixed(1) ?? '--',
+                    value: (waterLevel?.toStringAsFixed(1) ?? '--') + "%",
                   ),
                 ),
               ],
@@ -236,7 +236,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     icon: Icons.thermostat_outlined,
                     iconColor: Color.fromRGBO(218, 0, 0, 1),
                     title: 'Temperature',
-                    value: waterTemp?.toStringAsFixed(1) ?? '--',
+                    value: (waterTemp?.toStringAsFixed(1) ?? '--') + '°C',
                   ),
                 ),
                 SizedBox(width: 16),
@@ -245,7 +245,30 @@ class _DashboardPageState extends State<DashboardPage> {
                     icon: Icons.blur_on,
                     iconColor: Color.fromRGBO(87, 55, 19, 1),
                     title: 'Water Turbidity',
-                    value: waterTurbidity?.toStringAsFixed(1) ?? '--',
+                    value:
+                        (waterTurbidity?.toStringAsFixed(1) ?? '--') + ' NTU',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: BoxItem(
+                      icon: Icons.grain,
+                      iconColor: Color.fromARGB(255, 176, 211, 224),
+                      title: "Salinity",
+                      value: "0.5 mg/gal"),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: BoxItem(
+                    icon: Icons.bubble_chart,
+                    iconColor: Colors.blue,
+                    title: 'Dissolved O',
+                    value: '8 mg/gal',
                   ),
                 ),
               ],
@@ -266,7 +289,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 Expanded(
                   child: BoxItem(
                     icon: Icons.local_drink_sharp,
-                    iconColor: Color.fromARGB(255, 33, 255, 63),
+                    iconColor: Color.fromRGBO(139, 211, 235, 1),
                     title: 'Filtration System',
                     value: '  ON',
                   ),
@@ -277,7 +300,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     icon: Icons.bubble_chart_outlined,
                     iconColor: Color.fromRGBO(0, 153, 255, 1),
                     title: 'Aeration Rate',
-                    value: '  ON',
+                    value: '  HIGH',
                   ),
                 ),
               ],
