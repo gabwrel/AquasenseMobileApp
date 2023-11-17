@@ -4,12 +4,10 @@ import 'package:aquasenseapp/dashboard_page.dart';
 import 'package:aquasenseapp/pages/maintenance_page.dart';
 import 'package:aquasenseapp/pages/testnow_page.dart';
 import 'package:aquasenseapp/pages/configuration_page.dart';
-import 'firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  initializeFirebaseMessaging();
   runApp(const MyApp());
 }
 

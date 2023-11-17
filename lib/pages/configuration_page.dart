@@ -19,7 +19,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   @override
   void initState() {
     super.initState();
-    _databaseReference = FirebaseDatabase.instance.ref().child('PARAMETERS_CONFIG');
+    _databaseReference =
+        FirebaseDatabase.instance.ref().child('PARAMETERS_CONFIG');
 
     fetchConfigurationsValues();
   }
@@ -38,7 +39,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('temp_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        temperatureSetting = double.tryParse(dataSnapshot.value as String? ?? '0.0');
+        temperatureSetting =
+            double.tryParse(dataSnapshot.value as String? ?? '0.0');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -48,7 +50,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('turbidity_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        turbiditySetting = double.tryParse(dataSnapshot.value as String? ?? '0.0');
+        turbiditySetting =
+            double.tryParse(dataSnapshot.value as String? ?? '0.0');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -82,118 +85,150 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
           ],
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/CONFIGURATION.png', height: 80,),
-            Container(
-              padding: EdgeInsets.all(2.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.show_chart, color: Color.fromARGB(255, 0, 77, 211),),
-                  SizedBox(width: 8.0),
-                  Text('pH Level', style: TextStyle(fontSize: 20)),
-                  Expanded(
-                    child: SliderVerticalWidget(
-                      value: pHSetting ?? 0.0,
-                      min: 0,
-                      max: 14,
-                      divisions: 140,
-                      onChanged: (value) {
-                        setState(() {
-                          pHSetting = value;
-                        });
-                      },
-                      onChangeEnd: (value) {
-                        _databaseReference.child('ph_CONFIG').set(pHSetting?.toString() ?? '0.0');
-                      },
-                    ),
-                  ),
-                  Text(
-                    '${pHSetting?.toStringAsFixed(2) ?? '0.00'}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                    ),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/CONFIGURATION.png',
+                height: 80,
               ),
-            ),
-            Divider(color: Colors.grey, thickness: 1.5,),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.thermostat, size: 30, color: Colors.red,),
-                  SizedBox(width: 8.0),
-                  Text('Temperature', style: TextStyle(fontSize: 20)),
-                  Expanded(
-                    child: Slider(
-                      value: temperatureSetting ?? 25.0,
-                      min: 20,
-                      max: 32,
-                      divisions: 120,
-                      onChanged: (value) {
-                        setState(() {
-                          temperatureSetting = value;
-                        });
-                      },
-                      onChangeEnd: (value) {
-                        _databaseReference.child('temp_CONFIG').set(temperatureSetting?.toString() ?? '0.0');
-                      },
+              Container(
+                padding: EdgeInsets.all(2.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.show_chart,
+                      color: Color.fromARGB(255, 0, 77, 211),
                     ),
-                  ),
-                  Text(
-                    '${temperatureSetting?.toStringAsFixed(2) ?? '0.00'}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                    SizedBox(width: 8.0),
+                    Text('pH Level', style: TextStyle(fontSize: 20)),
+                    Expanded(
+                      child: SliderVerticalWidget(
+                        value: pHSetting ?? 0.0,
+                        min: 0,
+                        max: 14,
+                        divisions: 140,
+                        onChanged: (value) {
+                          setState(() {
+                            pHSetting = value;
+                          });
+                        },
+                        onChangeEnd: (value) {
+                          _databaseReference
+                              .child('ph_CONFIG')
+                              .set(pHSetting?.toString() ?? '0.0');
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                    Text(
+                      '${pHSetting?.toStringAsFixed(2) ?? '0.00'}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Divider(color: Colors.grey, thickness: 1.5,),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.blur_on_rounded, size: 30, color: Colors.green ,),
-                  SizedBox(width: 8.0),
-                  Text('Turbidity', style: TextStyle(fontSize: 20)),
-                  Expanded(
-                    child: Slider(
-                      value: turbiditySetting ?? 0.0,
-                      min: 0,
-                      max: 100,
-                      divisions: 100,
-                      onChanged: (value) {
-                        setState(() {
-                          turbiditySetting = value;
-                        });
-                      },
-                      onChangeEnd: (value) {
-                        _databaseReference.child('turbidity_CONFIG').set(turbiditySetting?.toString() ?? '0.0');
-                      },
-                    ),
-                  ),
-                  Text(
-                    '${turbiditySetting?.toStringAsFixed(2) ?? '0.00'}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
+              Divider(
+                color: Colors.grey,
+                thickness: 1.5,
               ),
-            ),
-            Divider(color: Colors.grey, thickness: 1.5,),
-          ],
+              Container(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.thermostat,
+                      size: 30,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text('Temperature', style: TextStyle(fontSize: 20)),
+                    Expanded(
+                      child: Slider(
+                        value: temperatureSetting ?? 25.0,
+                        min: 20,
+                        max: 32,
+                        divisions: 120,
+                        onChanged: (value) {
+                          setState(() {
+                            temperatureSetting = value;
+                          });
+                        },
+                        onChangeEnd: (value) {
+                          _databaseReference
+                              .child('temp_CONFIG')
+                              .set(temperatureSetting?.toString() ?? '0.0');
+                        },
+                      ),
+                    ),
+                    Text(
+                      '${temperatureSetting?.toStringAsFixed(2) ?? '0.00'}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: Colors.grey,
+                thickness: 1.5,
+              ),
+              Container(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.blur_on_rounded,
+                      size: 30,
+                      color: Colors.green,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text('Turbidity', style: TextStyle(fontSize: 20)),
+                    Expanded(
+                      child: Slider(
+                        value: turbiditySetting ?? 0.0,
+                        min: 0,
+                        max: 100,
+                        divisions: 100,
+                        onChanged: (value) {
+                          setState(() {
+                            turbiditySetting = value;
+                          });
+                        },
+                        onChangeEnd: (value) {
+                          _databaseReference
+                              .child('turbidity_CONFIG')
+                              .set(turbiditySetting?.toString() ?? '0.0');
+                        },
+                      ),
+                    ),
+                    Text(
+                      '${turbiditySetting?.toStringAsFixed(2) ?? '0.00'}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: Colors.grey,
+                thickness: 1.5,
+              ),
+            ],
+          ),
         ),
       ),
     );

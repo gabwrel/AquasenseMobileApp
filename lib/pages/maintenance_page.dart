@@ -11,11 +11,11 @@ class MaintenancePage extends StatefulWidget {
 }
 
 class _MaintenancePageState extends State<MaintenancePage> {
-  late String drip_MODE;
-  late String filtrationsystem_MODE;
-  late String relayDrain_TRIGGER;
-  late String relaySource_TRIGGER;
-  late String master_TRIGGER;
+  String? drip_MODE;
+  String? filtrationsystem_MODE;
+  String? drain_MODE;
+  String? source_MODE;
+  String? master_TRIGGER;
 
   late DatabaseReference _databaseReference;
   bool isLoading = true;
@@ -55,7 +55,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
         .onValue
         .listen((event) {
       setState(() {
-        relayDrain_TRIGGER = event.snapshot.value.toString();
+        drain_MODE = event.snapshot.value.toString();
       });
     });
 
@@ -65,7 +65,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
         .onValue
         .listen((event) {
       setState(() {
-        relaySource_TRIGGER = event.snapshot.value.toString();
+        source_MODE = event.snapshot.value.toString();
       });
     });
 
@@ -86,7 +86,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmation'),
+          title: Text('Confirmation'),
           content:
               Text('Are you sure to initiate $waterchangeLevel% water change?'),
           actions: [
@@ -94,7 +94,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: const Text('No'),
+              child: Text('No'),
             ),
             TextButton(
               onPressed: () {
@@ -111,7 +111,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                   MaterialPageRoute(builder: (context) => WaterChangePage()),
                 );
               },
-              child: const Text('Yes'),
+              child: Text('Yes'),
             ),
           ],
         );
@@ -131,7 +131,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
           toolbarHeight: 80,
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.blue),
+            icon: Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
@@ -166,11 +166,20 @@ class _MaintenancePageState extends State<MaintenancePage> {
                       return SingleChildScrollView(
                         child: Column(
                           children: [
-                            const SizedBox(height: 30),
-                            Image.asset('assets/images/logo.png', height: 100),
-                            Image.asset('assets/images/MAINTENANCE.png',
-                                height: 80),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Image.asset(
+                              'assets/images/logo.png',
+                              height: 100,
+                            ), // Replace with the actual path of your logo
+                            Image.asset(
+                              'assets/images/MAINTENANCE.png',
+                              height: 80,
+                            ), // Replace with the actual path of your logo
+
                             SizedBox(height: availableHeight * 0.05),
+
                             GestureDetector(
                               onTap: () {
                                 // Handle the onTap event for the Water Change item
@@ -183,13 +192,15 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                       horizontal: 20),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.water_drop,
-                                          size: 50, color: Colors.blue),
+                                      Icon(Icons.water_drop,
+                                          size: availableHeight * 0.075,
+                                          color: Colors.blue),
                                       SizedBox(width: availableWidth * 0.06),
                                       Expanded(
                                         child: Text('Water Change',
                                             style: TextStyle(
-                                                fontSize: 30,
+                                                fontSize:
+                                                    availableHeight * 0.04,
                                                 color: Colors.black)),
                                       ),
                                     ],
@@ -197,27 +208,19 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                 ),
                               ),
                             ),
+
                             SizedBox(height: availableHeight * 0.05),
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    handleWaterChange('10');
-                                  },
-                                  child: buildConfigItem(
-                                      '10%',
-                                      Colors.blue,
-                                      availableWidth * 0.2,
-                                      availableHeight * 0.15),
-                                ),
                                 GestureDetector(
                                   onTap: () {
                                     handleWaterChange('25');
                                   },
                                   child: buildConfigItem(
                                       '25%',
-                                      Colors.green,
+                                      Colors.blue,
                                       availableWidth * 0.2,
                                       availableHeight * 0.15),
                                 ),
@@ -227,7 +230,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                   },
                                   child: buildConfigItem(
                                       '50%',
-                                      Colors.orange,
+                                      Colors.green,
                                       availableWidth * 0.2,
                                       availableHeight * 0.15),
                                 ),
@@ -237,45 +240,70 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                   },
                                   child: buildConfigItem(
                                       '75%',
+                                      Colors.orange,
+                                      availableWidth * 0.2,
+                                      availableHeight * 0.15),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    handleWaterChange('100');
+                                  },
+                                  child: buildConfigItem(
+                                      '100%',
                                       Colors.red,
                                       availableWidth * 0.2,
                                       availableHeight * 0.15),
                                 ),
                               ],
                             ),
+
                             SizedBox(height: availableHeight * 0.05),
-                            const Divider(color: Colors.blue, thickness: 1),
+                            Divider(
+                              color: Colors.blue,
+                              thickness: 1,
+                            ),
                             buildSwitchItem(Icons.opacity, 'Continuous Drip',
-                                drip_MODE, 'drip_MODE', Colors.blue),
-                            const Divider(color: Colors.blue, thickness: 1),
+                                drip_MODE ?? "0", 'drip_MODE', Colors.blue),
+                            Divider(
+                              color: Colors.blue,
+                              thickness: 1,
+                            ),
                             buildSwitchItem(
                                 Icons.filter,
                                 'Filtration System',
-                                filtrationsystem_MODE,
+                                filtrationsystem_MODE ?? "0",
                                 'filtrationsystem_MODE',
                                 Colors.green),
-                            const Divider(color: Colors.blue, thickness: 1),
-                            buildSwitchItem(
-                                Icons.adjust,
-                                'Water Source',
-                                relaySource_TRIGGER,
-                                'relaySource_TRIGGER',
-                                Colors.blue),
-                            const Divider(color: Colors.blue, thickness: 1),
+                            Divider(
+                              color: Colors.blue,
+                              thickness: 1,
+                            ),
+                            buildSwitchItem(Icons.adjust, 'Water Source',
+                                source_MODE ?? "0", 'source_MODE', Colors.blue),
+                            Divider(
+                              color: Colors.blue,
+                              thickness: 1,
+                            ),
                             buildSwitchItem(
                                 Icons.hourglass_bottom,
                                 'Drain Valve',
-                                relayDrain_TRIGGER,
-                                'relayDrain_TRIGGER',
+                                drain_MODE ?? "0",
+                                'drain_MODE',
                                 Colors.blue),
-                            const Divider(color: Colors.blue, thickness: 1),
+                            Divider(
+                              color: Colors.blue,
+                              thickness: 1,
+                            ),
                             buildSwitchItem(
                                 Icons.power_settings_new,
                                 'Master Switch',
-                                master_TRIGGER,
+                                master_TRIGGER ?? "0",
                                 'master_TRIGGER',
                                 Colors.red),
-                            const Divider(color: Colors.blue, thickness: 1),
+                            Divider(
+                              color: Colors.blue,
+                              thickness: 1,
+                            ),
                           ],
                         ),
                       );
@@ -317,7 +345,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       ),
       title: Text(
         text,
-        style: const TextStyle(fontSize: 18),
+        style: TextStyle(fontSize: 18),
       ),
       trailing: Switch(
         value: value == "1",
@@ -330,12 +358,6 @@ class _MaintenancePageState extends State<MaintenancePage> {
                 break;
               case 'filtrationsystem_MODE':
                 filtrationsystem_MODE = newValue ? "1" : "0";
-                break;
-              case 'relaySource_TRIGGER':
-                relaySource_TRIGGER = newValue ? "1" : "0";
-                break;
-              case 'relayDrain_TRIGGER':
-                relayDrain_TRIGGER = newValue ? "1" : "0";
                 break;
               case 'master_TRIGGER':
                 master_TRIGGER = newValue ? "1" : "0";

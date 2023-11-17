@@ -1,3 +1,4 @@
+import 'package:aquasenseapp/pages/about_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -118,7 +119,7 @@ class _DashboardPageState extends State<DashboardPage> {
         flexibleSpace: Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: const EdgeInsets.only(top: 45),
+            padding: const EdgeInsets.only(top: 15),
             child: Image.asset(
               'assets/images/logo2.png',
               height: 80,
@@ -133,7 +134,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 icon: const Icon(Icons.info_outline,
                     size: 30, color: Colors.blue),
                 onPressed: () {
-                  // TODO: Implement refresh functionality
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AboutPage()),
+                  );
                 },
               ),
             ),
@@ -171,12 +175,14 @@ class _DashboardPageState extends State<DashboardPage> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About Page'),
-              onTap: () {
-                // TODO: Implement About Page navigation
-              },
-            ),
+                leading: const Icon(Icons.info),
+                title: const Text('About Page'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AboutPage()),
+                  );
+                }),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
@@ -187,135 +193,138 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/DASHBOARD.png'),
-            Divider(color: Colors.blue),
-            SizedBox(height: 4),
-            Text(
-              'WATER PARAMETERS',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.black,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/DASHBOARD.png'),
+              Divider(color: Colors.blue),
+              SizedBox(height: 4),
+              Text(
+                'WATER PARAMETERS',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.opacity,
-                    iconColor: Color.fromRGBO(139, 211, 235, 1),
-                    title: 'pH Level',
-                    value: pH?.toStringAsFixed(1) ?? '--',
-                    phValue: pH,
-                    phConfig: phConfig,
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.opacity,
+                      iconColor: Color.fromRGBO(139, 211, 235, 1),
+                      title: 'pH Level',
+                      value: pH?.toStringAsFixed(1) ?? '--',
+                      phValue: pH,
+                      phConfig: phConfig,
+                    ),
                   ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.waves_outlined,
-                    iconColor: Color.fromRGBO(22, 52, 224, 1),
-                    title: 'Water Level',
-                    value: waterLevel?.toStringAsFixed(1) ?? '--',
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.waves_outlined,
+                      iconColor: Color.fromRGBO(22, 52, 224, 1),
+                      title: 'Water Level',
+                      value: waterLevel?.toStringAsFixed(1) ?? '--',
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.thermostat_outlined,
-                    iconColor: Color.fromRGBO(218, 0, 0, 1),
-                    title: 'Temperature',
-                    value: waterTemp?.toStringAsFixed(1) ?? '--',
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.blur_on,
-                    iconColor: Color.fromRGBO(87, 55, 19, 1),
-                    title: 'Water Turbidity',
-                    value: waterTurbidity?.toStringAsFixed(1) ?? '--',
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Divider(color: Colors.blue, height: 20),
-            Text(
-              'ENVIRONMENT CONTROLS',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.black,
+                ],
               ),
-            ),
-            SizedBox(height: 16),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.lightbulb,
-                    iconColor: Color.fromRGBO(245, 222, 16, 1),
-                    title: 'Lighting',
-                    value: '--',
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.thermostat_outlined,
+                      iconColor: Color.fromRGBO(218, 0, 0, 1),
+                      title: 'Temperature',
+                      value: waterTemp?.toStringAsFixed(1) ?? '--',
+                    ),
                   ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.restaurant,
-                    iconColor: Colors.green,
-                    title: 'Feeding',
-                    value: '--',
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.blur_on,
+                      iconColor: Color.fromRGBO(87, 55, 19, 1),
+                      title: 'Water Turbidity',
+                      value: waterTurbidity?.toStringAsFixed(1) ?? '--',
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Divider(color: Colors.blue, height: 20),
-            Text(
-              'FILTRATION SYSTEM',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.black,
+                ],
               ),
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.whatshot,
-                    iconColor: Colors.red,
-                    title: 'Heater',
-                    value: '--',
-                  ),
+              SizedBox(height: 16),
+              Divider(color: Colors.blue, height: 20),
+              Text(
+                'ENVIRONMENT CONTROLS',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
                 ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: BoxItem(
-                    icon: Icons.lightbulb,
-                    iconColor: Colors.purple,
-                    title: 'UV Lamp',
-                    value: '--',
+              ),
+              SizedBox(height: 16),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.lightbulb,
+                      iconColor: Color.fromRGBO(245, 222, 16, 1),
+                      title: 'Lighting',
+                      value: '--',
+                    ),
                   ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.restaurant,
+                      iconColor: Colors.green,
+                      title: 'Feeding',
+                      value: '--',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Divider(color: Colors.blue, height: 20),
+              Text(
+                'FILTRATION SYSTEM',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
                 ),
-              ],
-            ),
-            SizedBox(height: 16),
-          ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.whatshot,
+                      iconColor: Colors.red,
+                      title: 'Heater',
+                      value: '--',
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.lightbulb,
+                      iconColor: Colors.purple,
+                      title: 'UV Lamp',
+                      value: '--',
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
