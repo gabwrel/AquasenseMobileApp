@@ -222,7 +222,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     icon: Icons.waves_outlined,
                     iconColor: Color.fromRGBO(22, 52, 224, 1),
                     title: 'Water Level',
-                    value: waterLevel?.toStringAsFixed(1) ?? '--',
+                    value: (waterLevel?.toStringAsFixed(1) ?? '--') + "%",
                   ),
                 ),
               ],
@@ -236,7 +236,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     icon: Icons.thermostat_outlined,
                     iconColor: Color.fromRGBO(218, 0, 0, 1),
                     title: 'Temperature',
-                    value: waterTemp?.toStringAsFixed(1) ?? '--',
+                    value: (waterTemp?.toStringAsFixed(1) ?? '--') + '°C',
                   ),
                 ),
                 SizedBox(width: 16),
@@ -245,7 +245,30 @@ class _DashboardPageState extends State<DashboardPage> {
                     icon: Icons.blur_on,
                     iconColor: Color.fromRGBO(87, 55, 19, 1),
                     title: 'Water Turbidity',
-                    value: waterTurbidity?.toStringAsFixed(1) ?? '--',
+                    value:
+                        (waterTurbidity?.toStringAsFixed(1) ?? '--') + ' NTU',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: BoxItem(
+                      icon: Icons.grain,
+                      iconColor: Color.fromARGB(255, 176, 211, 224),
+                      title: "Salinity",
+                      value: "0.5 mg/gal"),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: BoxItem(
+                    icon: Icons.bubble_chart,
+                    iconColor: Colors.blue,
+                    title: 'Dissolved O',
+                    value: '8 mg/gal',
                   ),
                 ),
               ],
@@ -253,7 +276,7 @@ class _DashboardPageState extends State<DashboardPage> {
             SizedBox(height: 16),
             Divider(color: Colors.blue, height: 20),
             Text(
-              'ENVIRONMENT CONTROLS',
+              'SYSTEM STATUS',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.black,
@@ -265,31 +288,22 @@ class _DashboardPageState extends State<DashboardPage> {
               children: [
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.lightbulb,
-                    iconColor: Color.fromRGBO(245, 222, 16, 1),
-                    title: 'Lighting',
-                    value: '--',
+                    icon: Icons.local_drink_sharp,
+                    iconColor: Color.fromRGBO(139, 211, 235, 1),
+                    title: 'Filtration System',
+                    value: '  ON',
                   ),
                 ),
                 SizedBox(width: 16),
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.restaurant,
-                    iconColor: Colors.green,
-                    title: 'Feeding',
-                    value: '--',
+                    icon: Icons.bubble_chart_outlined,
+                    iconColor: Color.fromRGBO(0, 153, 255, 1),
+                    title: 'Aeration Rate',
+                    value: '  HIGH',
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 8),
-            Divider(color: Colors.blue, height: 20),
-            Text(
-              'FILTRATION SYSTEM',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.black,
-              ),
             ),
             SizedBox(height: 16),
             Row(
@@ -297,19 +311,19 @@ class _DashboardPageState extends State<DashboardPage> {
               children: [
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.whatshot,
-                    iconColor: Colors.red,
-                    title: 'Heater',
-                    value: '--',
+                    icon: Icons.security,
+                    iconColor: Colors.blue,
+                    title: 'AquaGuard',
+                    value: '  ACTIVE',
                   ),
                 ),
                 SizedBox(width: 16),
                 Expanded(
                   child: BoxItem(
-                    icon: Icons.lightbulb,
-                    iconColor: Colors.purple,
-                    title: 'UV Lamp',
-                    value: '--',
+                    icon: Icons.remove_red_eye_outlined,
+                    iconColor: Color.fromRGBO(0, 128, 128, 1),
+                    title: 'Aquasight',
+                    value: '  ACTIVE',
                   ),
                 ),
               ],
@@ -359,12 +373,29 @@ class BoxItem extends StatelessWidget {
       }
     }
 
+    TextStyle valueTextStyle = TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    );
+
+    // Check the title of the box and customize the text style accordingly
+    if (title == 'Filtration System' ||
+        title == 'Aeration Rate' ||
+        title == 'AquaGuard' ||
+        title == 'Aquasight') {
+      valueTextStyle = TextStyle(
+        color: Color.fromARGB(255, 4, 23, 39),
+        fontSize: 20, // Change this to your desired text size
+        fontWeight: FontWeight.bold,
+      );
+    }
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
       color: backgroundColor,
-      elevation: 2.0,
+      elevation: 10.0,
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: Row(
@@ -386,10 +417,7 @@ class BoxItem extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     value,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: valueTextStyle, // Apply the text style here
                   ),
                 ],
               ),

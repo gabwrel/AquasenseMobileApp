@@ -19,7 +19,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   @override
   void initState() {
     super.initState();
-    _databaseReference = FirebaseDatabase.instance.ref().child('PARAMETERS_CONFIG');
+    _databaseReference =
+        FirebaseDatabase.instance.ref().child('PARAMETERS_CONFIG');
 
     fetchConfigurationsValues();
   }
@@ -38,7 +39,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('temp_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        temperatureSetting = double.tryParse(dataSnapshot.value as String? ?? '0.0');
+        temperatureSetting =
+            double.tryParse(dataSnapshot.value as String? ?? '0.0');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -48,7 +50,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     _databaseReference.child('turbidity_CONFIG').onValue.listen((event) {
       var dataSnapshot = event.snapshot;
       setState(() {
-        turbiditySetting = double.tryParse(dataSnapshot.value as String? ?? '0.0');
+        turbiditySetting =
+            double.tryParse(dataSnapshot.value as String? ?? '0.0');
       });
     }, onError: (Object? error) {
       // Handle error if necessary
@@ -87,13 +90,19 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset('assets/images/CONFIGURATION.png', height: 80,),
+            Image.asset(
+              'assets/images/CONFIGURATION.png',
+              height: 80,
+            ),
             Container(
               padding: EdgeInsets.all(2.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.show_chart, color: Color.fromARGB(255, 0, 77, 211),),
+                  Icon(
+                    Icons.show_chart,
+                    color: Color.fromARGB(255, 0, 77, 211),
+                  ),
                   SizedBox(width: 8.0),
                   Text('pH Level', style: TextStyle(fontSize: 20)),
                   Expanded(
@@ -108,7 +117,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('ph_CONFIG').set(pHSetting?.toString() ?? '0.0');
+                        _databaseReference
+                            .child('ph_CONFIG')
+                            .set(pHSetting?.toString() ?? '0.0');
                       },
                     ),
                   ),
@@ -122,13 +133,20 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 ],
               ),
             ),
-            Divider(color: Colors.grey, thickness: 1.5,),
+            Divider(
+              color: Colors.grey,
+              thickness: 1.5,
+            ),
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.thermostat, size: 30, color: Colors.red,),
+                  Icon(
+                    Icons.thermostat,
+                    size: 30,
+                    color: Colors.red,
+                  ),
                   SizedBox(width: 8.0),
                   Text('Temperature', style: TextStyle(fontSize: 20)),
                   Expanded(
@@ -143,7 +161,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('temp_CONFIG').set(temperatureSetting?.toString() ?? '0.0');
+                        _databaseReference
+                            .child('temp_CONFIG')
+                            .set(temperatureSetting?.toString() ?? '0.0');
                       },
                     ),
                   ),
@@ -157,13 +177,20 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 ],
               ),
             ),
-            Divider(color: Colors.grey, thickness: 1.5,),
+            Divider(
+              color: Colors.grey,
+              thickness: 1.5,
+            ),
             Container(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.blur_on_rounded, size: 30, color: Colors.green ,),
+                  Icon(
+                    Icons.blur_on_rounded,
+                    size: 30,
+                    color: Colors.green,
+                  ),
                   SizedBox(width: 8.0),
                   Text('Turbidity', style: TextStyle(fontSize: 20)),
                   Expanded(
@@ -178,7 +205,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                         });
                       },
                       onChangeEnd: (value) {
-                        _databaseReference.child('turbidity_CONFIG').set(turbiditySetting?.toString() ?? '0.0');
+                        _databaseReference
+                            .child('turbidity_CONFIG')
+                            .set(turbiditySetting?.toString() ?? '0.0');
                       },
                     ),
                   ),
@@ -192,7 +221,10 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 ],
               ),
             ),
-            Divider(color: Colors.grey, thickness: 1.5,),
+            Divider(
+              color: Colors.grey,
+              thickness: 1.5,
+            ),
           ],
         ),
       ),
@@ -241,33 +273,33 @@ class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
 
   void updateSliderColor() {
     if (value >= 0 && value <= 1) {
-      sliderColor = Color(0xFFFF0E00);
+      sliderColor = Color(0xFFff9f99);
     } else if (value > 1 && value <= 2) {
-      sliderColor = Color(0xFFFF7F00);
+      sliderColor = Color(0xFFffcc99);
     } else if (value > 2 && value <= 3) {
-      sliderColor = Color(0xFFFFC801);
+      sliderColor = Color(0xFFffe999);
     } else if (value > 3 && value <= 4) {
-      sliderColor = Color(0xFFFEF200);
+      sliderColor = Color(0xFFfffa99);
     } else if (value > 4 && value <= 5) {
-      sliderColor = Color(0xFFE8F800);
+      sliderColor = Color(0xFFf8ff96);
     } else if (value > 5 && value <= 6) {
-      sliderColor = Color(0xFFB3CC01);
+      sliderColor = Color(0xFFf0fe86);
     } else if (value > 6 && value <= 7) {
-      sliderColor = Color(0xFF029700);
+      sliderColor = Color(0xFF71ff6f);
     } else if (value > 7 && value <= 8) {
-      sliderColor = Color(0xFF00FFB1);
+      sliderColor = Color(0xFF99ffe0);
     } else if (value > 8 && value <= 9) {
-      sliderColor = Color(0xFF00FFFB);
+      sliderColor = Color(0xFF99fffd);
     } else if (value > 9 && value <= 10) {
-      sliderColor = Color(0xFF00C0FF);
+      sliderColor = Color(0xFFd6fffe);
     } else if (value > 10 && value <= 11) {
-      sliderColor = Color(0xFF0153FF);
+      sliderColor = Color(0xFF99baff);
     } else if (value > 11 && value <= 12) {
-      sliderColor = Color(0xFF010CC6);
+      sliderColor = Color(0xFF838afe);
     } else if (value > 12 && value <= 13) {
-      sliderColor = Color(0xFF8301C6);
+      sliderColor = Color(0xFFd483fe);
     } else if (value > 13) {
-      sliderColor = Color(0xFF480070);
+      sliderColor = Color(0xFFc660ff);
     }
   }
 
