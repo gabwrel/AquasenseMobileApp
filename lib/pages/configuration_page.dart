@@ -16,12 +16,34 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
 
   late DatabaseReference _databaseReference;
 
+  String selectedFish = 'Custom'; // Default fish selection
+
+  // Define fish species and their configurations
+  final Map<String, Map<String, double>> fishConfigurations = {
+    'Angelfish': {'pH': 6.8, 'temperature': 27.0, 'turbidity': 14.0},
+    'Arowana': {'pH': 6.5, 'temperature': 28.0, 'turbidity': 16.0},
+    'Bangus': {'pH': 7.0, 'temperature': 28.0, 'turbidity': 15.0},
+    'Betta': {'pH': 7.0, 'temperature': 25.0, 'turbidity': 10.0},
+    'Discus': {'pH': 6.0, 'temperature': 28.0, 'turbidity': 16.0},
+    'Flowerhorn': {'pH': 7.5, 'temperature': 27.0, 'turbidity': 14.0},
+    'Goldfish': {'pH': 7.2, 'temperature': 22.0, 'turbidity': 8.0},
+    'Guppy': {'pH': 7.5, 'temperature': 24.0, 'turbidity': 15.0},
+    'Neon Tetra': {'pH': 6.5, 'temperature': 25.0, 'turbidity': 12.0},
+    'Oscar': {'pH': 7.0, 'temperature': 26.0, 'turbidity': 12.0},
+    'Tilapia': {'pH': 7.2, 'temperature': 25.0, 'turbidity': 10.0},
+    // Add more fish species as needed
+  };
+
   @override
   void initState() {
     super.initState();
     _databaseReference =
         FirebaseDatabase.instance.ref().child('PARAMETERS_CONFIG');
 
+    // Set initial configurations based on the default selected fish
+    updateFishConfiguration(selectedFish);
+
+    // Fetch current configuration values from Firebase
     fetchConfigurationsValues();
   }
 
@@ -59,8 +81,34 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     });
   }
 
+  void updateFishConfiguration(String selectedFish) {
+    final Map<String, double>? config = fishConfigurations[selectedFish];
+
+    if (config != null) {
+      setState(() {
+        pHSetting = config['pH'];
+        temperatureSetting = config['temperature'];
+        turbiditySetting = config['turbidity'];
+      });
+
+      // Update Firebase database with new configuration values
+      _databaseReference
+          .child('ph_CONFIG')
+          .set(pHSetting?.toStringAsFixed(2) ?? '0.0');
+      _databaseReference
+          .child('temp_CONFIG')
+          .set(temperatureSetting?.toStringAsFixed(2) ?? '0.0');
+      _databaseReference
+          .child('turbidity_CONFIG')
+          .set(turbiditySetting?.toStringAsFixed(2) ?? '0.0');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Generate the list of fish species dynamically
+    List<String> fishSpecies = ['Custom', ...fishConfigurations.keys.toList()];
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -90,47 +138,36 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
                 'assets/images/CONFIGURATION.png',
                 height: 80,
               ),
+              // Dropdown for selecting fish species
               Container(
-                padding: EdgeInsets.all(2.0),
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.show_chart,
-                      color: Color.fromARGB(255, 0, 77, 211),
-                    ),
+                    Text('Fish Species', style: TextStyle(fontSize: 20)),
                     SizedBox(width: 8.0),
-                    Text('pH Level', style: TextStyle(fontSize: 20)),
-                    Expanded(
-                      child: SliderVerticalWidget(
-                        value: pHSetting ?? 0.0,
-                        min: 0,
-                        max: 14,
-                        divisions: 140,
-                        onChanged: (value) {
-                          setState(() {
-                            pHSetting = value;
-                          });
+                    DropdownButton<String>(
+                      value: selectedFish,
+                      items: fishSpecies.map<DropdownMenuItem<String>>(
+                        (String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
                         },
-                        onChangeEnd: (value) {
-                          _databaseReference
-                              .child('ph_CONFIG')
-                              .set(pHSetting?.toString() ?? '0.0');
-                        },
-                      ),
-                    ),
-                    Text(
-                      '${pHSetting?.toStringAsFixed(2) ?? '0.00'}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                      ),
+                      ).toList(),
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedFish = value ?? 'Custom';
+                          updateFishConfiguration(selectedFish);
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -139,89 +176,67 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 color: Colors.grey,
                 thickness: 1.5,
               ),
-              Container(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.thermostat,
-                      size: 30,
-                      color: Colors.red,
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('Temperature', style: TextStyle(fontSize: 20)),
-                    Expanded(
-                      child: Slider(
-                        value: temperatureSetting ?? 25.0,
-                        min: 20,
-                        max: 32,
-                        divisions: 120,
-                        onChanged: (value) {
-                          setState(() {
-                            temperatureSetting = value;
-                          });
-                        },
-                        onChangeEnd: (value) {
-                          _databaseReference
-                              .child('temp_CONFIG')
-                              .set(temperatureSetting?.toString() ?? '0.0');
-                        },
-                      ),
-                    ),
-                    Text(
-                      '${temperatureSetting?.toStringAsFixed(2) ?? '0.00'}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+              buildSliderRow(
+                icon: Icons.show_chart,
+                color: Color.fromARGB(255, 0, 77, 211),
+                title: 'pH Level',
+                value: pHSetting ?? 0.0,
+                min: 0,
+                max: 14,
+                onChanged: (value) {
+                  setState(() {
+                    pHSetting = value;
+                  });
+                },
+                onChangeEnd: (value) {
+                  _databaseReference
+                      .child('ph_CONFIG')
+                      .set(pHSetting?.toStringAsFixed(2) ?? '0.0');
+                },
               ),
               Divider(
                 color: Colors.grey,
                 thickness: 1.5,
               ),
-              Container(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.blur_on_rounded,
-                      size: 30,
-                      color: Colors.green,
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('Turbidity', style: TextStyle(fontSize: 20)),
-                    Expanded(
-                      child: Slider(
-                        value: turbiditySetting ?? 0.0,
-                        min: 0,
-                        max: 100,
-                        divisions: 100,
-                        onChanged: (value) {
-                          setState(() {
-                            turbiditySetting = value;
-                          });
-                        },
-                        onChangeEnd: (value) {
-                          _databaseReference
-                              .child('turbidity_CONFIG')
-                              .set(turbiditySetting?.toString() ?? '0.0');
-                        },
-                      ),
-                    ),
-                    Text(
-                      '${turbiditySetting?.toStringAsFixed(2) ?? '0.00'}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+              buildSliderRow(
+                icon: Icons.thermostat,
+                color: Colors.red,
+                title: 'Temperature',
+                value: temperatureSetting ?? 25.0,
+                min: 20,
+                max: 32,
+                onChanged: (value) {
+                  setState(() {
+                    temperatureSetting = value;
+                  });
+                },
+                onChangeEnd: (value) {
+                  _databaseReference
+                      .child('temp_CONFIG')
+                      .set(temperatureSetting?.toStringAsFixed(2) ?? '0.0');
+                },
+              ),
+              Divider(
+                color: Colors.grey,
+                thickness: 1.5,
+              ),
+              buildSliderRow(
+                icon: Icons.blur_on_rounded,
+                color: Colors.green,
+                title: 'Turbidity',
+                value: turbiditySetting ?? 0.0,
+                min: 0,
+                max: 100,
+                onChanged: (value) {
+                  setState(() {
+                    turbiditySetting = value;
+                  });
+                },
+                onChangeEnd: (value) {
+                  _databaseReference
+                      .child('turbidity_CONFIG')
+                      .set(turbiditySetting?.toStringAsFixed(2) ?? '0.0');
+                },
               ),
               Divider(
                 color: Colors.grey,
@@ -233,152 +248,54 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
       ),
     );
   }
-}
 
-class SliderVerticalWidget extends StatefulWidget {
-  final double value;
-  final double min;
-  final double max;
-  final int divisions;
-  final ValueChanged<double>? onChanged;
-  final ValueChanged<double>? onChangeEnd;
-
-  SliderVerticalWidget({
-    required this.value,
-    required this.min,
-    required this.max,
-    required this.divisions,
-    this.onChanged,
-    this.onChangeEnd,
-  });
-
-  @override
-  _SliderVerticalWidgetState createState() => _SliderVerticalWidgetState();
-}
-
-class _SliderVerticalWidgetState extends State<SliderVerticalWidget> {
-  late double value;
-  Color sliderColor = Colors.red;
-
-  @override
-  void initState() {
-    super.initState();
-    value = widget.value;
-    updateSliderColor();
-  }
-
-  @override
-  void didUpdateWidget(SliderVerticalWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    value = widget.value;
-    updateSliderColor();
-  }
-
-  void updateSliderColor() {
-    if (value >= 0 && value <= 1) {
-      sliderColor = Color(0xFFFF0E00);
-    } else if (value > 1 && value <= 2) {
-      sliderColor = Color(0xFFFF7F00);
-    } else if (value > 2 && value <= 3) {
-      sliderColor = Color(0xFFFFC801);
-    } else if (value > 3 && value <= 4) {
-      sliderColor = Color(0xFFFEF200);
-    } else if (value > 4 && value <= 5) {
-      sliderColor = Color(0xFFE8F800);
-    } else if (value > 5 && value <= 6) {
-      sliderColor = Color(0xFFB3CC01);
-    } else if (value > 6 && value <= 7) {
-      sliderColor = Color(0xFF029700);
-    } else if (value > 7 && value <= 8) {
-      sliderColor = Color(0xFF00FFB1);
-    } else if (value > 8 && value <= 9) {
-      sliderColor = Color(0xFF00FFFB);
-    } else if (value > 9 && value <= 10) {
-      sliderColor = Color(0xFF00C0FF);
-    } else if (value > 10 && value <= 11) {
-      sliderColor = Color(0xFF0153FF);
-    } else if (value > 11 && value <= 12) {
-      sliderColor = Color(0xFF010CC6);
-    } else if (value > 12 && value <= 13) {
-      sliderColor = Color(0xFF8301C6);
-    } else if (value > 13) {
-      sliderColor = Color(0xFF480070);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double min = widget.min;
-    final double max = widget.max;
-
-    return SliderTheme(
-      data: SliderTheme.of(context).copyWith(
-        trackHeight: 80,
-        thumbShape: SliderComponentShape.noOverlay,
-        overlayShape: SliderComponentShape.noOverlay,
-        valueIndicatorShape: SliderComponentShape.noOverlay,
-        trackShape: RectangularSliderTrackShape(),
-        activeTickMarkColor: Colors.transparent,
-        inactiveTickMarkColor: Colors.transparent,
-        overlayColor: sliderColor.withOpacity(0.4),
-      ),
-      child: Container(
-        height: 360,
-        child: Column(
+  Widget buildSliderRow({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required double value,
+    required double min,
+    required double max,
+    required ValueChanged<double> onChanged,
+    required ValueChanged<double> onChangeEnd,
+  }) {
+    return Row(
+      children: [
+        SizedBox(width: 8.0),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildSideLabel(max),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Stack(
-                children: [
-                  RotatedBox(
-                    quarterTurns: 3,
-                    child: Slider(
-                      value: value,
-                      min: min,
-                      max: max,
-                      divisions: widget.divisions,
-                      label: value.round().toString(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          value = newValue;
-                          updateSliderColor();
-                        });
-                        if (widget.onChanged != null) {
-                          widget.onChanged!(newValue);
-                        }
-                      },
-                      onChangeEnd: (newValue) {
-                        if (widget.onChangeEnd != null) {
-                          widget.onChangeEnd!(newValue);
-                        }
-                      },
-                      activeColor: sliderColor,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      '${value.round()}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 30,
+                  color: color,
+                ),
+                Text(title, style: TextStyle(fontSize: 20)),
+              ],
             ),
-            const SizedBox(height: 16),
-            buildSideLabel(min),
+            Slider(
+              value: value,
+              min: min,
+              max: max,
+              divisions: ((max - min) * 100).toInt(),
+              onChanged: onChanged,
+              onChangeEnd: onChangeEnd,
+            ),
           ],
         ),
-      ),
+        Expanded(
+          child: Container(),
+        ),
+        Text(
+          '${value.toStringAsFixed(2)}',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ],
     );
   }
-
-  Widget buildSideLabel(double value) => Text(
-        value.round().toString(),
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      );
 }
