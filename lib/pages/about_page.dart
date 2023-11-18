@@ -46,13 +46,20 @@ class AboutPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Your source for water quality monitoring and control.',
+              '"Aquaculture Intelligence At Your Fingertips"',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'A sensor-based device for the real-time monitoring of water quality in ornamental fish farms.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
               ),
             ),
-            // Add more text or widgets as needed
           ],
         ),
       ),
