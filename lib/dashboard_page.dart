@@ -101,48 +101,61 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(232, 255, 255, 255),
-      appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: Colors.white,
-        leading: Builder(
-          builder: (BuildContext context) {
-            return Center(
-              child: IconButton(
-                icon: const Icon(Icons.menu, size: 30, color: Colors.blue),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              ),
-            );
-          },
-        ),
-        flexibleSpace: Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: Image.asset(
-              'assets/images/logo2.png',
-              height: 80,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80),
+        child: Container(
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.12),
+              blurRadius: 100,
+              offset: const Offset(0, -2),
+            )
+          ]),
+          child: AppBar(
+            elevation: 0,
+            toolbarHeight: 80,
+            backgroundColor: Colors.white,
+            leading: Builder(
+              builder: (BuildContext context) {
+                return Center(
+                  child: IconButton(
+                    icon: const Icon(Icons.menu, size: 30, color: Colors.blue),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  ),
+                );
+              },
             ),
-          ),
-        ),
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: IconButton(
-                icon: const Icon(Icons.info_outline,
-                    size: 30, color: Colors.blue),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AboutPage()),
-                  );
-                },
+            flexibleSpace: Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Image.asset(
+                  'assets/images/logo2.png',
+                  height: 80,
+                ),
               ),
             ),
+            actions: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.info_outline,
+                        size: 30, color: Colors.blue),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AboutPage()),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       drawer: Drawer(
         child: ListView(

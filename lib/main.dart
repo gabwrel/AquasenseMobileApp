@@ -4,6 +4,7 @@ import 'package:aquasenseapp/dashboard_page.dart';
 import 'package:aquasenseapp/pages/maintenance_page.dart';
 import 'package:aquasenseapp/pages/testnow_page.dart';
 import 'package:aquasenseapp/pages/configuration_page.dart';
+import 'package:bottom_bar_matu/bottom_bar_matu.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,43 +38,33 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Firebase Demo',
+      title: 'AquaSense',
       theme: ThemeData(
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
       ),
       home: Scaffold(
         body: _pages[_selectedIndex],
-        bottomNavigationBar: Theme(
-          data: ThemeData(
-            canvasColor: Colors.blue, // Set the background color here
-          ),
-          child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Dashboard',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'Maintenance',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.check_circle_outline),
-                label: 'Test',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.bar_chart),
-                label: 'Configuration',
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 100,
+                offset: const Offset(0, -2),
               ),
             ],
-            currentIndex: _selectedIndex,
-            selectedItemColor:
-                Colors.white, // White icon and text color for selected item
-            unselectedItemColor:
-                Colors.white, // White icon and text color for unselected items
-            onTap: _onItemTapped,
           ),
+          child: BottomBarBubble(
+              selectedIndex: _selectedIndex,
+              items: [
+                BottomBarItem(iconData: Icons.home),
+                BottomBarItem(iconData: Icons.settings),
+                BottomBarItem(iconData: Icons.water_drop),
+                BottomBarItem(iconData: Icons.bar_chart),
+              ],
+              onSelect: _onItemTapped,
+              color: Colors.blue),
         ),
       ),
     );

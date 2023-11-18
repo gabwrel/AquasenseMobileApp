@@ -185,25 +185,29 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                 // Handle the onTap event for the Water Change item
                                 print('Water Change clicked');
                               },
-                              child: Container(
-                                width: availableWidth * 0.9,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.water_drop,
-                                          size: availableHeight * 0.075,
-                                          color: Colors.blue),
-                                      SizedBox(width: availableWidth * 0.06),
-                                      Expanded(
-                                        child: Text('Water Change',
-                                            style: TextStyle(
-                                                fontSize:
-                                                    availableHeight * 0.04,
-                                                color: Colors.black)),
-                                      ),
-                                    ],
+                              child: FractionallySizedBox(
+                                widthFactor: 0.9,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(width: 25),
+                                        Icon(Icons.water_drop,
+                                            size: availableHeight * 0.075,
+                                            color: Colors.blue),
+                                        SizedBox(width: availableWidth * 0.06),
+                                        Expanded(
+                                          child: Text(' Water Change',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      availableHeight * 0.04,
+                                                  color: Colors.black)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

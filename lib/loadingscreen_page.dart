@@ -123,7 +123,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                       fontSize: 28,
                     ),
                   ),
-                  SizedBox(height: 230),
+                  SizedBox(height: 50),
                   isLoading
                       ? SpinKitCircle(
                           color: Colors.red,
