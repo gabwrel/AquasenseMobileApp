@@ -1,4 +1,3 @@
-import 'package:aquasenseapp/main.dart';
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatelessWidget {
@@ -11,10 +10,7 @@ class AboutPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
+            Navigator.pushReplacementNamed(context, '/dashboard');
           },
         ),
         title: Row(

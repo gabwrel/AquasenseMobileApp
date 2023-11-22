@@ -1,4 +1,3 @@
-import 'package:aquasenseapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -44,12 +43,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
         setState(() {
           isLoading = false;
         });
-        showCompleteDialog(); // Show the dialog before navigating back
+        showCompleteDialog(context); // Show the dialog before navigating back
       }
     });
   }
 
-  void showCompleteDialog() {
+  void showCompleteDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -60,7 +59,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
-                navigateToHome();
+                navigateToHome(context);
               },
               child: Text('Ok'),
             ),
@@ -70,11 +69,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
     );
   }
 
-  void navigateToHome() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => MyApp()),
-    );
+  void navigateToHome(BuildContext context) {
+    Navigator.pushReplacementNamed(context, '/dashboard');
   }
 
   @override

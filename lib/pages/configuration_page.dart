@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:aquasenseapp/main.dart';
 
 class ConfigurationPage extends StatefulWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
@@ -22,7 +21,6 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   final Map<String, Map<String, double>> fishConfigurations = {
     'Angelfish': {'pH': 6.8, 'temperature': 27.0, 'turbidity': 14.0},
     'Arowana': {'pH': 6.5, 'temperature': 28.0, 'turbidity': 16.0},
-    'Bangus': {'pH': 7.0, 'temperature': 28.0, 'turbidity': 15.0},
     'Betta': {'pH': 7.0, 'temperature': 25.0, 'turbidity': 10.0},
     'Discus': {'pH': 6.0, 'temperature': 28.0, 'turbidity': 16.0},
     'Flowerhorn': {'pH': 7.5, 'temperature': 27.0, 'turbidity': 14.0},
@@ -30,7 +28,6 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     'Guppy': {'pH': 7.5, 'temperature': 24.0, 'turbidity': 15.0},
     'Neon Tetra': {'pH': 6.5, 'temperature': 25.0, 'turbidity': 12.0},
     'Oscar': {'pH': 7.0, 'temperature': 26.0, 'turbidity': 12.0},
-    'Tilapia': {'pH': 7.2, 'temperature': 25.0, 'turbidity': 10.0},
     // Add more fish species as needed
   };
 
@@ -111,17 +108,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
         toolbarHeight: 80,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-          },
-        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -272,7 +261,12 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   size: 30,
                   color: color,
                 ),
-                Text(title, style: TextStyle(fontSize: 20)),
+                SizedBox(
+                  width: 8.0,
+                ),
+                Text(title,
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
               ],
             ),
             Slider(

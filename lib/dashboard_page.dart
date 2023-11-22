@@ -2,12 +2,22 @@ import 'package:aquasenseapp/pages/about_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
+}
+
+Future<void> _logout(BuildContext context) async {
+  try {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
+  } catch (e) {
+    print('Error logging out: $e');
+  }
 }
 
 class _DashboardPageState extends State<DashboardPage> {
@@ -199,10 +209,8 @@ class _DashboardPageState extends State<DashboardPage> {
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
-              onTap: () {
-                // TODO: Implement Logout functionality
-              },
-            ),
+              onTap: () async => await _logout(context),
+            )
           ],
         ),
       ),
@@ -386,7 +394,7 @@ class BoxItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
       color: backgroundColor,
-      elevation: 2.0,
+      elevation: 3.0,
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: Row(

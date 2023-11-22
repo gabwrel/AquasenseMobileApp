@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:aquasenseapp/main.dart';
 import 'package:aquasenseapp/pages/waterchange_page.dart';
 
 class MaintenancePage extends StatefulWidget {
@@ -128,17 +127,9 @@ class _MaintenancePageState extends State<MaintenancePage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          elevation: 2,
           toolbarHeight: 80,
           backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.blue),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MyApp()),
-              );
-            },
-          ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

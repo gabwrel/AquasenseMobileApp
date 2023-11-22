@@ -11,17 +11,9 @@ class TestNowPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
         toolbarHeight: 80,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-          },
-        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
