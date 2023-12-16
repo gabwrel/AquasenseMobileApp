@@ -30,7 +30,7 @@ class TestNowPage extends StatelessWidget {
           Expanded(
             child: Center(
               child: Image.asset(
-                'assets/images/aquassist.png',
+                'assets/images/TestNow.png',
                 height: 170,
               ),
             ),

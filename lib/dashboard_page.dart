@@ -22,10 +22,13 @@ class _DashboardPageState extends State<DashboardPage> {
   double? phConfig;
   double? tempConfig;
   double? turbidityConfig;
-  String? filtrationMode;
-  bool? aeration;
-  bool? continuousDrip;
-  bool? recirculatingPump;
+  String? lightingStatus;
+  String? heaterStatus;
+  String? uvStatus;
+  String? filtrationStatus;
+  String? aerationStatus;
+  String? dripStatus;
+  String? pumpStatus;
 
   late DatabaseReference databaseRef;
 
@@ -63,20 +66,78 @@ class _DashboardPageState extends State<DashboardPage> {
       setState(() => turbidityConfig = value);
     });
 
-    initializeConfigListener('FILTRATION_MODE', (value) {
-      setState(() => filtrationMode = value == 0 ? 'AUTO' : 'MANUAL');
+    fetchMaintenanceValues();
+  }
+
+  void fetchMaintenanceValues() {
+    databaseRef
+        .child('FILTRATION_SYSTEM')
+        .child('lighting_TRIGGER')
+        .onValue
+        .listen((event) {
+      setState(() {
+        lightingStatus = event.snapshot.value?.toString() ?? '--';
+      });
     });
 
-    initializeConfigListener('AERATION', (value) {
-      setState(() => aeration = value == 1);
+    databaseRef
+        .child('FILTRATION_SYSTEM')
+        .child('heater_TRIGGER')
+        .onValue
+        .listen((event) {
+      setState(() {
+        heaterStatus = event.snapshot.value?.toString() ?? '--';
+      });
     });
 
-    initializeConfigListener('CONTINUOUS_DRIP', (value) {
-      setState(() => continuousDrip = value == 1);
+    databaseRef
+        .child('FILTRATION_SYSTEM')
+        .child('uvLamp_TRIGGER')
+        .onValue
+        .listen((event) {
+      setState(() {
+        uvStatus = event.snapshot.value?.toString() ?? '--';
+      });
     });
 
-    initializeConfigListener('RECIRCULATING_PUMP', (value) {
-      setState(() => recirculatingPump = value == 1);
+    databaseRef
+        .child('FILTRATION_SYSTEM')
+        .child('filtrationsystem_MODE')
+        .onValue
+        .listen((event) {
+      setState(() {
+        filtrationStatus = event.snapshot.value?.toString() ?? '--';
+      });
+    });
+
+    databaseRef
+        .child('FILTRATION_SYSTEM')
+        .child('aeration_TRIGGER')
+        .onValue
+        .listen((event) {
+      setState(() {
+        aerationStatus = event.snapshot.value?.toString() ?? '--';
+      });
+    });
+
+    databaseRef
+        .child('FILTRATION_SYSTEM')
+        .child('drip_MODE')
+        .onValue
+        .listen((event) {
+      setState(() {
+        dripStatus = event.snapshot.value?.toString() ?? '--';
+      });
+    });
+
+    databaseRef
+        .child('FILTRATION_SYSTEM')
+        .child('pump_TRIGGER')
+        .onValue
+        .listen((event) {
+      setState(() {
+        pumpStatus = event.snapshot.value?.toString() ?? '--';
+      });
     });
   }
 
@@ -230,7 +291,6 @@ class _DashboardPageState extends State<DashboardPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/images/DASHBOARD.png'),
-              const Divider(color: Colors.blue),
               const SizedBox(height: 4),
               const Text(
                 'WATER PARAMETERS',
@@ -253,7 +313,6 @@ class _DashboardPageState extends State<DashboardPage> {
                       phConfig: phConfig,
                     ),
                   ),
-                  const SizedBox(width: 16),
                   Expanded(
                     child: BoxItem(
                       icon: Icons.waves_outlined,
@@ -274,17 +333,17 @@ class _DashboardPageState extends State<DashboardPage> {
                       icon: Icons.thermostat_outlined,
                       iconColor: const Color.fromRGBO(218, 0, 0, 1),
                       title: 'Temperature',
-                      value: waterTemp?.toStringAsFixed(1) ?? '--',
+                      value: '${waterTemp?.toStringAsFixed(1) ?? '--'} °C',
                       waterTempBorderColor: getTemperatureBorderColor(),
                     ),
                   ),
-                  const SizedBox(width: 16),
                   Expanded(
                     child: BoxItem(
                       icon: Icons.blur_on,
                       iconColor: const Color.fromRGBO(87, 55, 19, 1),
                       title: 'Water Turbidity',
-                      value: waterTurbidity?.toStringAsFixed(1) ?? '--',
+                      value:
+                          '${waterTurbidity?.toStringAsFixed(1) ?? '--'} NTU',
                       turbidityBorderColor: getTurbidityBorderColor(),
                     ),
                   ),
@@ -300,19 +359,18 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: BoxItem(
                       icon: Icons.lightbulb,
-                      iconColor: Color.fromRGBO(245, 222, 16, 1),
+                      iconColor: const Color.fromRGBO(245, 222, 16, 1),
                       title: 'Lighting',
-                      value: '--',
+                      value: lightingStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
-                  SizedBox(width: 16),
-                  Expanded(
+                  const Expanded(
                     child: BoxItem(
                       icon: Icons.restaurant,
                       iconColor: Colors.green,
@@ -340,16 +398,15 @@ class _DashboardPageState extends State<DashboardPage> {
                       icon: Icons.thermostat_outlined,
                       iconColor: getHeaterIconColor(),
                       title: 'Heater',
-                      value: '--',
+                      value: heaterStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  const Expanded(
+                  Expanded(
                     child: BoxItem(
                       icon: Icons.lightbulb,
                       iconColor: Colors.purple,
                       title: 'UV Lamp',
-                      value: '--',
+                      value: uvStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
                 ],
@@ -363,20 +420,15 @@ class _DashboardPageState extends State<DashboardPage> {
                       icon: Icons.autorenew,
                       iconColor: getFiltrationModeIconColor(),
                       title: 'Filtration Mode',
-                      value: filtrationMode ?? '--',
+                      value: filtrationStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
-                  const SizedBox(width: 16),
                   Expanded(
                     child: BoxItem(
                       icon: Icons.air_rounded,
                       iconColor: getAerationIconColor(),
                       title: 'Aeration',
-                      value: aeration != null
-                          ? aeration!
-                              ? 'Active'
-                              : 'Inactive'
-                          : '--',
+                      value: aerationStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
                 ],
@@ -390,24 +442,15 @@ class _DashboardPageState extends State<DashboardPage> {
                       icon: Icons.format_list_numbered,
                       iconColor: getContinuousDripIconColor(),
                       title: 'Continuous Drip',
-                      value: continuousDrip != null
-                          ? continuousDrip!
-                              ? 'Active'
-                              : 'Inactive'
-                          : '--',
+                      value: dripStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
-                  const SizedBox(width: 16),
                   Expanded(
                     child: BoxItem(
                       icon: Icons.autorenew,
                       iconColor: getRecirculatingPumpIconColor(),
-                      title: 'Recirculating Pump',
-                      value: recirculatingPump != null
-                          ? recirculatingPump!
-                              ? 'Active'
-                              : 'Inactive'
-                          : '--',
+                      title: 'Pump',
+                      value: pumpStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
                 ],
@@ -551,53 +594,56 @@ class BoxItem extends StatelessWidget {
       }
     }
 
-    return Material(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-        side: BorderSide(
-          color: title == 'pH Level'
-              ? pHBorderColor ?? Colors.transparent
-              : title == 'Water Level'
-                  ? waterLevelBorderColor ?? Colors.transparent
-                  : title == 'Temperature'
-                      ? waterTempBorderColor ?? Colors.transparent
-                      : title == 'Water Turbidity'
-                          ? turbidityBorderColor ?? Colors.transparent
-                          : Colors.transparent,
-          width: 2.0,
+    return FractionallySizedBox(
+      widthFactor: .87, // Adjust the width factor as needed
+      child: Material(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: title == 'pH Level'
+                ? pHBorderColor ?? Colors.transparent
+                : title == 'Water Level'
+                    ? waterLevelBorderColor ?? Colors.transparent
+                    : title == 'Temperature'
+                        ? waterTempBorderColor ?? Colors.transparent
+                        : title == 'Water Turbidity'
+                            ? turbidityBorderColor ?? Colors.transparent
+                            : Colors.transparent,
+            width: 2.0,
+          ),
         ),
-      ),
-      elevation: 3.0,
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(icon, size: 36, color: iconColor),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(icon, size: 28, color: iconColor),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 2),
+                    Text(
+                      value,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
