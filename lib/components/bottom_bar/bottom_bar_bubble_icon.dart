@@ -6,11 +6,11 @@ import '../components/colors.dart';
 
 class BottomBarBubbleIcon extends StatefulWidget {
   const BottomBarBubbleIcon({
-    Key? key,
+    super.key,
     required this.item,
     required this.color,
     this.isSelected = false,
-  }) : super(key: key);
+  });
 
   final BottomBarItem item;
   final Color color;

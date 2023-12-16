@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -11,6 +13,8 @@ class MyEvent {
 }
 
 class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
+
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
@@ -53,15 +57,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Testing Complete'),
-          content: Text('Testing has been completed.'),
+          title: const Text('Testing Complete'),
+          content: const Text('Testing has been completed.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 navigateToHome(context);
               },
-              child: Text('Ok'),
+              child: const Text('Ok'),
             ),
           ],
         );
@@ -80,7 +84,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         toolbarHeight: 80,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.blue),
+          icon: const Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
             // You can choose whether to navigate back directly or not
             // navigateToHome();
@@ -106,22 +110,22 @@ class _LoadingScreenState extends State<LoadingScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 150),
+                  const SizedBox(height: 150),
                   Image.asset(
                     'assets/images/aquassist.png',
                     height: 170,
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     'Testing Parameters',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 28,
                     ),
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   isLoading
-                      ? SpinKitCircle(
+                      ? const SpinKitCircle(
                           color: Colors.red,
                           size: 70.0,
                         )

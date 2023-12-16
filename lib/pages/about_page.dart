@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatelessWidget {
+  const AboutPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,7 +10,7 @@ class AboutPage extends StatelessWidget {
         toolbarHeight: 80,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.blue),
+          icon: const Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () {
             Navigator.pushReplacementNamed(context, '/dashboard');
           },
@@ -32,16 +34,16 @@ class AboutPage extends StatelessWidget {
               'assets/images/AQUASENSE.png', // Make sure to adjust the path based on your actual asset location
               height: 150, // Adjust the height as needed
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Welcome to AquaSense!',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               '"Aquaculture Intelligence At Your Fingertips"',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -49,7 +51,7 @@ class AboutPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
+            const Text(
               'A sensor-based device for the real-time monitoring of water quality in ornamental fish farms.',
               textAlign: TextAlign.center,
               style: TextStyle(

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:aquasenseapp/loadingscreen_page.dart';
-import 'package:aquasenseapp/main.dart';
 
 class TestNowPage extends StatelessWidget {
-  const TestNowPage({Key? key}) : super(key: key);
+  const TestNowPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +35,14 @@ class TestNowPage extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                 padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                  EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 ),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
@@ -55,10 +54,11 @@ class TestNowPage extends StatelessWidget {
                 pushValueToDatabase();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoadingScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const LoadingScreen()),
                 );
               },
-              child: Text(
+              child: const Text(
                 'Test Now',
                 style: TextStyle(
                   fontSize: 24,

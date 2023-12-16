@@ -5,7 +5,7 @@ import 'bottom_bar_bubble_icon.dart';
 
 class BottomBarBubble extends StatefulWidget {
   const BottomBarBubble({
-    Key? key,
+    super.key,
     required this.items,
     this.selectedIndex = 0,
     this.height = 71,
@@ -13,7 +13,7 @@ class BottomBarBubble extends StatefulWidget {
     this.color = Colors.blue,
     this.backgroundColor = Colors.white,
     this.onSelect,
-  }) : super(key: key);
+  });
 
   final int selectedIndex;
   final double height;

@@ -1,4 +1,7 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print
+
 import 'package:aquasenseapp/pages/about_page.dart';
+import 'package:aquasenseapp/pages/previous_readings.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,21 +14,14 @@ class DashboardPage extends StatefulWidget {
   _DashboardPageState createState() => _DashboardPageState();
 }
 
-Future<void> _logout(BuildContext context) async {
-  try {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(context, '/login');
-  } catch (e) {
-    print('Error logging out: $e');
-  }
-}
-
 class _DashboardPageState extends State<DashboardPage> {
   double? pH;
   double? waterLevel;
   double? waterTemp;
   double? waterTurbidity;
   double? phConfig;
+  double? tempConfig;
+  double? turbidityConfig;
 
   late DatabaseReference databaseRef;
 
@@ -33,64 +29,34 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     initializeFirebase();
-    databaseRef = FirebaseDatabase.instance.ref();
+    databaseRef = FirebaseDatabase.instance.reference();
 
-    databaseRef.child('SENSOR_DATA').child('ph').onValue.listen((event) {
-      if (event.snapshot.value != null) {
-        double phValue = double.parse(event.snapshot.value.toString());
-        setState(() {
-          pH = phValue;
-        });
-      }
+    initializeSensorDataListener('ph', (value) {
+      setState(() => pH = value);
     });
 
-    databaseRef
-        .child('SENSOR_DATA')
-        .child('waterLevel')
-        .onValue
-        .listen((event) {
-      if (event.snapshot.value != null) {
-        double waterLevelValue = double.parse(event.snapshot.value.toString());
-        setState(() {
-          waterLevel = waterLevelValue;
-        });
-      }
+    initializeSensorDataListener('waterLevel', (value) {
+      setState(() => waterLevel = value);
     });
 
-    databaseRef.child('SENSOR_DATA').child('waterTemp').onValue.listen((event) {
-      if (event.snapshot.value != null) {
-        double waterTempValue = double.parse(event.snapshot.value.toString());
-        setState(() {
-          waterTemp = waterTempValue;
-        });
-      }
+    initializeSensorDataListener('waterTemp', (value) {
+      setState(() => waterTemp = value);
     });
 
-    databaseRef
-        .child('SENSOR_DATA')
-        .child('waterTurbidity')
-        .onValue
-        .listen((event) {
-      if (event.snapshot.value != null) {
-        double waterTurbidityValue =
-            double.parse(event.snapshot.value.toString());
-        setState(() {
-          waterTurbidity = waterTurbidityValue;
-        });
-      }
+    initializeSensorDataListener('waterTurbidity', (value) {
+      setState(() => waterTurbidity = value);
     });
 
-    databaseRef
-        .child('PARAMETERS_CONFIG')
-        .child('ph_CONFIG')
-        .onValue
-        .listen((event) {
-      if (event.snapshot.value != null) {
-        double phConfigValue = double.parse(event.snapshot.value.toString());
-        setState(() {
-          phConfig = phConfigValue;
-        });
-      }
+    initializeConfigListener('ph_CONFIG', (value) {
+      setState(() => phConfig = value);
+    });
+
+    initializeConfigListener('temp_CONFIG', (value) {
+      setState(() => tempConfig = value);
+    });
+
+    initializeConfigListener('turbidity_CONFIG', (value) {
+      setState(() => turbidityConfig = value);
     });
   }
 
@@ -102,17 +68,40 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  void initializeSensorDataListener(
+      String child, void Function(double) callback) {
+    databaseRef.child('SENSOR_DATA').child(child).onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        double sensorValue = double.parse(event.snapshot.value.toString());
+        callback(sensorValue);
+      }
+    });
+  }
+
+  void initializeConfigListener(String child, void Function(double) callback) {
+    databaseRef.child('PARAMETERS_CONFIG').child(child).onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        double configValue = double.parse(event.snapshot.value.toString());
+        callback(configValue);
+      }
+    });
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      print('Error logging out: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(232, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(232, 255, 255, 255),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80),
+        preferredSize: const Size.fromHeight(80),
         child: Container(
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
@@ -157,7 +146,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AboutPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const AboutPage()),
                       );
                     },
                   ),
@@ -172,7 +162,7 @@ class _DashboardPageState extends State<DashboardPage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/logo2.png'),
                   fit: BoxFit.cover,
@@ -180,115 +170,117 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               child: Container(
                 color: Colors.blue, // Background color
-                child: SizedBox(), // Empty SizedBox to remove the text
+                child: const SizedBox(), // Empty SizedBox to remove the text
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
+              leading: const Icon(Icons.info),
+              title: const Text('About Page'),
               onTap: () {
-                // TODO: Implement Home navigation
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutPage()),
+                );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('User'),
+              leading: const Icon(Icons.table_chart),
+              title: const Text('Previous Readings'),
               onTap: () {
-                // TODO: Implement User navigation
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PreviousReadings()),
+                );
               },
             ),
-            ListTile(
-                leading: const Icon(Icons.info),
-                title: const Text('About Page'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AboutPage()),
-                  );
-                }),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () async => await _logout(context),
-            )
+            ),
           ],
         ),
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/images/DASHBOARD.png'),
-              Divider(color: Colors.blue),
-              SizedBox(height: 4),
-              Text(
+              const Divider(color: Colors.blue),
+              const SizedBox(height: 4),
+              const Text(
                 'WATER PARAMETERS',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: BoxItem(
                       icon: Icons.opacity,
-                      iconColor: Color.fromRGBO(139, 211, 235, 1),
+                      iconColor: const Color.fromRGBO(139, 211, 235, 1),
                       title: 'pH Level',
                       value: pH?.toStringAsFixed(1) ?? '--',
                       phValue: pH,
                       phConfig: phConfig,
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: BoxItem(
                       icon: Icons.waves_outlined,
-                      iconColor: Color.fromRGBO(22, 52, 224, 1),
+                      iconColor: const Color.fromRGBO(22, 52, 224, 1),
                       title: 'Water Level',
                       value: waterLevel?.toStringAsFixed(1) ?? '--',
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: BoxItem(
                       icon: Icons.thermostat_outlined,
-                      iconColor: Color.fromRGBO(218, 0, 0, 1),
+                      iconColor: const Color.fromRGBO(218, 0, 0, 1),
                       title: 'Temperature',
                       value: waterTemp?.toStringAsFixed(1) ?? '--',
+                      waterTemp: waterTemp,
+                      tempConfig: tempConfig,
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: BoxItem(
                       icon: Icons.blur_on,
-                      iconColor: Color.fromRGBO(87, 55, 19, 1),
+                      iconColor: const Color.fromRGBO(87, 55, 19, 1),
                       title: 'Water Turbidity',
                       value: waterTurbidity?.toStringAsFixed(1) ?? '--',
+                      waterTurbidity: waterTurbidity,
+                      turbidityConfig: turbidityConfig,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16),
-              Divider(color: Colors.blue, height: 20),
-              Text(
+              const SizedBox(height: 16),
+              const Divider(color: Colors.blue, height: 20),
+              const Text(
                 'ENVIRONMENT CONTROLS',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -312,16 +304,16 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               ),
               const SizedBox(height: 8),
-              Divider(color: Colors.blue, height: 20),
-              Text(
+              const Divider(color: Colors.blue, height: 20),
+              const Text(
                 'FILTRATION SYSTEM',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 16),
-              Row(
+              const SizedBox(height: 16),
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
@@ -343,7 +335,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -359,6 +351,11 @@ class BoxItem extends StatelessWidget {
   final Color? iconColor;
   final double? phValue;
   final double? phConfig;
+  final double? waterLevel;
+  final double? waterTemp;
+  final double? tempConfig;
+  final double? waterTurbidity;
+  final double? turbidityConfig;
 
   const BoxItem({
     Key? key,
@@ -368,32 +365,90 @@ class BoxItem extends StatelessWidget {
     this.iconColor,
     this.phValue,
     this.phConfig,
+    this.waterLevel,
+    this.waterTemp,
+    this.tempConfig,
+    this.waterTurbidity,
+    this.turbidityConfig,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Calculate the pH difference
-    double? difference = phValue != null && phConfig != null
+    double? pHdifference = phValue != null && phConfig != null
         ? (phValue! - phConfig!).abs()
         : null;
 
-    // Set the background color based on the pH difference
-    Color? backgroundColor;
-    if (difference != null) {
-      if (difference <= 1.01) {
-        backgroundColor = Colors.green; // Within +- 1
-      } else if (difference > 1.01 && difference < 1.99) {
-        backgroundColor = Colors.orange; // Within +- 1.5
-      } else if (difference >= 2) {
-        backgroundColor = Colors.red; // 2 or more
+    // Set the border color based on the pH difference
+    Color? pHBorderColor;
+    if (pHdifference != null) {
+      if (pHdifference <= 1.01) {
+        pHBorderColor = Colors.green; // Within +- 1
+      } else if (pHdifference > 1.01 && pHdifference < 1.99) {
+        pHBorderColor = Colors.orange; // Within +- 1.5
+      } else if (pHdifference >= 2) {
+        pHBorderColor = Colors.red; // 2 or more
       }
     }
 
-    return Card(
+    // Set the border color based on the water level
+    Color? waterLevelBorderColor;
+    if (waterLevel != null) {
+      if (waterLevel! >= 51) {
+        waterLevelBorderColor = Colors.green; // 51 and above
+      } else if (waterLevel! >= 26 && waterLevel! <= 50) {
+        waterLevelBorderColor = Colors.orange; // 26 to 50
+      } else if (waterLevel! <= 25) {
+        waterLevelBorderColor = Colors.red; // 25 and below
+      }
+    }
+
+    // Set the border color based on the temperature difference
+    Color? temperatureBorderColor;
+    double? temperatureDifference = waterTemp != null && tempConfig != null
+        ? (waterTemp! - tempConfig!).abs() + 1 // Adding + 1 here
+        : null;
+    if (temperatureDifference != null) {
+      if (temperatureDifference <= 2.01) {
+        // Adjusted the values accordingly
+        temperatureBorderColor = Colors.green; // Within +- 1
+      } else if (temperatureDifference > 2.01 && temperatureDifference < 2.99) {
+        temperatureBorderColor = Colors.orange; // Within +- 1.5
+      } else if (temperatureDifference >= 3) {
+        temperatureBorderColor = Colors.red; // 2 or more
+      }
+    }
+    // Set the border color based on the turbidity difference
+    Color? turbidityBorderColor;
+    double? turbidityDifference =
+        waterTurbidity != null && turbidityConfig != null
+            ? (waterTurbidity! - turbidityConfig!).abs()
+            : null;
+    if (turbidityDifference != null) {
+      if (turbidityDifference <= 1.01) {
+        turbidityBorderColor = Colors.green; // Within +- 1
+      } else if (turbidityDifference > 1.01 && turbidityDifference < 1.99) {
+        turbidityBorderColor = Colors.orange; // Within +- 1.5
+      } else if (turbidityDifference >= 2) {
+        turbidityBorderColor = Colors.red; // 2 or more
+      }
+    }
+
+    return Material(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
+        side: BorderSide(
+          color: title == 'pH Level'
+              ? pHBorderColor ?? Colors.transparent
+              : title == 'Water Level'
+                  ? waterLevelBorderColor ?? Colors.transparent
+                  : title == 'Temperature'
+                      ? temperatureBorderColor ?? Colors.transparent
+                      : title == 'Water Turbidity'
+                          ? turbidityBorderColor ?? Colors.transparent
+                          : Colors.transparent,
+          width: 2.0,
+        ),
       ),
-      color: backgroundColor,
       elevation: 3.0,
       child: Padding(
         padding: const EdgeInsets.all(4),

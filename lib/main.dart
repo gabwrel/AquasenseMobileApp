@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:aquasenseapp/pages/login_page.dart';
@@ -16,7 +18,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   final int selectedIndex;
 
-  const MyApp({Key? key, this.selectedIndex = 0}) : super(key: key);
+  const MyApp({super.key, this.selectedIndex = 0});
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -27,10 +29,10 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   final List<Widget> _pages = [
-    DashboardPage(),
-    MaintenancePage(),
-    TestNowPage(),
-    ConfigurationPage(),
+    const DashboardPage(),
+    const MaintenancePage(),
+    const TestNowPage(),
+    const ConfigurationPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -70,7 +72,8 @@ class DashboardScreen extends StatelessWidget {
   final int selectedIndex;
   final void Function(int) onItemTapped;
 
-  const DashboardScreen(this.pages, this.selectedIndex, this.onItemTapped);
+  const DashboardScreen(this.pages, this.selectedIndex, this.onItemTapped,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +92,10 @@ class DashboardScreen extends StatelessWidget {
         child: BottomBarBubble(
           selectedIndex: selectedIndex,
           items: [
-            BottomBarItem(iconData: Icons.home),
-            BottomBarItem(iconData: Icons.settings),
+            BottomBarItem(iconData: Icons.monitor_heart_rounded),
             BottomBarItem(iconData: Icons.water_drop),
-            BottomBarItem(iconData: Icons.bar_chart),
+            BottomBarItem(iconData: Icons.query_stats_rounded),
+            BottomBarItem(iconData: Icons.tune_rounded),
           ],
           onSelect: onItemTapped,
           color: Colors.blue,

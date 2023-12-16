@@ -1,8 +1,10 @@
+// ignore_for_file: avoid_print, unnecessary_to_list_in_spreads, unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class ConfigurationPage extends StatefulWidget {
-  const ConfigurationPage({Key? key}) : super(key: key);
+  const ConfigurationPage({super.key});
 
   @override
   State<ConfigurationPage> createState() => _ConfigurationPageState();
@@ -123,9 +125,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         ),
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -135,12 +137,12 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               ),
               // Dropdown for selecting fish species
               Container(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Fish Species', style: TextStyle(fontSize: 20)),
-                    SizedBox(width: 8.0),
+                    const Text('Fish Species', style: TextStyle(fontSize: 20)),
+                    const SizedBox(width: 8.0),
                     DropdownButton<String>(
                       value: selectedFish,
                       items: fishSpecies.map<DropdownMenuItem<String>>(
@@ -161,13 +163,13 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 color: Colors.grey,
                 thickness: 1.5,
               ),
               buildSliderRow(
                 icon: Icons.show_chart,
-                color: Color.fromARGB(255, 0, 77, 211),
+                color: const Color.fromARGB(255, 0, 77, 211),
                 title: 'pH Level',
                 value: pHSetting ?? 0.0,
                 min: 0,
@@ -183,7 +185,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                       .set(pHSetting?.toStringAsFixed(2) ?? '0.0');
                 },
               ),
-              Divider(
+              const Divider(
                 color: Colors.grey,
                 thickness: 1.5,
               ),
@@ -205,7 +207,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                       .set(temperatureSetting?.toStringAsFixed(2) ?? '0.0');
                 },
               ),
-              Divider(
+              const Divider(
                 color: Colors.grey,
                 thickness: 1.5,
               ),
@@ -227,7 +229,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                       .set(turbiditySetting?.toStringAsFixed(2) ?? '0.0');
                 },
               ),
-              Divider(
+              const Divider(
                 color: Colors.grey,
                 thickness: 1.5,
               ),
@@ -250,7 +252,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
   }) {
     return Row(
       children: [
-        SizedBox(width: 8.0),
+        const SizedBox(width: 8.0),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -261,12 +263,12 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   size: 30,
                   color: color,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8.0,
                 ),
                 Text(title,
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w500)),
               ],
             ),
             Slider(
@@ -284,7 +286,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         ),
         Text(
           '${value.toStringAsFixed(2)}',
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),

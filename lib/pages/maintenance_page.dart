@@ -1,9 +1,11 @@
+// ignore_for_file: non_constant_identifier_names, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:aquasenseapp/pages/waterchange_page.dart';
 
 class MaintenancePage extends StatefulWidget {
-  const MaintenancePage({Key? key}) : super(key: key);
+  const MaintenancePage({super.key});
 
   @override
   State<MaintenancePage> createState() => _MaintenancePageState();
@@ -85,7 +87,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmation'),
+          title: const Text('Confirmation'),
           content:
               Text('Are you sure to initiate $waterchangeLevel% water change?'),
           actions: [
@@ -93,7 +95,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
             TextButton(
               onPressed: () {
@@ -107,10 +109,11 @@ class _MaintenancePageState extends State<MaintenancePage> {
                     .set('1');
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => WaterChangePage()),
+                  MaterialPageRoute(
+                      builder: (context) => const WaterChangePage()),
                 );
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
           ],
         );
@@ -142,7 +145,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
           ),
         ),
         body: isLoading
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(), // Show a loading indicator
               )
             : Padding(
@@ -157,7 +160,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                       return SingleChildScrollView(
                         child: Column(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 30,
                             ),
                             Image.asset(
@@ -185,7 +188,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                         horizontal: 20),
                                     child: Row(
                                       children: [
-                                        SizedBox(width: 25),
+                                        const SizedBox(width: 25),
                                         Icon(Icons.water_drop,
                                             size: availableHeight * 0.075,
                                             color: Colors.blue),
@@ -253,13 +256,13 @@ class _MaintenancePageState extends State<MaintenancePage> {
                             ),
 
                             SizedBox(height: availableHeight * 0.05),
-                            Divider(
+                            const Divider(
                               color: Colors.blue,
                               thickness: 1,
                             ),
                             buildSwitchItem(Icons.opacity, 'Continuous Drip',
                                 drip_MODE ?? "0", 'drip_MODE', Colors.blue),
-                            Divider(
+                            const Divider(
                               color: Colors.blue,
                               thickness: 1,
                             ),
@@ -269,13 +272,13 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                 filtrationsystem_MODE ?? "0",
                                 'filtrationsystem_MODE',
                                 Colors.green),
-                            Divider(
+                            const Divider(
                               color: Colors.blue,
                               thickness: 1,
                             ),
                             buildSwitchItem(Icons.adjust, 'Water Source',
                                 source_MODE ?? "0", 'source_MODE', Colors.blue),
-                            Divider(
+                            const Divider(
                               color: Colors.blue,
                               thickness: 1,
                             ),
@@ -285,7 +288,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                 drain_MODE ?? "0",
                                 'drain_MODE',
                                 Colors.blue),
-                            Divider(
+                            const Divider(
                               color: Colors.blue,
                               thickness: 1,
                             ),
@@ -295,7 +298,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                                 master_TRIGGER ?? "0",
                                 'master_TRIGGER',
                                 Colors.red),
-                            Divider(
+                            const Divider(
                               color: Colors.blue,
                               thickness: 1,
                             ),
@@ -340,7 +343,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       ),
       title: Text(
         text,
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
       trailing: Switch(
         value: value == "1",
