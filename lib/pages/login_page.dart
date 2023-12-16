@@ -89,7 +89,10 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _emailController,
                         decoration: const InputDecoration(
                           labelText: 'Email',
-                          labelStyle: TextStyle(),
+                          labelStyle: TextStyle(
+                            fontFamily: 'Satoshi',
+                            fontWeight: FontWeight.w500,
+                          ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
@@ -118,7 +121,10 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _passwordController,
                         decoration: const InputDecoration(
                           labelText: 'Password',
-                          labelStyle: TextStyle(),
+                          labelStyle: TextStyle(
+                            fontFamily: 'Satoshi',
+                            fontWeight: FontWeight.w500,
+                          ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
@@ -147,7 +153,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: const Text(
                       'Login',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(
+                          fontFamily: 'Satoshi',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -155,7 +164,11 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: _navigateToRegistration,
                     child: const Text(
                       'Don\'t have an account? Register here',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Satoshi',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],

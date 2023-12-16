@@ -1,14 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print
 
 import 'package:aquasenseapp/pages/about_page.dart';
-import 'package:aquasenseapp/pages/previous_readings.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:aquasenseapp/pages/previous_readings.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  const DashboardPage({super.key});
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -22,6 +22,10 @@ class _DashboardPageState extends State<DashboardPage> {
   double? phConfig;
   double? tempConfig;
   double? turbidityConfig;
+  String? filtrationMode;
+  bool? aeration;
+  bool? continuousDrip;
+  bool? recirculatingPump;
 
   late DatabaseReference databaseRef;
 
@@ -29,7 +33,7 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     initializeFirebase();
-    databaseRef = FirebaseDatabase.instance.reference();
+    databaseRef = FirebaseDatabase.instance.ref();
 
     initializeSensorDataListener('ph', (value) {
       setState(() => pH = value);
@@ -57,6 +61,22 @@ class _DashboardPageState extends State<DashboardPage> {
 
     initializeConfigListener('turbidity_CONFIG', (value) {
       setState(() => turbidityConfig = value);
+    });
+
+    initializeConfigListener('FILTRATION_MODE', (value) {
+      setState(() => filtrationMode = value == 0 ? 'AUTO' : 'MANUAL');
+    });
+
+    initializeConfigListener('AERATION', (value) {
+      setState(() => aeration = value == 1);
+    });
+
+    initializeConfigListener('CONTINUOUS_DRIP', (value) {
+      setState(() => continuousDrip = value == 1);
+    });
+
+    initializeConfigListener('RECIRCULATING_PUMP', (value) {
+      setState(() => recirculatingPump = value == 1);
     });
   }
 
@@ -240,6 +260,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       iconColor: const Color.fromRGBO(22, 52, 224, 1),
                       title: 'Water Level',
                       value: waterLevel?.toStringAsFixed(1) ?? '--',
+                      waterLevelBorderColor: getWaterLevelBorderColor(),
                     ),
                   ),
                 ],
@@ -254,8 +275,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       iconColor: const Color.fromRGBO(218, 0, 0, 1),
                       title: 'Temperature',
                       value: waterTemp?.toStringAsFixed(1) ?? '--',
-                      waterTemp: waterTemp,
-                      tempConfig: tempConfig,
+                      waterTempBorderColor: getTemperatureBorderColor(),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -265,8 +285,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       iconColor: const Color.fromRGBO(87, 55, 19, 1),
                       title: 'Water Turbidity',
                       value: waterTurbidity?.toStringAsFixed(1) ?? '--',
-                      waterTurbidity: waterTurbidity,
-                      turbidityConfig: turbidityConfig,
+                      turbidityBorderColor: getTurbidityBorderColor(),
                     ),
                   ),
                 ],
@@ -313,19 +332,19 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: BoxItem(
-                      icon: Icons.whatshot,
-                      iconColor: Colors.red,
+                      icon: Icons.thermostat_outlined,
+                      iconColor: getHeaterIconColor(),
                       title: 'Heater',
                       value: '--',
                     ),
                   ),
-                  SizedBox(width: 16),
-                  Expanded(
+                  const SizedBox(width: 16),
+                  const Expanded(
                     child: BoxItem(
                       icon: Icons.lightbulb,
                       iconColor: Colors.purple,
@@ -336,11 +355,147 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               ),
               const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.autorenew,
+                      iconColor: getFiltrationModeIconColor(),
+                      title: 'Filtration Mode',
+                      value: filtrationMode ?? '--',
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.air_rounded,
+                      iconColor: getAerationIconColor(),
+                      title: 'Aeration',
+                      value: aeration != null
+                          ? aeration!
+                              ? 'Active'
+                              : 'Inactive'
+                          : '--',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.format_list_numbered,
+                      iconColor: getContinuousDripIconColor(),
+                      title: 'Continuous Drip',
+                      value: continuousDrip != null
+                          ? continuousDrip!
+                              ? 'Active'
+                              : 'Inactive'
+                          : '--',
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: BoxItem(
+                      icon: Icons.autorenew,
+                      iconColor: getRecirculatingPumpIconColor(),
+                      title: 'Recirculating Pump',
+                      value: recirculatingPump != null
+                          ? recirculatingPump!
+                              ? 'Active'
+                              : 'Inactive'
+                          : '--',
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // Helper method to get water level border color
+  Color? getWaterLevelBorderColor() {
+    if (waterLevel != null) {
+      if (waterLevel! >= 51) {
+        return Colors.green; // 51 and above
+      } else if (waterLevel! >= 26 && waterLevel! <= 50) {
+        return Colors.orange; // 26 to 50
+      } else if (waterLevel! <= 25) {
+        return Colors.red; // 25 and below
+      }
+    }
+    return null;
+  }
+
+  // Helper method to get temperature border color
+  Color? getTemperatureBorderColor() {
+    double? temperatureDifference = waterTemp != null && tempConfig != null
+        ? (waterTemp! - tempConfig!).abs() + 1
+        : null;
+    if (temperatureDifference != null) {
+      if (temperatureDifference <= 2.01) {
+        return Colors.green; // Within +- 1
+      } else if (temperatureDifference > 2.01 && temperatureDifference < 2.99) {
+        return Colors.orange; // Within +- 1.5
+      } else if (temperatureDifference >= 3) {
+        return Colors.red; // 2 or more
+      }
+    }
+    return null;
+  }
+
+  // Helper method to get turbidity border color
+  Color? getTurbidityBorderColor() {
+    double? turbidityDifference =
+        waterTurbidity != null && turbidityConfig != null
+            ? (waterTurbidity! - turbidityConfig!).abs()
+            : null;
+    if (turbidityDifference != null) {
+      if (turbidityDifference <= 1.01) {
+        return Colors.green; // Within +- 1
+      } else if (turbidityDifference > 1.01 && turbidityDifference < 1.99) {
+        return Colors.orange; // Within +- 1.5
+      } else if (turbidityDifference >= 2) {
+        return Colors.red; // 2 or more
+      }
+    }
+    return null;
+  }
+
+  // Helper method to get heater icon color
+  Color? getHeaterIconColor() {
+    // Implement your logic based on heater status
+    return Colors.red; // Placeholder color, change as needed
+  }
+
+  // Helper method to get filtration mode icon color
+  Color? getFiltrationModeIconColor() {
+    // Implement your logic based on filtration mode status
+    return Colors.green; // Placeholder color, change as needed
+  }
+
+  // Helper method to get aeration icon color
+  Color? getAerationIconColor() {
+    // Implement your logic based on aeration status
+    return Colors.blue; // Placeholder color, change as needed
+  }
+
+  // Helper method to get continuous drip icon color
+  Color? getContinuousDripIconColor() {
+    // Implement your logic based on continuous drip status
+    return Colors.blue; // Placeholder color, change as needed
+  }
+
+  // Helper method to get recirculating pump icon color
+  Color? getRecirculatingPumpIconColor() {
+    // Implement your logic based on recirculating pump status
+    return Colors.blue; // Placeholder color, change as needed
   }
 }
 
@@ -356,9 +511,12 @@ class BoxItem extends StatelessWidget {
   final double? tempConfig;
   final double? waterTurbidity;
   final double? turbidityConfig;
+  final Color? waterLevelBorderColor;
+  final Color? waterTempBorderColor;
+  final Color? turbidityBorderColor;
 
   const BoxItem({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
     required this.value,
@@ -370,7 +528,10 @@ class BoxItem extends StatelessWidget {
     this.tempConfig,
     this.waterTurbidity,
     this.turbidityConfig,
-  }) : super(key: key);
+    this.waterLevelBorderColor,
+    this.waterTempBorderColor,
+    this.turbidityBorderColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -390,49 +551,6 @@ class BoxItem extends StatelessWidget {
       }
     }
 
-    // Set the border color based on the water level
-    Color? waterLevelBorderColor;
-    if (waterLevel != null) {
-      if (waterLevel! >= 51) {
-        waterLevelBorderColor = Colors.green; // 51 and above
-      } else if (waterLevel! >= 26 && waterLevel! <= 50) {
-        waterLevelBorderColor = Colors.orange; // 26 to 50
-      } else if (waterLevel! <= 25) {
-        waterLevelBorderColor = Colors.red; // 25 and below
-      }
-    }
-
-    // Set the border color based on the temperature difference
-    Color? temperatureBorderColor;
-    double? temperatureDifference = waterTemp != null && tempConfig != null
-        ? (waterTemp! - tempConfig!).abs() + 1 // Adding + 1 here
-        : null;
-    if (temperatureDifference != null) {
-      if (temperatureDifference <= 2.01) {
-        // Adjusted the values accordingly
-        temperatureBorderColor = Colors.green; // Within +- 1
-      } else if (temperatureDifference > 2.01 && temperatureDifference < 2.99) {
-        temperatureBorderColor = Colors.orange; // Within +- 1.5
-      } else if (temperatureDifference >= 3) {
-        temperatureBorderColor = Colors.red; // 2 or more
-      }
-    }
-    // Set the border color based on the turbidity difference
-    Color? turbidityBorderColor;
-    double? turbidityDifference =
-        waterTurbidity != null && turbidityConfig != null
-            ? (waterTurbidity! - turbidityConfig!).abs()
-            : null;
-    if (turbidityDifference != null) {
-      if (turbidityDifference <= 1.01) {
-        turbidityBorderColor = Colors.green; // Within +- 1
-      } else if (turbidityDifference > 1.01 && turbidityDifference < 1.99) {
-        turbidityBorderColor = Colors.orange; // Within +- 1.5
-      } else if (turbidityDifference >= 2) {
-        turbidityBorderColor = Colors.red; // 2 or more
-      }
-    }
-
     return Material(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -442,7 +560,7 @@ class BoxItem extends StatelessWidget {
               : title == 'Water Level'
                   ? waterLevelBorderColor ?? Colors.transparent
                   : title == 'Temperature'
-                      ? temperatureBorderColor ?? Colors.transparent
+                      ? waterTempBorderColor ?? Colors.transparent
                       : title == 'Water Turbidity'
                           ? turbidityBorderColor ?? Colors.transparent
                           : Colors.transparent,

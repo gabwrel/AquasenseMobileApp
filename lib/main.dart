@@ -53,6 +53,10 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontFamily: 'Satoshi'),
+          // Add more text styles as needed
+        ),
       ),
       navigatorKey: navigatorKey,
       initialRoute: '/login',
