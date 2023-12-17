@@ -1,0 +1,192 @@
+// ignore_for_file: file_names, avoid_print
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+
+class WaterChangePage extends StatefulWidget {
+  const WaterChangePage({super.key});
+
+  @override
+  State<WaterChangePage> createState() => _WaterChangePageState();
+}
+
+class _WaterChangePageState extends State<WaterChangePage> {
+  late DatabaseReference _databaseReference;
+
+  @override
+  void initState() {
+    super.initState();
+    _databaseReference = FirebaseDatabase.instance.ref();
+    // Remove the call to fetchMaintenanceValues()
+  }
+
+  void handleWaterChange(String waterChangeLevel) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content:
+              Text('Are you sure to initiate $waterChangeLevel% water change?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                _databaseReference
+                    .child('MAINTENANCE')
+                    .child('waterchange_LEVEL')
+                    .set(waterChangeLevel);
+                _databaseReference
+                    .child('TRIGGERS')
+                    .child('waterchange_TRIGGER')
+                    .set('1');
+                Navigator.pushReplacementNamed(context, '/dashboard');
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 80,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            },
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(child: Container()),
+              Image.asset(
+                'assets/images/logo2.png',
+                height: 60,
+              ),
+            ],
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Center(
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final availableWidth = constraints.maxWidth;
+                final availableHeight = constraints.maxHeight;
+
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Image.asset('assets/images/waterchange.png', height: 200),
+                      SizedBox(height: availableHeight * 0.05),
+                      GestureDetector(
+                        onTap: () {
+                          print('Water Change clicked');
+                        },
+                        child: SizedBox(
+                          width: availableWidth * 0.9,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: availableHeight * 0.05),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              handleWaterChange('10');
+                            },
+                            child: buildConfigItem(
+                              '10%',
+                              Colors.blue,
+                              availableWidth * 0.2,
+                              availableHeight * 0.15,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              handleWaterChange('25');
+                            },
+                            child: buildConfigItem(
+                              '25%',
+                              Colors.green,
+                              availableWidth * 0.2,
+                              availableHeight * 0.15,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              handleWaterChange('50');
+                            },
+                            child: buildConfigItem(
+                              '50%',
+                              Colors.orange,
+                              availableWidth * 0.2,
+                              availableHeight * 0.15,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              handleWaterChange('75');
+                            },
+                            child: buildConfigItem(
+                              '75%',
+                              Colors.red,
+                              availableWidth * 0.2,
+                              availableHeight * 0.15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildConfigItem(
+      String value, Color color, double width, double height) {
+    return Container(
+      width: width,
+      height: height * 0.6,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Text(
+          value,
+          style: TextStyle(
+            fontSize: height * 0.25,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}

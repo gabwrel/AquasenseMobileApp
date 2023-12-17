@@ -1,381 +1,254 @@
-// ignore_for_file: non_constant_identifier_names, avoid_print
+// ignore_for_file: avoid_print
 
+import 'package:aquasenseapp/pages/about_page.dart';
+import 'package:aquasenseapp/pages/filtration/continousDrip_page.dart';
+import 'package:aquasenseapp/pages/filtration/filtrationSystem_page.dart';
+import 'package:aquasenseapp/pages/filtration/masterSwitch_page.dart';
+import 'package:aquasenseapp/pages/filtration/waterChange_page.dart';
+import 'package:aquasenseapp/pages/previous_readings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:aquasenseapp/pages/waterchange_page.dart';
 
-class MaintenancePage extends StatefulWidget {
+class MaintenancePage extends StatelessWidget {
   const MaintenancePage({super.key});
 
-  @override
-  State<MaintenancePage> createState() => _MaintenancePageState();
-}
-
-class _MaintenancePageState extends State<MaintenancePage> {
-  String? drip_MODE;
-  String? filtrationsystem_MODE;
-  String? drain_MODE;
-  String? source_MODE;
-  String? master_TRIGGER;
-
-  late DatabaseReference _databaseReference;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _databaseReference = FirebaseDatabase.instance.ref();
-
-    fetchMaintenanceValues();
-  }
-
-  void fetchMaintenanceValues() {
-    _databaseReference
-        .child('FILTRATION_SYSTEM')
-        .child('drip_MODE')
-        .onValue
-        .listen((event) {
-      setState(() {
-        drip_MODE = event.snapshot.value.toString();
-      });
-    });
-
-    _databaseReference
-        .child('FILTRATION_SYSTEM')
-        .child('filtrationsystem_MODE')
-        .onValue
-        .listen((event) {
-      setState(() {
-        filtrationsystem_MODE = event.snapshot.value.toString();
-      });
-    });
-
-    _databaseReference
-        .child('MAINTENANCE')
-        .child('relayDrain_TRIGGER')
-        .onValue
-        .listen((event) {
-      setState(() {
-        drain_MODE = event.snapshot.value.toString();
-      });
-    });
-
-    _databaseReference
-        .child('MAINTENANCE')
-        .child('relaySource_TRIGGER')
-        .onValue
-        .listen((event) {
-      setState(() {
-        source_MODE = event.snapshot.value.toString();
-      });
-    });
-
-    _databaseReference
-        .child('TRIGGERS')
-        .child('master_TRIGGER')
-        .onValue
-        .listen((event) {
-      setState(() {
-        master_TRIGGER = event.snapshot.value.toString();
-        isLoading = false; // Data fetching is complete
-      });
-    });
-  }
-
-  void handleWaterChange(String waterchangeLevel) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirmation'),
-          content:
-              Text('Are you sure to initiate $waterchangeLevel% water change?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('No'),
-            ),
-            TextButton(
-              onPressed: () {
-                _databaseReference
-                    .child('MAINTENANCE')
-                    .child('waterchange_LEVEL')
-                    .set(waterchangeLevel);
-                _databaseReference
-                    .child('TRIGGERS')
-                    .child('waterchange_TRIGGER')
-                    .set('1');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const WaterChangePage()),
-                );
-              },
-              child: const Text('Yes'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      print('Error logging out: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context);
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 2,
-          toolbarHeight: 80,
-          backgroundColor: Colors.white,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(child: Container()),
-              Image.asset(
-                'assets/images/logo2.png',
-                height: 60,
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: Container(
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.12),
+              blurRadius: 100,
+              offset: const Offset(0, -2),
+            )
+          ]),
+          child: AppBar(
+            elevation: 0,
+            toolbarHeight: 80,
+            backgroundColor: Colors.white,
+            leading: Builder(
+              builder: (BuildContext context) {
+                return Center(
+                  child: IconButton(
+                    icon: const Icon(Icons.menu, size: 30, color: Colors.blue),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  ),
+                );
+              },
+            ),
+            flexibleSpace: Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Image.asset(
+                  'assets/images/logo2.png',
+                  height: 80,
+                ),
               ),
-            ],
-          ),
-        ),
-        body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(), // Show a loading indicator
-              )
-            : Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
-                child: Center(
-                  child: LayoutBuilder(
-                    builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      final availableWidth = constraints.maxWidth;
-                      final availableHeight = constraints.maxHeight;
-
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Image.asset(
-                              'assets/images/logo.png',
-                              height: 100,
-                            ), // Replace with the actual path of your logo
-                            Image.asset(
-                              'assets/images/MAINTENANCE.png',
-                              height: 80,
-                            ), // Replace with the actual path of your logo
-
-                            SizedBox(height: availableHeight * 0.05),
-
-                            GestureDetector(
-                              onTap: () {
-                                // Handle the onTap event for the Water Change item
-                                print('Water Change clicked');
-                              },
-                              child: FractionallySizedBox(
-                                widthFactor: 0.9,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 25),
-                                        Icon(Icons.water_drop,
-                                            size: availableHeight * 0.075,
-                                            color: Colors.blue),
-                                        SizedBox(width: availableWidth * 0.06),
-                                        Expanded(
-                                          child: Text(' Water Change',
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      availableHeight * 0.04,
-                                                  color: Colors.black)),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(height: availableHeight * 0.05),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    handleWaterChange('25');
-                                  },
-                                  child: buildConfigItem(
-                                      '25%',
-                                      Colors.blue,
-                                      availableWidth * 0.2,
-                                      availableHeight * 0.15),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    handleWaterChange('50');
-                                  },
-                                  child: buildConfigItem(
-                                      '50%',
-                                      Colors.green,
-                                      availableWidth * 0.2,
-                                      availableHeight * 0.15),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    handleWaterChange('75');
-                                  },
-                                  child: buildConfigItem(
-                                      '75%',
-                                      Colors.orange,
-                                      availableWidth * 0.2,
-                                      availableHeight * 0.15),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    handleWaterChange('100');
-                                  },
-                                  child: buildConfigItem(
-                                      '100%',
-                                      Colors.red,
-                                      availableWidth * 0.2,
-                                      availableHeight * 0.15),
-                                ),
-                              ],
-                            ),
-
-                            SizedBox(height: availableHeight * 0.05),
-                            const Divider(
-                              color: Colors.blue,
-                              thickness: 1,
-                            ),
-                            buildSwitchItem(Icons.opacity, 'Continuous Drip',
-                                drip_MODE ?? "0", 'drip_MODE', Colors.blue),
-                            const Divider(
-                              color: Colors.blue,
-                              thickness: 1,
-                            ),
-                            buildSwitchItem(
-                                Icons.filter,
-                                'Filtration System',
-                                filtrationsystem_MODE ?? "0",
-                                'filtrationsystem_MODE',
-                                Colors.green),
-                            const Divider(
-                              color: Colors.blue,
-                              thickness: 1,
-                            ),
-                            buildSwitchItem(Icons.adjust, 'Water Source',
-                                source_MODE ?? "0", 'source_MODE', Colors.blue),
-                            const Divider(
-                              color: Colors.blue,
-                              thickness: 1,
-                            ),
-                            buildSwitchItem(
-                                Icons.hourglass_bottom,
-                                'Drain Valve',
-                                drain_MODE ?? "0",
-                                'drain_MODE',
-                                Colors.blue),
-                            const Divider(
-                              color: Colors.blue,
-                              thickness: 1,
-                            ),
-                            buildSwitchItem(
-                                Icons.power_settings_new,
-                                'Master Switch',
-                                master_TRIGGER ?? "0",
-                                'master_TRIGGER',
-                                Colors.red),
-                            const Divider(
-                              color: Colors.blue,
-                              thickness: 1,
-                            ),
-                          ],
-                        ),
+            ),
+            actions: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.info_outline,
+                        size: 30, color: Colors.blue),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AboutPage()),
                       );
                     },
                   ),
                 ),
               ),
+            ],
+          ),
+        ),
       ),
-    );
-  }
-
-  Widget buildConfigItem(
-      String value, Color color, double width, double height) {
-    return Container(
-      width: width,
-      height: height * 0.6,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(10),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/logo2.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Container(
+                color: Colors.blue, // Background color
+                child: const SizedBox(), // Empty SizedBox to remove the text
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('About Page'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.table_chart),
+              title: const Text('Previous Readings'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PreviousReadings()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () async => await _logout(context),
+            ),
+          ],
+        ),
       ),
-      child: Center(
-        child: Text(
-          value,
-          style: TextStyle(
-              fontSize: height * 0.25,
-              fontWeight: FontWeight.bold,
-              color: Colors.white),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/AquassistMaintenance.png',
+              height: 120,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MaintenanceCard(
+                  icon: Icons.water_drop,
+                  title: 'Water\nChange',
+                  iconColor: Colors.blue,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const WaterChangePage()),
+                    );
+                  },
+                ),
+                const SizedBox(width: 20),
+                MaintenanceCard(
+                  icon: Icons.filter_alt_rounded,
+                  title: 'Filtration\nSystem',
+                  iconColor: Colors.green,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FiltrationSystemPage()),
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MaintenanceCard(
+                  icon: Icons.water_drop_outlined,
+                  title: 'Continuous\nDrip',
+                  iconColor: Colors.grey,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ContinousDripPage()),
+                    );
+                  },
+                ),
+                const SizedBox(width: 20),
+                MaintenanceCard(
+                  icon: Icons.power_settings_new,
+                  title: 'Master\nSwitch',
+                  iconColor: Colors.red,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MasterSwitchPage()),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget buildSwitchItem(IconData icon, String text, String value,
-      String configKey, Color iconColor) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: iconColor,
-      ),
-      title: Text(
-        text,
-        style: const TextStyle(fontSize: 18),
-      ),
-      trailing: Switch(
-        value: value == "1",
-        onChanged: (newValue) {
-          setState(() {
-            // Update the string value in the local state
-            switch (configKey) {
-              case 'drip_MODE':
-                drip_MODE = newValue ? "1" : "0";
-                break;
-              case 'filtrationsystem_MODE':
-                filtrationsystem_MODE = newValue ? "1" : "0";
-                break;
-              case 'master_TRIGGER':
-                master_TRIGGER = newValue ? "1" : "0";
-                break;
-            }
+class MaintenanceCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Color iconColor;
+  final VoidCallback onTap;
 
-            // Update the string value in the Firebase Realtime Database
-            if (configKey == 'master_TRIGGER') {
-              _databaseReference
-                  .child('TRIGGERS')
-                  .child(configKey)
-                  .set(newValue ? "1" : "0");
-            } else {
-              _databaseReference
-                  .child('FILTRATION_SYSTEM')
-                  .child(configKey)
-                  .set(newValue ? "1" : "0");
-            }
-          });
-        },
+  const MaintenanceCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.iconColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: 150,
+        height: 150,
+        child: Card(
+          elevation: 4.0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 40,
+                color: iconColor,
+              ),
+              const SizedBox(height: 5), // Adjust the spacing
+              Center(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16, // Adjust the font size
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

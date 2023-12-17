@@ -417,7 +417,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   Expanded(
                     child: BoxItem(
-                      icon: Icons.autorenew,
+                      icon: Icons.filter_alt_rounded,
                       iconColor: getFiltrationModeIconColor(),
                       title: 'Filtration Mode',
                       value: filtrationStatus == "1" ? "Active" : "Inactive",
@@ -439,7 +439,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   Expanded(
                     child: BoxItem(
-                      icon: Icons.format_list_numbered,
+                      icon: Icons.water_drop_rounded,
                       iconColor: getContinuousDripIconColor(),
                       title: 'Continuous Drip',
                       value: dripStatus == "1" ? "Active" : "Inactive",
