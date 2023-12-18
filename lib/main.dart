@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:aquasenseapp/components/firebase_api.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:aquasenseapp/pages/login_page.dart';
@@ -9,9 +10,12 @@ import 'package:aquasenseapp/pages/testnow_page.dart';
 import 'package:aquasenseapp/pages/configuration_page.dart';
 import 'package:bottom_bar_matu/bottom_bar_matu.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
 

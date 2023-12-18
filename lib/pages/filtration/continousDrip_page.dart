@@ -1,10 +1,11 @@
 // ignore_for_file: avoid_print, file_names
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class ContinousDripPage extends StatefulWidget {
-  const ContinousDripPage({super.key});
+  const ContinousDripPage({Key? key}) : super(key: key);
 
   @override
   State<ContinousDripPage> createState() => _ContinousDripPageState();
@@ -84,24 +85,15 @@ class _ContinousDripPageState extends State<ContinousDripPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Continuous Drip",
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
                   Transform.scale(
-                    scale:
-                        1.5, // Adjust the scale factor to make the switch larger
-                    child: Switch(
+                    scale: 1,
+                    child: CupertinoSwitch(
                       value: isDripOn,
                       onChanged: (newValue) {
                         _updateDripMode(newValue);
                       },
+                      activeColor: Colors.blue, // Set the active color to blue
+                      trackColor: Colors.grey, // Set the inactive color to grey
                     ),
                   ),
                 ],

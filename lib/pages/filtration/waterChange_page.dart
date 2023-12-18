@@ -94,8 +94,15 @@ class _WaterChangePageState extends State<WaterChangePage> {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      Image.asset('assets/images/waterchange.png', height: 200),
+                      Image.asset('assets/images/waterchange.png',
+                          height: availableHeight * 0.4),
                       SizedBox(height: availableHeight * 0.05),
+                      const Text(
+                        "Select the desired water change volume",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
                       GestureDetector(
                         onTap: () {
                           print('Water Change clicked');

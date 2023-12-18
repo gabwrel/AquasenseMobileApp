@@ -293,7 +293,7 @@ class _DashboardPageState extends State<DashboardPage> {
               Image.asset('assets/images/DASHBOARD.png'),
               const SizedBox(height: 4),
               const Text(
-                'WATER PARAMETERS',
+                'Water Quality Parameters Status',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -352,7 +352,7 @@ class _DashboardPageState extends State<DashboardPage> {
               const SizedBox(height: 16),
               const Divider(color: Colors.blue, height: 20),
               const Text(
-                'ENVIRONMENT CONTROLS',
+                'Environment Controls Status',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -383,7 +383,7 @@ class _DashboardPageState extends State<DashboardPage> {
               const SizedBox(height: 8),
               const Divider(color: Colors.blue, height: 20),
               const Text(
-                'FILTRATION SYSTEM',
+                'Filtration Status Status',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,

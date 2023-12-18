@@ -228,11 +228,10 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/images/CONFIGURATION.png',
-                height: 80,
+                'assets/images/ThresholdConfig.png',
               ),
               // Dropdown for selecting fish species
               Container(
@@ -241,7 +240,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('Fish Species', style: TextStyle(fontSize: 20)),
-                    const SizedBox(width: 8.0),
+                    const SizedBox(width: 120.0),
                     DropdownButton<String>(
                       value: selectedFish,
                       items: fishSpecies.map<DropdownMenuItem<String>>(
@@ -264,7 +263,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               ),
               const Divider(
                 color: Colors.grey,
-                thickness: 1.5,
+                thickness: 0.5,
               ),
               buildSliderRow(
                 icon: Icons.show_chart,
@@ -286,7 +285,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               ),
               const Divider(
                 color: Colors.grey,
-                thickness: 1.5,
+                thickness: 0.5,
               ),
               buildSliderRow(
                 icon: Icons.thermostat,
@@ -308,7 +307,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               ),
               const Divider(
                 color: Colors.grey,
-                thickness: 1.5,
+                thickness: 0.5,
               ),
               buildSliderRow(
                 icon: Icons.blur_on_rounded,
@@ -330,7 +329,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               ),
               const Divider(
                 color: Colors.grey,
-                thickness: 1.5,
+                thickness: 0.5,
               ),
             ],
           ),
@@ -357,6 +356,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
           children: [
             Row(
               children: [
+                const SizedBox(
+                  width: 8.0,
+                ),
                 Icon(
                   icon,
                   size: 30,
@@ -389,6 +391,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
+        ),
+        const SizedBox(
+          width: 18.0,
         ),
       ],
     );

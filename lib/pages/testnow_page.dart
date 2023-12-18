@@ -1,5 +1,4 @@
-// import 'package:aquasenseapp/pages/filtration/continousDrip_page.dart';
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_key_in_widget_constructors, use_build_context_synchronously, avoid_print
 
 import 'package:aquasenseapp/pages/about_page.dart';
 import 'package:aquasenseapp/pages/previous_readings.dart';
@@ -10,8 +9,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:aquasenseapp/loadingscreen_page.dart';
 
 class TestNowPage extends StatelessWidget {
-  const TestNowPage({super.key});
+  const TestNowPage({Key? key});
 
+  // Function to handle user logout
   Future<void> _logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -138,73 +138,80 @@ class TestNowPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 40),
+          // Button for Previous Readings
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                  const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+            child: SizedBox(
+              width: 200, // Set a fixed width for the button
+              height: 60, // Set a fixed height for the button
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.blue), // Set blue color
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
                   ),
                 ),
-              ),
-              onPressed: () {
-                pushValueToDatabase();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const LoadingScreen()),
-                );
-              },
-              child: const Text(
-                'Test Now',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                onPressed: () {
+                  // Add your logic for the "Previous Readings" button
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PreviousReadings()),
+                  );
+                },
+                child: const Text(
+                  'Previous Readings',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: ElevatedButton(
-          //     style: ButtonStyle(
-          //       backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-          //       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          //         const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-          //       ),
-          //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          //         RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(30.0),
-          //         ),
-          //       ),
-          //     ),
-          //     onPressed: () {
-          //       pushValueToDatabase();
-          //       Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (context) => const ContinousDripPage()),
-          //       );
-          //     },
-          //     child: const Text(
-          //       'Continous Drip',
-          //       style: TextStyle(
-          //         fontSize: 24,
-          //         fontWeight: FontWeight.bold,
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          // Button for Test Now
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: 200, // Set a fixed width for the button
+              height: 60, // Set a fixed height for the button
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  // Add your logic for the "Test Now" button
+                  pushValueToDatabase();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoadingScreen()),
+                  );
+                },
+                child: const Text(
+                  'Test Now',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
+  // Function to push a value to the Firebase database
   void pushValueToDatabase() async {
     await Firebase.initializeApp(); // Initialize Firebase
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
