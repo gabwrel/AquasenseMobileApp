@@ -26,39 +26,42 @@ class AboutPage extends StatelessWidget {
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/AQUASENSE.png', // Make sure to adjust the path based on your actual asset location
-              height: 150, // Adjust the height as needed
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Welcome to AquaSense!',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/AQUASENSE.png', // Make sure to adjust the path based on your actual asset location
+                height: 150, // Adjust the height as needed
               ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              '"Aquaculture Intelligence At Your Fingertips"',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 20),
+              const Text(
+                'Welcome to AquaSense!',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const Text(
-              'A sensor-based device for the real-time monitoring of water quality in ornamental fish farms.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
+              const SizedBox(height: 10),
+              const Text(
+                '"Aquaculture Intelligence At Your Fingertips"',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+              const Text(
+                'A sensor-based device for the real-time monitoring of water quality in ornamental fish farms.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

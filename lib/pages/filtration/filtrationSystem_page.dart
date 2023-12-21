@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, file_names
+// ignore_for_file: library_private_types_in_public_api, file_names, use_key_in_widget_constructors
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -131,6 +131,7 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
             return SingleChildScrollView(
               child: Column(
                 children: [
+                  SizedBox(height: availableHeight * 0.05),
                   Image.asset('assets/images/filtration.png',
                       height: availableHeight * 0.4),
                   SizedBox(height: availableHeight * 0.05),
@@ -207,7 +208,7 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
         title == 'Auto Filtration System' || !isAutoFiltrationOn;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(8),
       child: Opacity(
         opacity: isCurrentCardEnabled ? 1.0 : 0.5,
         child: Card(

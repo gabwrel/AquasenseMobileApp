@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class ContinousDripPage extends StatefulWidget {
-  const ContinousDripPage({Key? key}) : super(key: key);
+  const ContinousDripPage({super.key});
 
   @override
   State<ContinousDripPage> createState() => _ContinousDripPageState();
