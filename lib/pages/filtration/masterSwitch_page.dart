@@ -25,7 +25,6 @@ class _MasterSwitchPageState extends State<MasterSwitchPage> {
 
   void _retrieveSwitchState() {
     _databaseReference
-        .child('TRIGGERS')
         .child('master_TRIGGER')
         .get()
         .then((DataSnapshot snapshot) {
@@ -42,10 +41,7 @@ class _MasterSwitchPageState extends State<MasterSwitchPage> {
 
   void _updateSwitchState(bool newValue) {
     int switchValue = newValue ? 1 : 0;
-    _databaseReference
-        .child('TRIGGERS')
-        .child('master_TRIGGER')
-        .set(switchValue.toString());
+    _databaseReference.child('master_TRIGGER').set(switchValue.toString());
     setState(() {
       isActivated = newValue;
     });
