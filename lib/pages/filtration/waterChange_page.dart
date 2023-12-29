@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, avoid_print
+// ignore_for_file: file_names, use_build_context_synchronously, avoid_print
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +12,36 @@ class WaterChangePage extends StatefulWidget {
 
 class _WaterChangePageState extends State<WaterChangePage> {
   late DatabaseReference _databaseReference;
+  DateTime? selectedDateTime;
+  late String waterChangeSchedule;
 
   @override
   void initState() {
     super.initState();
     _databaseReference = FirebaseDatabase.instance.ref();
-    // Remove the call to fetchMaintenanceValues()
+    _databaseReference
+        .child('MAINTENANCE')
+        .child('schedule')
+        .onValue
+        .listen((event) {
+      setState(() {
+        waterChangeSchedule = event.snapshot.value?.toString() ?? 'N/A';
+      });
+    });
+  }
+
+  void _scheduleWaterChange(String waterChangeLevel) async {
+    await _selectDateTime(context);
+
+    if (selectedDateTime != null) {
+      String unixTime = selectedDateTime!.millisecondsSinceEpoch.toString();
+      _databaseReference.child('MAINTENANCE').child('schedule').set(unixTime);
+      _databaseReference
+          .child('MAINTENANCE')
+          .child('waterchange_LEVEL')
+          .set(waterChangeLevel);
+      Navigator.of(context).pop();
+    }
   }
 
   void handleWaterChange(String waterChangeLevel) {
@@ -31,7 +55,7 @@ class _WaterChangePageState extends State<WaterChangePage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: const Text('No'),
             ),
@@ -45,14 +69,75 @@ class _WaterChangePageState extends State<WaterChangePage> {
                     .child('TRIGGERS')
                     .child('waterchange_TRIGGER')
                     .set('1');
-                Navigator.pushReplacementNamed(context, '/dashboard');
+                _databaseReference
+                    .child('MAINTENANCE')
+                    .child('schedule')
+                    .set('0');
+                Navigator.of(context).pop();
               },
-              child: const Text('Yes'),
+              child: const Text('Perform Now'),
+            ),
+            TextButton(
+              onPressed: () {
+                _scheduleWaterChange(
+                    waterChangeLevel); // Pass the waterChangeLevel
+              },
+              child: const Text('Schedule'),
             ),
           ],
         );
       },
     );
+  }
+
+  String _calculateTimeUntilNextWaterChange(Object? scheduleUnix) {
+    if (scheduleUnix == null) {
+      return 'N/A';
+    }
+
+    int schedule = int.tryParse(scheduleUnix.toString()) ?? 0;
+    int nowUnix = DateTime.now().millisecondsSinceEpoch;
+    int difference = schedule - nowUnix;
+
+    if (difference <= 0) {
+      return 'N/A';
+    }
+
+    Duration duration = Duration(milliseconds: difference);
+
+    int days = duration.inDays;
+    int hours = duration.inHours.remainder(24);
+    int minutes = duration.inMinutes.remainder(60);
+
+    return '$days day/s, $hours hours, $minutes minutes';
+  }
+
+  Future<void> _selectDateTime(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+
+    if (picked != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+
+      if (pickedTime != null) {
+        setState(() {
+          selectedDateTime = DateTime(
+            picked.year,
+            picked.month,
+            picked.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        });
+      }
+    }
   }
 
   @override
@@ -163,6 +248,28 @@ class _WaterChangePageState extends State<WaterChangePage> {
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(height: availableHeight * 0.05),
+                      StreamBuilder<DatabaseEvent>(
+                        stream: _databaseReference
+                            .child('MAINTENANCE')
+                            .child('schedule')
+                            .onValue,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData &&
+                              snapshot.data!.snapshot.value != null) {
+                            String scheduleText =
+                                _calculateTimeUntilNextWaterChange(
+                                    snapshot.data!.snapshot.value);
+                            return Text(
+                              'Next Water Change in: $scheduleText',
+                              style: const TextStyle(fontSize: 16),
+                            );
+                          } else {
+                            return const Text('Next Water Change in: N/A',
+                                style: TextStyle(fontSize: 16));
+                          }
+                        },
                       ),
                     ],
                   ),
