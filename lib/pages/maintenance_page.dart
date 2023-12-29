@@ -2,6 +2,7 @@
 
 import 'package:aquasenseapp/pages/about_page.dart';
 import 'package:aquasenseapp/pages/filtration/continousDrip_page.dart';
+import 'package:aquasenseapp/pages/filtration/environment_controls.dart';
 import 'package:aquasenseapp/pages/filtration/filtrationSystem_page.dart';
 import 'package:aquasenseapp/pages/filtration/masterSwitch_page.dart';
 import 'package:aquasenseapp/pages/filtration/waterChange_page.dart';
@@ -127,77 +128,98 @@ class MaintenancePage extends StatelessWidget {
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/AquassistMaintenance.png',
-              height: 120,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MaintenanceCard(
-                  icon: Icons.water_drop,
-                  title: 'Water\nChange',
-                  iconColor: Colors.blue,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const WaterChangePage()),
-                    );
-                  },
-                ),
-                const SizedBox(width: 20),
-                MaintenanceCard(
-                  icon: Icons.filter_alt_rounded,
-                  title: 'Filtration\nSystem',
-                  iconColor: Colors.green,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const FiltrationSystemPage()),
-                    );
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MaintenanceCard(
-                  icon: Icons.water_drop_outlined,
-                  title: 'Continuous\nDrip',
-                  iconColor: Colors.grey,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ContinousDripPage()),
-                    );
-                  },
-                ),
-                const SizedBox(width: 20),
-                MaintenanceCard(
-                  icon: Icons.power_settings_new,
-                  title: 'Master\nSwitch',
-                  iconColor: Colors.red,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MasterSwitchPage()),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/AquassistMaintenance.png',
+                height: 120,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MaintenanceCard(
+                    icon: Icons.water_drop,
+                    title: 'Water\nChange',
+                    iconColor: Colors.blue,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WaterChangePage()),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 20),
+                  MaintenanceCard(
+                    icon: Icons.filter_alt_rounded,
+                    title: 'Filtration\nSystem',
+                    iconColor: Colors.green,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FiltrationSystemPage()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MaintenanceCard(
+                    icon: Icons.water_drop_outlined,
+                    title: 'Continuous\nDrip',
+                    iconColor: Colors.grey,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ContinousDripPage()),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 20),
+                  MaintenanceCard(
+                    icon: Icons.power_settings_new,
+                    title: 'Master\nSwitch',
+                    iconColor: Colors.red,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MasterSwitchPage()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MaintenanceCard(
+                    icon: Icons.access_alarm,
+                    title: 'Environmental\nControls',
+                    iconColor: Colors.purple,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const EnvironementalControls()),
+                      );
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
