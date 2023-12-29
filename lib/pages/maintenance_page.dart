@@ -211,8 +211,7 @@ class MaintenancePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                const EnvironementalControls()),
+                            builder: (context) => const EnvironmentControls()),
                       );
                     },
                   )

@@ -1,35 +1,17 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-class EnvironementalControls extends StatefulWidget {
-  const EnvironementalControls({Key? key});
+class EnvironmentControls extends StatefulWidget {
+  const EnvironmentControls({super.key});
 
   @override
-  _EnvironementalControlsState createState() => _EnvironementalControlsState();
+  _EnvironmentControlsState createState() => _EnvironmentControlsState();
 }
 
-class _EnvironementalControlsState extends State<EnvironementalControls> {
-  late DatabaseReference _databaseReference;
-  late String lightingStatus = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _databaseReference = FirebaseDatabase.instance.ref();
-
-    _databaseReference
-        .child('TRIGGER')
-        .child('lighting_TRIGGER')
-        .onValue
-        .listen((event) {
-      setState(() {
-        lightingStatus = event.snapshot.value?.toString() ?? '--';
-      });
-    });
-  }
+class _EnvironmentControlsState extends State<EnvironmentControls> {
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
 
   @override
   Widget build(BuildContext context) {
@@ -54,57 +36,110 @@ class _EnvironementalControlsState extends State<EnvironementalControls> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                // Icon and Text
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.lightbulb,
-                      color: Colors.yellow,
-                    ),
-                    SizedBox(width: 8.0),
-                    Text(
-                      "Lighting",
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                  ],
-                ),
-                // Switch on the right
-                const Spacer(),
-                CupertinoSwitch(
-                  value: lightingStatus == '1',
-                  onChanged: (bool value) {
-                    setState(() {
-                      lightingStatus = value ? '1' : '0';
-                      // Update the value in the Firebase Realtime Database
-                      _databaseReference
-                          .child('TRIGGER')
-                          .child('lighting_TRIGGER')
-                          .set(lightingStatus);
-                    });
-                  },
-                ),
-              ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/EnvironmentalControls.png',
+              width: 250,
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Text(
-                  "Feeding",
-                  style: TextStyle(fontSize: 18.0),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 200, // Set a fixed width for the button
+              height: 60, // Set a fixed height for the button
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
                 ),
-              ],
+                onPressed: () => _showControlDialog(),
+                child: const Text(
+                  'Lighting',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Future<void> _showControlDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Lighting Controls'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                _buildDialogButton('Turn On', () {
+                  _updateLightingTrigger('1');
+                  Navigator.of(context).pop();
+                }),
+                _buildDialogButton('Schedule', () async {
+                  TimeOfDay? startTime = await _selectTime('Select Start Time');
+                  if (startTime != null) {
+                    _updateScheduling('lightingStart_SCHEDULE', startTime);
+                    TimeOfDay? endTime = await _selectTime('Select End Time');
+                    if (endTime != null) {
+                      _updateScheduling('lightingEnd_SCHEDULE', endTime);
+                      Navigator.of(context).pop();
+                    }
+                  }
+                }),
+                _buildDialogButton('Cancel', () {
+                  Navigator.of(context).pop();
+                }),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _updateLightingTrigger(String value) {
+    _databaseReference.child('TRIGGERS/lighting_TRIGGER').set(value);
+  }
+
+  void _updateScheduling(String node, TimeOfDay time) {
+    // Format the time to 24-hour format
+    String formattedTime =
+        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+
+    _databaseReference.child('SCHEDULING/$node').set(formattedTime);
+  }
+
+  Future<TimeOfDay?> _selectTime(String title) async {
+    return showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark(), // You can customize the theme
+          child: child!,
+        );
+      },
+      helpText: title,
+    );
+  }
+
+  Widget _buildDialogButton(String text, void Function()? onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Text(text),
     );
   }
 }

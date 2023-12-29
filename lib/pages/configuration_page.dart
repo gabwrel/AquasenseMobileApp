@@ -3,6 +3,7 @@
 import 'package:aquasenseapp/pages/about_page.dart';
 import 'package:aquasenseapp/pages/previous_readings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -331,11 +332,46 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 color: Colors.grey,
                 thickness: 0.5,
               ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: 150, // Set a fixed width for the button
+                  height: 45, // Set a fixed height for the button
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      // Add your logic for the "Test Now" button
+                      pushValueToDatabase();
+                    },
+                    child: const Text(
+                      'Apply',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void pushValueToDatabase() async {
+    await Firebase.initializeApp(); // Initialize Firebase
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    databaseReference.child('TRIGGERS').child('fetch_TRIGGER').set('1');
   }
 
   Widget buildSliderRow({
@@ -351,50 +387,91 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     return Row(
       children: [
         const SizedBox(width: 8.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const SizedBox(
-                  width: 8.0,
-                ),
-                Icon(
-                  icon,
-                  size: 30,
-                  color: color,
-                ),
-                const SizedBox(
-                  width: 8.0,
-                ),
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w500)),
-              ],
-            ),
-            Slider(
-              value: value,
-              min: min,
-              max: max,
-              divisions: ((max - min) * 100).toInt(),
-              onChanged: onChanged,
-              onChangeEnd: onChangeEnd,
-            ),
-          ],
-        ),
         Expanded(
-          child: Container(),
-        ),
-        Text(
-          '${value.toStringAsFixed(2)}',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 30,
+                    color: color,
+                  ),
+                  const SizedBox(
+                    width: 8.0,
+                  ),
+                  Text(title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                      )),
+                ],
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: () {
+                      if (value > min) {
+                        onChanged(value - 0.1);
+                        onChangeEnd(value - 0.1);
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    width: 100, // Adjust the width as needed
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      controller: TextEditingController(
+                        text: value.toStringAsFixed(2),
+                      ),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 12.0,
+                        ),
+                        isDense: true, // Reduces the height of the input field
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide: const BorderSide(
+                            color: Color.fromARGB(255, 197, 197, 197),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide: const BorderSide(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      onSubmitted: (String newValue) {
+                        double parsedValue = double.parse(newValue);
+                        parsedValue = parsedValue.clamp(min, max);
+                        onChanged(parsedValue);
+                        onChangeEnd(parsedValue);
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      if (value < max) {
+                        onChanged(value + 0.1);
+                        onChangeEnd(value + 0.1);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        const SizedBox(
-          width: 18.0,
-        ),
+        const SizedBox(width: 8.0),
       ],
     );
   }

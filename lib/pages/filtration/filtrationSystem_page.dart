@@ -132,80 +132,83 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
         ),
       ),
       body: Center(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            final availableHeight = constraints.maxHeight;
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final availableHeight = constraints.maxHeight;
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: availableHeight * 0.05),
-                  Image.asset('assets/images/filtration.png',
-                      height: availableHeight * 0.4),
-                  SizedBox(height: availableHeight * 0.05),
-                  buildCardRow(
-                    'Auto Filtration System',
-                    'filtration_AUTO',
-                    filtrationAutoMode,
-                    Icons.waves_rounded,
-                    Colors.green,
-                  ),
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: availableHeight * 0.05),
+                    Image.asset('assets/images/filtration.png',
+                        height: availableHeight * 0.4),
+                    SizedBox(height: availableHeight * 0.05),
+                    buildCardRow(
+                      'Auto Filtration System',
+                      'filtration_AUTO',
+                      filtrationAutoMode,
+                      Icons.waves_rounded,
+                      Colors.green,
+                    ),
 
-                  buildCardRow(
-                    'UV Lamp',
-                    'uvLamp_TRIGGER',
-                    uvStatus,
-                    Icons.wb_sunny_rounded,
-                    Colors.purple,
-                  ),
+                    buildCardRow(
+                      'UV Lamp',
+                      'uvLamp_TRIGGER',
+                      uvStatus,
+                      Icons.wb_sunny_rounded,
+                      Colors.purple,
+                    ),
 
-                  // buildCardRow(
-                  //   'Lighting',
-                  //   'lighting_TRIGGER',
-                  //   lightingStatus,
-                  //   Icons.tungsten_rounded,
-                  //   Colors.yellow,
-                  // ),
-                  buildCardRow(
-                    'Heater',
-                    'heater_TRIGGER',
-                    heaterStatus,
-                    Icons.thermostat_outlined,
-                    Colors.red,
-                  ),
-                  buildCardRow(
-                    'Filtration Pump',
-                    'pump_TRIGGER',
-                    pumpStatus,
-                    Icons.sync_rounded,
-                    Colors.green,
-                  ),
-                  buildCardRow(
-                    'Aeration',
-                    'aeration_TRIGGER',
-                    aerationStatus,
-                    Icons.bubble_chart,
-                    Colors.grey,
-                  ),
-                  buildCardRow(
-                    'Water Source',
-                    'relaySource_TRIGGER',
-                    watersourceStatus,
-                    Icons.water_drop_rounded,
-                    Colors.red,
-                  ),
-                  buildCardRow(
-                    'Drain Valve',
-                    'relayDrain_TRIGGER',
-                    drainStatus,
-                    Icons.stop_circle_rounded,
-                    Colors.red,
-                  ),
-                  // Add more widgets here as needed
-                ],
-              ),
-            );
-          },
+                    // buildCardRow(
+                    //   'Lighting',
+                    //   'lighting_TRIGGER',
+                    //   lightingStatus,
+                    //   Icons.tungsten_rounded,
+                    //   Colors.yellow,
+                    // ),
+                    buildCardRow(
+                      'Heater',
+                      'heater_TRIGGER',
+                      heaterStatus,
+                      Icons.thermostat_outlined,
+                      Colors.red,
+                    ),
+                    buildCardRow(
+                      'Filtration Pump',
+                      'pump_TRIGGER',
+                      pumpStatus,
+                      Icons.sync_rounded,
+                      Colors.green,
+                    ),
+                    buildCardRow(
+                      'Aeration',
+                      'aeration_TRIGGER',
+                      aerationStatus,
+                      Icons.bubble_chart,
+                      Colors.grey,
+                    ),
+                    buildCardRow(
+                      'Water Source',
+                      'relaySource_TRIGGER',
+                      watersourceStatus,
+                      Icons.water_drop_rounded,
+                      Colors.red,
+                    ),
+                    buildCardRow(
+                      'Drain Valve',
+                      'relayDrain_TRIGGER',
+                      drainStatus,
+                      Icons.stop_circle_rounded,
+                      Colors.red,
+                    ),
+                    // Add more widgets here as needed
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
