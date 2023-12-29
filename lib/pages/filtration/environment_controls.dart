@@ -45,14 +45,14 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
               'assets/images/EnvironmentalControls.png',
               width: 250,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             SizedBox(
               width: 200, // Set a fixed width for the button
               height: 60, // Set a fixed height for the button
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
+                      MaterialStateProperty.all<Color>(const Color(0xFFd42a38)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
@@ -69,10 +69,96 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: 200,
+              height: 60,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(const Color(0xFFa4d758)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                ),
+                onPressed: () => _showFeedingDialog(),
+                child: const Text(
+                  'Feeding',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _showFeedingDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Feeding Controls'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Set the size to min
+            children: <Widget>[
+              _buildDialogButton('Turn On', () {
+                _updateFeedingTrigger('1');
+                Navigator.of(context).pop();
+              }),
+              _buildDialogButton('Schedule', () async {
+                int? selectedFrequency = await _showFeedingFrequencyDialog();
+                if (selectedFrequency != null) {
+                  _updateFeedingSchedule(selectedFrequency);
+                  Navigator.of(context).pop();
+                }
+              }),
+              _buildDialogButton('Cancel', () {
+                Navigator.of(context).pop();
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<int?> _showFeedingFrequencyDialog() async {
+    return showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Feeding Frequency'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Set the size to min
+            children: [
+              _buildDialogButton(
+                  'Once A Day', () => Navigator.of(context).pop(24)),
+              _buildDialogButton(
+                  'Twice A Day', () => Navigator.of(context).pop(12)),
+              _buildDialogButton(
+                  '3 Times A Day', () => Navigator.of(context).pop(8)),
+              _buildDialogButton(
+                  '4 Times A Day', () => Navigator.of(context).pop(6)),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _updateFeedingTrigger(String value) {
+    _databaseReference.child('TRIGGERS/feednow_TRIGGER').set(value);
+  }
+
+  void _updateFeedingSchedule(int frequency) {
+    _databaseReference.child('SCHEDULING/feeding_SCHEDULE').set(frequency);
   }
 
   Future<void> _showControlDialog() async {
