@@ -20,6 +20,7 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
   late String watersourceStatus = '';
   late String pumpStatus = '';
   late String drainStatus = '';
+  late String aerationStatus = '';
 
   @override
   void initState() {
@@ -36,9 +37,8 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
       });
     });
 
-    // Retrieve UV Lamp status from Firebase
     _databaseReference
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('uvLamp_TRIGGER')
         .onValue
         .listen((event) {
@@ -47,20 +47,18 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
       });
     });
 
-    // Retrieve Filtration System status from Firebase
+    // _databaseReference
+    //     .child('TRIGGERS')
+    //     .child('lighting_TRIGGER')
+    //     .onValue
+    //     .listen((event) {
+    //   setState(() {
+    //     lightingStatus = event.snapshot.value?.toString() ?? '--';
+    //   });
+    // });
 
     _databaseReference
-        .child('FILTRATION_SYSTEM')
-        .child('lighting_TRIGGER')
-        .onValue
-        .listen((event) {
-      setState(() {
-        lightingStatus = event.snapshot.value?.toString() ?? '--';
-      });
-    });
-
-    _databaseReference
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('heater_TRIGGER')
         .onValue
         .listen((event) {
@@ -70,8 +68,8 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
     });
 
     _databaseReference
-        .child('FILTRATION_SYSTEM')
-        .child('watersource_TRIGGER')
+        .child('TRIGGERS')
+        .child('relaySource_TRIGGER')
         .onValue
         .listen((event) {
       setState(() {
@@ -80,7 +78,17 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
     });
 
     _databaseReference
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
+        .child('aeration_TRIGGER')
+        .onValue
+        .listen((event) {
+      setState(() {
+        aerationStatus = event.snapshot.value?.toString() ?? '--';
+      });
+    });
+
+    _databaseReference
+        .child('TRIGGERS')
         .child('pump_TRIGGER')
         .onValue
         .listen((event) {
@@ -90,8 +98,8 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
     });
 
     _databaseReference
-        .child('FILTRATION_SYSTEM')
-        .child('drain_MODE')
+        .child('TRIGGERS')
+        .child('relayDrain_TRIGGER')
         .onValue
         .listen((event) {
       setState(() {
@@ -151,13 +159,13 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
                     Colors.purple,
                   ),
 
-                  buildCardRow(
-                    'Lighting',
-                    'lighting_TRIGGER',
-                    lightingStatus,
-                    Icons.tungsten_rounded,
-                    Colors.yellow,
-                  ),
+                  // buildCardRow(
+                  //   'Lighting',
+                  //   'lighting_TRIGGER',
+                  //   lightingStatus,
+                  //   Icons.tungsten_rounded,
+                  //   Colors.yellow,
+                  // ),
                   buildCardRow(
                     'Heater',
                     'heater_TRIGGER',
@@ -173,15 +181,22 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
                     Colors.green,
                   ),
                   buildCardRow(
+                    'Aeration',
+                    'aeration_TRIGGER',
+                    aerationStatus,
+                    Icons.bubble_chart,
+                    Colors.grey,
+                  ),
+                  buildCardRow(
                     'Water Source',
-                    'watersource_TRIGGER',
+                    'relaySource_TRIGGER',
                     watersourceStatus,
                     Icons.water_drop_rounded,
                     Colors.red,
                   ),
                   buildCardRow(
                     'Drain Valve',
-                    'drain_MODE',
+                    'relayDrain_TRIGGER',
                     drainStatus,
                     Icons.stop_circle_rounded,
                     Colors.red,
@@ -267,7 +282,7 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
   void _updateSwitchValue(String databaseKey, bool newValue) {
     // Update the switch value in the Firebase Realtime Database
     _databaseReference
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child(databaseKey)
         .set(newValue ? "1" : "0")
         .then((_) {
