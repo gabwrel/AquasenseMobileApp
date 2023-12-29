@@ -37,63 +37,90 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/EnvironmentalControls.png',
-              width: 250,
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: 200, // Set a fixed width for the button
-              height: 60, // Set a fixed height for the button
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xFFd42a38)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/EnvironmentalControls.png',
+                width: 250,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: 200, // Set a fixed width for the button
+                height: 60, // Set a fixed height for the button
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color(0xFFd42a38)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () => _showControlDialog(),
+                  child: const Text(
+                    'Lighting',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                onPressed: () => _showControlDialog(),
-                child: const Text(
-                  'Lighting',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: 200,
-              height: 60,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xFFa4d758)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: 200,
+                height: 60,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color(0xFFa4d758)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () => _showFeedingDialog(),
+                  child: const Text(
+                    'Feeding',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                onPressed: () => _showFeedingDialog(),
-                child: const Text(
-                  'Feeding',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              StreamBuilder<DatabaseEvent>(
+                stream: _databaseReference
+                    .child('TRIGGERS/lighting_TRIGGER')
+                    .onValue,
+                builder: (BuildContext context,
+                    AsyncSnapshot<DatabaseEvent> snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.data!.snapshot.value != null) {
+                    bool isLightOn = (snapshot.data!.snapshot.value == '1');
+                    return Text(
+                      'Light: ${isLightOn ? 'ON' : 'OFF'}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    );
+                  } else {
+                    // Handle loading state or error state
+                    return const Text('Light status loading...');
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
@@ -108,7 +135,7 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
           content: Column(
             mainAxisSize: MainAxisSize.min, // Set the size to min
             children: <Widget>[
-              _buildDialogButton('Turn On', () {
+              _buildDialogButton('Feed Now', () {
                 _updateFeedingTrigger('1');
                 Navigator.of(context).pop();
               }),
@@ -172,6 +199,10 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
               children: <Widget>[
                 _buildDialogButton('Turn On', () {
                   _updateLightingTrigger('1');
+                  Navigator.of(context).pop();
+                }),
+                _buildDialogButton('Turn Off', () {
+                  _updateLightingTrigger('0');
                   Navigator.of(context).pop();
                 }),
                 _buildDialogButton('Schedule', () async {
