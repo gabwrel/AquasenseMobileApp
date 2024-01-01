@@ -95,74 +95,56 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 350,
-                height: 60,
-                child: Material(
-                  // elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: StreamBuilder<DatabaseEvent>(
-                        stream: _databaseReference
-                            .child('TRIGGERS/lighting_TRIGGER')
-                            .onValue,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<DatabaseEvent> snapshot) {
-                          if (snapshot.hasData &&
-                              snapshot.data!.snapshot.value != null) {
-                            bool isLightOn =
-                                (snapshot.data!.snapshot.value == '1');
-                            return Text(
-                              'Light: ${isLightOn ? 'ON' : 'OFF'}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            );
-                          } else {
-                            // Handle loading state or error state
-                            return const Text('Light status loading...');
-                          }
-                        },
-                      ),
-                    ),
-                  ),
+              const SizedBox(height: 16),
+              Center(
+                child: StreamBuilder<DatabaseEvent>(
+                  stream: _databaseReference
+                      .child('TRIGGERS/lighting_TRIGGER')
+                      .onValue,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<DatabaseEvent> snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.data!.snapshot.value != null) {
+                      bool isLightOn = (snapshot.data!.snapshot.value == '1');
+                      return Text(
+                        'Light: ${isLightOn ? 'ON' : 'OFF'}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      );
+                    } else {
+                      // Handle loading state or error state
+                      return const Text('Light status loading...');
+                    }
+                  },
                 ),
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                width: 350,
-                height: 60,
-                child: Material(
-                  // elevation: 2,
-                  child: Center(
-                    child: StreamBuilder<DatabaseEvent>(
-                      stream: _databaseReference
-                          .child('SCHEDULING/feeding_SCHEDULE')
-                          .onValue,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<DatabaseEvent> snapshot) {
-                        if (snapshot.hasData &&
-                            snapshot.data!.snapshot.value != null) {
-                          int feedingFrequency =
-                              (snapshot.data!.snapshot.value as int);
-                          String feedingText =
-                              _getFeedingText(feedingFrequency);
-                          return Text(
-                            feedingText,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          );
-                        } else {
-                          // Handle loading state or error state
-                          return const Text('Feeding Schedule: N/A');
-                        }
-                      },
-                    ),
-                  ),
+              Center(
+                child: StreamBuilder<DatabaseEvent>(
+                  stream: _databaseReference
+                      .child('SCHEDULING/feeding_SCHEDULE')
+                      .onValue,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<DatabaseEvent> snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.data!.snapshot.value != null) {
+                      int feedingFrequency =
+                          (snapshot.data!.snapshot.value as int);
+                      String feedingText = _getFeedingText(feedingFrequency);
+                      return Text(
+                        feedingText,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      );
+                    } else {
+                      // Handle loading state or error state
+                      return const Text('Feeding Schedule: N/A');
+                    }
+                  },
                 ),
               ),
               const SizedBox(height: 16),
