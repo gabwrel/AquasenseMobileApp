@@ -95,28 +95,75 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              StreamBuilder<DatabaseEvent>(
-                stream: _databaseReference
-                    .child('TRIGGERS/lighting_TRIGGER')
-                    .onValue,
-                builder: (BuildContext context,
-                    AsyncSnapshot<DatabaseEvent> snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.data!.snapshot.value != null) {
-                    bool isLightOn = (snapshot.data!.snapshot.value == '1');
-                    return Text(
-                      'Light: ${isLightOn ? 'ON' : 'OFF'}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal,
+              SizedBox(
+                width: 350,
+                height: 60,
+                child: Material(
+                  // elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: StreamBuilder<DatabaseEvent>(
+                        stream: _databaseReference
+                            .child('TRIGGERS/lighting_TRIGGER')
+                            .onValue,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<DatabaseEvent> snapshot) {
+                          if (snapshot.hasData &&
+                              snapshot.data!.snapshot.value != null) {
+                            bool isLightOn =
+                                (snapshot.data!.snapshot.value == '1');
+                            return Text(
+                              'Light: ${isLightOn ? 'ON' : 'OFF'}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            );
+                          } else {
+                            // Handle loading state or error state
+                            return const Text('Light status loading...');
+                          }
+                        },
                       ),
-                    );
-                  } else {
-                    // Handle loading state or error state
-                    return const Text('Light status loading...');
-                  }
-                },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: 350,
+                height: 60,
+                child: Material(
+                  // elevation: 2,
+                  child: Center(
+                    child: StreamBuilder<DatabaseEvent>(
+                      stream: _databaseReference
+                          .child('SCHEDULING/feeding_SCHEDULE')
+                          .onValue,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<DatabaseEvent> snapshot) {
+                        if (snapshot.hasData &&
+                            snapshot.data!.snapshot.value != null) {
+                          int feedingFrequency =
+                              (snapshot.data!.snapshot.value as int);
+                          String feedingText =
+                              _getFeedingText(feedingFrequency);
+                          return Text(
+                            feedingText,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          );
+                        } else {
+                          // Handle loading state or error state
+                          return const Text('Feeding Schedule: N/A');
+                        }
+                      },
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
             ],
@@ -251,6 +298,21 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
       },
       helpText: title,
     );
+  }
+
+  String _getFeedingText(int frequency) {
+    switch (frequency) {
+      case 24:
+        return 'Feeding Schedule: Once A Day';
+      case 12:
+        return 'Feeding Schedule: Twice A Day';
+      case 8:
+        return 'Feeding Schedule: Thrice A Day';
+      case 6:
+        return 'Feeding Schedule: Four Times A Day';
+      default:
+        return 'Feeding Schedule: N/A';
+    }
   }
 
   Widget _buildDialogButton(String text, void Function()? onPressed) {

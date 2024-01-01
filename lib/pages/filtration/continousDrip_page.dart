@@ -24,7 +24,10 @@ class _ContinousDripPageState extends State<ContinousDripPage> {
   }
 
   void _retrieveDripMode() {
-    _databaseReference.child('drip_MODE').get().then((DataSnapshot snapshot) {
+    _databaseReference
+        .child('continousDrip_MODE')
+        .get()
+        .then((DataSnapshot snapshot) {
       if (snapshot.value != null) {
         setState(() {
           isDripOn = snapshot.value == '1';
@@ -37,11 +40,25 @@ class _ContinousDripPageState extends State<ContinousDripPage> {
   }
 
   void _updateDripMode(bool newValue) {
-    int dripValue = newValue ? 1 : 0;
-    _databaseReference.child('drip_MODE').set(dripValue.toString());
-    setState(() {
-      isDripOn = newValue;
-    });
+    if (isDripOn != newValue) {
+      int dripValue = newValue ? 1 : 0;
+
+      // Update the FILTRATION_SYSTEM node
+      _databaseReference.child('continousDrip_MODE').set(dripValue.toString());
+
+      // Update the TRIGGERS node only if drip mode is on
+      if (newValue) {
+        DatabaseReference triggersReference = FirebaseDatabase.instance
+            .ref()
+            .child('TRIGGERS')
+            .child('fetch_TRIGGER');
+        triggersReference.set('1');
+      }
+
+      setState(() {
+        isDripOn = newValue;
+      });
+    }
   }
 
   @override

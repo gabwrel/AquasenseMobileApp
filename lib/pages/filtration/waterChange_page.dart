@@ -19,6 +19,9 @@ class _WaterChangePageState extends State<WaterChangePage> {
   void initState() {
     super.initState();
     _databaseReference = FirebaseDatabase.instance.ref();
+
+    _databaseReference.child('MAINTENANCE').child('schedule').set('');
+
     _databaseReference
         .child('MAINTENANCE')
         .child('schedule')
@@ -28,6 +31,11 @@ class _WaterChangePageState extends State<WaterChangePage> {
         waterChangeSchedule = event.snapshot.value?.toString() ?? 'N/A';
       });
     });
+  }
+
+  void onPressed() {
+    // Function to clear the water change schedule
+    _databaseReference.child('MAINTENANCE').child('schedule').set('');
   }
 
   void _scheduleWaterChange(String waterChangeLevel) async {
@@ -250,27 +258,64 @@ class _WaterChangePageState extends State<WaterChangePage> {
                         ],
                       ),
                       SizedBox(height: availableHeight * 0.05),
-                      StreamBuilder<DatabaseEvent>(
-                        stream: _databaseReference
-                            .child('MAINTENANCE')
-                            .child('schedule')
-                            .onValue,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData &&
-                              snapshot.data!.snapshot.value != null) {
-                            String scheduleText =
-                                _calculateTimeUntilNextWaterChange(
-                                    snapshot.data!.snapshot.value);
-                            return Text(
-                              'Next Water Change in: $scheduleText',
-                              style: const TextStyle(fontSize: 16),
-                            );
-                          } else {
-                            return const Text('Next Water Change in: N/A',
-                                style: TextStyle(fontSize: 16));
-                          }
-                        },
+                      SizedBox(
+                        width: 350, // Adjust the width as needed
+                        height: 60, // Adjust the height as needed
+                        child: Material(
+                          elevation: 0, // Set the elevation value as needed
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: StreamBuilder<DatabaseEvent>(
+                                stream: _databaseReference
+                                    .child('MAINTENANCE')
+                                    .child('schedule')
+                                    .onValue,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData &&
+                                      snapshot.data!.snapshot.value != null) {
+                                    String scheduleText =
+                                        _calculateTimeUntilNextWaterChange(
+                                            snapshot.data!.snapshot.value);
+                                    return Text(
+                                      'Next Water Change in: $scheduleText',
+                                      style: const TextStyle(fontSize: 16),
+                                    );
+                                  } else {
+                                    return const Text(
+                                      'Next Water Change in: N/A',
+                                      style: TextStyle(fontSize: 16),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
+                      SizedBox(height: availableHeight * 0.05),
+                      SizedBox(
+                        width: 200,
+                        height: 60,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.red),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ))),
+                            onPressed: onPressed,
+                            child: const Text(
+                              "Clear Schedule",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                      )
                     ],
                   ),
                 );

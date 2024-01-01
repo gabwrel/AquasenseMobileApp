@@ -71,7 +71,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   void fetchMaintenanceValues() {
     databaseRef
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('lighting_TRIGGER')
         .onValue
         .listen((event) {
@@ -81,7 +81,7 @@ class _DashboardPageState extends State<DashboardPage> {
     });
 
     databaseRef
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('heater_TRIGGER')
         .onValue
         .listen((event) {
@@ -91,7 +91,7 @@ class _DashboardPageState extends State<DashboardPage> {
     });
 
     databaseRef
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('uvLamp_TRIGGER')
         .onValue
         .listen((event) {
@@ -111,7 +111,7 @@ class _DashboardPageState extends State<DashboardPage> {
     });
 
     databaseRef
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('aeration_TRIGGER')
         .onValue
         .listen((event) {
@@ -130,11 +130,7 @@ class _DashboardPageState extends State<DashboardPage> {
       });
     });
 
-    databaseRef
-        .child('FILTRATION_SYSTEM')
-        .child('pump_TRIGGER')
-        .onValue
-        .listen((event) {
+    databaseRef.child('TRIGGERS').child('pump_TRIGGER').onValue.listen((event) {
       setState(() {
         pumpStatus = event.snapshot.value?.toString() ?? '--';
       });

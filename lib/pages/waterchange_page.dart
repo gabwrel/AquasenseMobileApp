@@ -58,7 +58,7 @@ class _WaterChangePageState extends State<WaterChangePage> {
   void navigateToHome() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const MyApp()),
+      MaterialPageRoute(builder: (context) => MyApp()),
     );
   }
 

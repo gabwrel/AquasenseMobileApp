@@ -2,11 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:aquasenseapp/pages/registration_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback onLoginSuccess;
 
-  const LoginPage({Key? key, required this.onLoginSuccess});
+  const LoginPage({super.key, required this.onLoginSuccess});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -16,20 +17,22 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscureText = true; // Add this line to manage password visibility
+  bool _obscureText = true;
 
   void _signInWithEmailAndPassword() async {
     try {
-      await _auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navigate to the home/dashboard page on successful login
+
+      // Save the authentication token to SharedPreferences
+      await saveAuthToken(userCredential.user!.uid);
+
+      // Call the onLoginSuccess callback provided in the constructor
       widget.onLoginSuccess();
     } catch (e) {
-      // Handle login errors
       print('Login error: $e');
-      // You can show a snackbar or display an error message to the user
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -39,6 +42,11 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     }
+  }
+
+  Future<void> saveAuthToken(String authToken) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('auth_token', authToken);
   }
 
   void _navigateToRegistration() {
@@ -74,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
                     height: 80,
                   ),
                   const SizedBox(height: 40),
-                  // Wrap your TextField with Expanded
                   Container(
                     width: double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 32),
@@ -105,7 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Wrap your TextField with Expanded
                   Container(
                     width: double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 32),

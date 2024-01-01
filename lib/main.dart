@@ -1,37 +1,101 @@
-// ignore_for_file: library_private_types_in_public_api
-
-import 'package:aquasenseapp/components/firebase_api.dart';
-import 'package:flutter/material.dart';
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, avoid_print
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:aquasenseapp/pages/login_page.dart';
 import 'package:aquasenseapp/dashboard_page.dart';
 import 'package:aquasenseapp/pages/maintenance_page.dart';
 import 'package:aquasenseapp/pages/testnow_page.dart';
 import 'package:aquasenseapp/pages/configuration_page.dart';
 import 'package:bottom_bar_matu/bottom_bar_matu.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await FirebaseApi().initNotifications();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  final int selectedIndex;
-
-  const MyApp({super.key, this.selectedIndex = 0});
-
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: isUserLoggedIn(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          bool isLoggedIn = snapshot.data as bool;
+
+          return MaterialApp(
+            title: 'AquaSense',
+            theme: ThemeData(
+              primaryColor: Colors.blue,
+              scaffoldBackgroundColor: Colors.white,
+              textTheme: const TextTheme(
+                bodyMedium: TextStyle(fontFamily: 'Satoshi'),
+                // Add more text styles as needed
+              ),
+            ),
+            navigatorKey: navigatorKey,
+            initialRoute: isLoggedIn ? '/dashboard' : '/login',
+            routes: {
+              '/login': (context) => LoginPage(
+                    onLoginSuccess: () {
+                      Navigator.pushReplacementNamed(context, '/dashboard');
+                    },
+                  ),
+              '/dashboard': (context) => DashboardScreen(),
+            },
+          );
+        } else {
+          return const MaterialApp(
+            home: Scaffold(body: Center(child: CircularProgressIndicator())),
+          );
+        }
+      },
+    );
+  }
+
+  Future<bool> isUserLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token') != null;
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  int _selectedIndex = 0;
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+class AuthChecker extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: isUserLoggedIn(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          bool isLoggedIn = snapshot.data as bool;
+          return isLoggedIn
+              ? DashboardScreen()
+              : LoginPage(
+                  onLoginSuccess: () {},
+                );
+        } else {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+      },
+    );
+  }
 
+  Future<bool> isUserLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token') != null;
+  }
+}
+
+class DashboardScreen extends StatefulWidget {
+  @override
+  _DashboardScreenState createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  int _selectedIndex = 0;
   final List<Widget> _pages = [
     const DashboardPage(),
     const MaintenancePage(),
@@ -45,48 +109,10 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _onLoginSuccess() {
-    // Navigate to DashboardPage after successful login
-    navigatorKey.currentState?.pushReplacementNamed('/dashboard');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AquaSense',
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(fontFamily: 'Satoshi'),
-          // Add more text styles as needed
-        ),
-      ),
-      navigatorKey: navigatorKey,
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => LoginPage(
-              onLoginSuccess: _onLoginSuccess,
-            ),
-        '/dashboard': (context) =>
-            DashboardScreen(_pages, _selectedIndex, _onItemTapped),
-      },
-    );
-  }
-}
-
-class DashboardScreen extends StatelessWidget {
-  final List<Widget> pages;
-  final int selectedIndex;
-  final void Function(int) onItemTapped;
-
-  const DashboardScreen(this.pages, this.selectedIndex, this.onItemTapped,
-      {super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[selectedIndex],
+      body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -98,14 +124,14 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
         child: BottomBarBubble(
-          selectedIndex: selectedIndex,
+          selectedIndex: _selectedIndex,
           items: [
             BottomBarItem(iconData: Icons.monitor_heart_rounded),
             BottomBarItem(iconData: Icons.water_drop),
             BottomBarItem(iconData: Icons.query_stats_rounded),
             BottomBarItem(iconData: Icons.tune_rounded),
           ],
-          onSelect: onItemTapped,
+          onSelect: _onItemTapped,
           color: Colors.blue,
         ),
       ),
