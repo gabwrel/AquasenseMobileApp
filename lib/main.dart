@@ -1,4 +1,5 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, avoid_print
+import 'package:aquasenseapp/components/firebase_api.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:aquasenseapp/pages/login_page.dart';
@@ -14,6 +15,8 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseApi firebaseApi = FirebaseApi();
+  await firebaseApi.initNotifications();
   runApp(MyApp());
 }
 
