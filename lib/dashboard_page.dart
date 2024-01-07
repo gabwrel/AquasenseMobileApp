@@ -496,11 +496,11 @@ class _DashboardPageState extends State<DashboardPage> {
             ? (waterTurbidity! - turbidityConfig!).abs()
             : null;
     if (turbidityDifference != null) {
-      if (turbidityDifference <= 1.01) {
+      if (turbidityDifference <= 10.01) {
         return Colors.green; // Within +- 1
-      } else if (turbidityDifference > 1.01 && turbidityDifference < 1.99) {
+      } else if (turbidityDifference > 10.01 && turbidityDifference < 10.99) {
         return Colors.orange; // Within +- 1.5
-      } else if (turbidityDifference >= 2) {
+      } else if (turbidityDifference >= 20) {
         return Colors.red; // 2 or more
       }
     }
