@@ -1,5 +1,8 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, avoid_print
 import 'package:aquasenseapp/components/firebase_api.dart';
+import 'package:aquasenseapp/components/notifications/pH_correction_error.dart';
+import 'package:aquasenseapp/components/notifications/system_error.dart';
+import 'package:aquasenseapp/components/notifications/turbidity_correction.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:aquasenseapp/pages/login_page.dart';
@@ -48,6 +51,7 @@ class MyApp extends StatelessWidget {
                     },
                   ),
               '/dashboard': (context) => DashboardScreen(),
+              '/dashboard/maintenance': (context) => const MaintenancePage(),
             },
           );
         } else {
@@ -115,7 +119,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: Column(
+        children: [
+          Expanded(child: _pages[_selectedIndex]),
+          const SystemErrorListener(),
+          const PhCorrectionErrorListener(),
+          const TurbidityCorrection(),
+        ],
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [

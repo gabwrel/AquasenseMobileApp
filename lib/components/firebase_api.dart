@@ -2,19 +2,41 @@
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
   final databaseReference = FirebaseDatabase.instance.ref();
 
-  void handleMessage(RemoteMessage? message) {
+  void handleMessage(RemoteMessage? message, BuildContext context) {
     if (message == null) return;
 
     final notification = message.notification;
     if (notification != null) {
       print('Title: ${notification.title}');
       print('Body: ${notification.body}');
-      // Handle the notification as needed, without navigating to a screen
+
+      // Show dialog only when the app is in the foreground
+      if (MediaQuery.of(context).size.width > 0 &&
+          MediaQuery.of(context).size.height > 0) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(notification.title ?? 'Notification'),
+              content: Text(notification.body ?? ''),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
 
     // Handle the incoming FCM message when the app is in the foreground
@@ -22,7 +44,7 @@ class FirebaseApi {
     // Perform custom actions based on the message data
   }
 
-  Future<void> initPushNotifications() async {
+  Future<void> initPushNotifications(BuildContext context) async {
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: true,
@@ -32,8 +54,31 @@ class FirebaseApi {
 
     await FirebaseMessaging.instance.subscribeToTopic('all');
 
-    FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+    FirebaseMessaging.onMessage.listen((message) {
+      // Check if the app is in the foreground before handling the message
+      if (MediaQuery.of(context).size.width > 0 &&
+          MediaQuery.of(context).size.height > 0) {
+        handleMessage(message, context);
+      }
+    });
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        // Check if the app is in the foreground before handling the initial message
+        if (MediaQuery.of(context).size.width > 0 &&
+            MediaQuery.of(context).size.height > 0) {
+          handleMessage(message, context);
+        }
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      // Check if the app is in the foreground before handling the opened app message
+      if (MediaQuery.of(context).size.width > 0 &&
+          MediaQuery.of(context).size.height > 0) {
+        handleMessage(message, context);
+      }
+    });
   }
 
   Future<void> initNotifications() async {
@@ -70,8 +115,11 @@ class FirebaseApi {
   }
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
+    print('Handling background message:');
     print('Title: ${message.notification?.title}');
     print('Body: ${message.notification?.body}');
     print('Payload: ${message.data}');
   }
+
+  // New method to trigger system error notification
 }
