@@ -28,7 +28,7 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
     _databaseReference = FirebaseDatabase.instance.ref();
 
     _databaseReference
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('filtration_AUTO')
         .onValue
         .listen((event) {
@@ -161,13 +161,6 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
                       Colors.purple,
                     ),
 
-                    // buildCardRow(
-                    //   'Lighting',
-                    //   'lighting_TRIGGER',
-                    //   lightingStatus,
-                    //   Icons.tungsten_rounded,
-                    //   Colors.yellow,
-                    // ),
                     buildCardRow(
                       'Heater',
                       'heater_TRIGGER',
@@ -272,7 +265,7 @@ class _FiltrationSystemPageState extends State<FiltrationSystemPage> {
   void _updateAutoFiltrationSystem(bool newValue) {
     // Update the auto filtration system value in the Firebase Realtime Database
     _databaseReference
-        .child('FILTRATION_SYSTEM')
+        .child('TRIGGERS')
         .child('filtration_AUTO')
         .set(newValue ? "1" : "0")
         .then((_) {

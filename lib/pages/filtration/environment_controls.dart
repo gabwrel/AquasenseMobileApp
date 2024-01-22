@@ -1,5 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -12,6 +14,11 @@ class EnvironmentControls extends StatefulWidget {
 
 class _EnvironmentControlsState extends State<EnvironmentControls> {
   final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
+
+  final _feedingScheduleController = StreamController<String>();
+
+  // Getter method to expose the stream
+  Stream<String> get feedingScheduleStream => _feedingScheduleController.stream;
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +56,8 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
               ),
               const SizedBox(height: 16),
               SizedBox(
-                width: 200, // Set a fixed width for the button
-                height: 60, // Set a fixed height for the button
+                width: 200,
+                height: 60,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
@@ -114,7 +121,6 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
                         ),
                       );
                     } else {
-                      // Handle loading state or error state
                       return const Text('Light status loading...');
                     }
                   },
@@ -130,18 +136,21 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
                       AsyncSnapshot<DatabaseEvent> snapshot) {
                     if (snapshot.hasData &&
                         snapshot.data!.snapshot.value != null) {
-                      int feedingFrequency =
-                          (snapshot.data!.snapshot.value as int);
-                      String feedingText = _getFeedingText(feedingFrequency);
+                      String feedingSchedule =
+                          snapshot.data!.snapshot.value as String;
+                      _feedingScheduleController
+                          .add(feedingSchedule); // Stream the data
+
+                      String displayText = _getFeedingText(feedingSchedule);
+
                       return Text(
-                        feedingText,
+                        'Feeding Schedule: $displayText',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.normal,
                         ),
                       );
                     } else {
-                      // Handle loading state or error state
                       return const Text('Feeding Schedule: N/A');
                     }
                   },
@@ -162,7 +171,7 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
         return AlertDialog(
           title: const Text('Feeding Controls'),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Set the size to min
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _buildDialogButton('Feed Now', () {
                 _updateFeedingTrigger('1');
@@ -185,6 +194,21 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
     );
   }
 
+  String _getFeedingText(String schedule) {
+    switch (schedule) {
+      case '24':
+        return 'Once A Day';
+      case '12':
+        return 'Twice A Day';
+      case '8':
+        return 'Thrice A Day';
+      case '6':
+        return 'Four Times A Day';
+      default:
+        return 'N/A';
+    }
+  }
+
   Future<int?> _showFeedingFrequencyDialog() async {
     return showDialog<int>(
       context: context,
@@ -192,7 +216,7 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
         return AlertDialog(
           title: const Text('Select Feeding Frequency'),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Set the size to min
+            mainAxisSize: MainAxisSize.min,
             children: [
               _buildDialogButton(
                   'Once A Day', () => Navigator.of(context).pop(24)),
@@ -261,10 +285,8 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
   }
 
   void _updateScheduling(String node, TimeOfDay time) {
-    // Format the time to 24-hour format
     String formattedTime =
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-
     _databaseReference.child('SCHEDULING/$node').set(formattedTime);
   }
 
@@ -274,27 +296,12 @@ class _EnvironmentControlsState extends State<EnvironmentControls> {
       initialTime: TimeOfDay.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
-          data: ThemeData.dark(), // You can customize the theme
+          data: ThemeData.dark(),
           child: child!,
         );
       },
       helpText: title,
     );
-  }
-
-  String _getFeedingText(int frequency) {
-    switch (frequency) {
-      case 24:
-        return 'Feeding Schedule: Once A Day';
-      case 12:
-        return 'Feeding Schedule: Twice A Day';
-      case 8:
-        return 'Feeding Schedule: Thrice A Day';
-      case 6:
-        return 'Feeding Schedule: Four Times A Day';
-      default:
-        return 'Feeding Schedule: N/A';
-    }
   }
 
   Widget _buildDialogButton(String text, void Function()? onPressed) {

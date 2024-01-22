@@ -1,20 +1,22 @@
-// ignore_for_file: library_private_types_in_public_api, unused_field
+// ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 
-class SystemErrorListener extends StatefulWidget {
-  const SystemErrorListener({super.key});
+class TemperatureCorrectionListener extends StatefulWidget {
+  const TemperatureCorrectionListener({super.key});
 
   @override
-  _SystemErrorListenerState createState() => _SystemErrorListenerState();
+  State<TemperatureCorrectionListener> createState() =>
+      _TemperatureCorrectionListenerState();
 }
 
-class _SystemErrorListenerState extends State<SystemErrorListener> {
+class _TemperatureCorrectionListenerState
+    extends State<TemperatureCorrectionListener> {
   final DatabaseReference _databaseReference =
-      FirebaseDatabase.instance.ref().child('NOTIFICATIONS/system_ERROR');
+      FirebaseDatabase.instance.ref().child('ERROR_CODES/temperature_ERROR');
 
   late StreamSubscription<DatabaseEvent> _subscription;
   bool _isAlertShown = false;
@@ -29,28 +31,43 @@ class _SystemErrorListenerState extends State<SystemErrorListener> {
   void _subscribeToDatabase() {
     _subscription = _databaseReference.onValue.listen((DatabaseEvent event) {
       final String? value = event.snapshot.value?.toString();
-      if (value == "1") {
-        _debounceSystemErrorAlert();
+      if (value == "401") {
+        _debounceTemperatureAlert(
+          title: 'Water Temperature Alert',
+          content: 'Water Temperature Critical',
+        );
+      } else if (value == '402') {
+        _debounceTemperatureAlert(
+          title: 'Water Temperature Alert',
+          content: 'Low Temperature! AQUAssist will now activate heater.',
+        );
+      } else if (value == '403') {
+        _debounceTemperatureAlert(
+          title: 'Water Temperature Alert',
+          content: 'High Temperature! AQUAssist will now deactivate heater.',
+        );
       }
     });
   }
 
-  void _debounceSystemErrorAlert() {
+  void _debounceTemperatureAlert(
+      {required String title, required String content}) {
     if (_debounceTimer != null && _debounceTimer!.isActive) {
       _debounceTimer!.cancel(); // Cancel the previous timer
     }
 
     _debounceTimer = Timer(const Duration(seconds: 5), () {
-      _showSystemErrorAlert();
+      _showTemperatureErrorAlert(title: title, content: content);
     });
   }
 
-  void _showSystemErrorAlert() {
+  void _showTemperatureErrorAlert(
+      {required String title, required String content}) {
     QuickAlert.show(
       context: context,
       type: QuickAlertType.error,
-      title: 'System Error',
-      text: 'System failed to start',
+      title: title,
+      text: content,
       confirmBtnText: 'OK',
       onConfirmBtnTap: () {
         _isAlertShown = false; // Reset the flag when the alert is dismissed

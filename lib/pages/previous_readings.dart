@@ -1,10 +1,12 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class PreviousReadings extends StatefulWidget {
-  const PreviousReadings({Key? key}) : super(key: key);
+  const PreviousReadings({super.key});
 
   @override
   State<PreviousReadings> createState() => _PreviousReadingsState();
@@ -44,7 +46,7 @@ class _PreviousReadingsState extends State<PreviousReadings> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -98,10 +100,12 @@ class _PreviousReadingsState extends State<PreviousReadings> {
 
   DataTable buildDataTable() {
     return DataTable(
+      columnSpacing: 10.0, // Adjust the spacing between columns
+      headingRowHeight: 40.0, // Adjust the height of the heading row
+      dataRowHeight: 35.0, // Adjust the height of data rows
       columns: const [
         DataColumn(label: Text('Date')),
-        DataColumn(label: Text('Time')),
-        DataColumn(label: Text('ph Level')),
+        DataColumn(label: Text('pH Level')),
         DataColumn(label: Text('Turbidity (NTU)')),
         DataColumn(label: Text('Temperature (C)')),
       ],
@@ -109,25 +113,52 @@ class _PreviousReadingsState extends State<PreviousReadings> {
           .map(
             (reading) => DataRow(
               cells: [
-                DataCell(Text(formatDate(reading['Date']))),
-                DataCell(Text(formatTime(reading['Time']))),
-                DataCell(Text(reading['ph Level'].toString())),
-                DataCell(Text(reading['Turbidity (NTU)'].toString())),
-                DataCell(Text(reading['Temperature (C)'].toString())),
+                DataCell(
+                  Center(
+                    child: Text(
+                      formatDate(reading['Date']),
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Center(
+                    child: Text(
+                      reading['ph Level'].toString(),
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Center(
+                    child: Text(
+                      reading['Turbidity (NTU)'].toString(),
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Center(
+                    child: Text(
+                      reading['Temperature (C)'].toString(),
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ),
               ],
             ),
           )
           .toList(),
     );
   }
+}
 
-  String formatDate(String dateString) {
-    DateTime date = DateTime.parse(dateString);
-    return DateFormat('yyyy-MM-dd').format(date);
-  }
+String formatDate(String dateString) {
+  DateTime date = DateTime.parse(dateString);
+  return DateFormat('yyyy-MM-dd').format(date);
+}
 
-  String formatTime(String timeString) {
-    DateTime time = DateTime.parse(timeString);
-    return DateFormat('HH:mm:ss').format(time);
-  }
+String formatTime(String timeString) {
+  DateTime time = DateTime.parse(timeString);
+  return DateFormat('HH:mm:ss').format(time);
 }

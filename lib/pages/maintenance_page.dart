@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:aquasenseapp/main.dart';
 import 'package:aquasenseapp/pages/about_page.dart';
 import 'package:aquasenseapp/pages/filtration/continousDrip_page.dart';
 import 'package:aquasenseapp/pages/filtration/environment_controls.dart';
@@ -84,48 +85,49 @@ class MaintenancePage extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/logo2.png'),
-                  fit: BoxFit.cover,
-                ),
+        child: Center(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const SizedBox(height: 32),
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Home'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                  );
+                },
               ),
-              child: Container(
-                color: Colors.blue, // Background color
-                child: const SizedBox(), // Empty SizedBox to remove the text
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('About Page'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AboutPage()),
+                  );
+                },
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About Page'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AboutPage()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.table_chart),
-              title: const Text('Previous Readings'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PreviousReadings()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () async => await _logout(context),
-            ),
-          ],
+              ListTile(
+                leading: const Icon(Icons.table_chart),
+                title: const Text('Previous Readings'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PreviousReadings()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Logout'),
+                onTap: () async => await _logout(context),
+              ),
+            ],
+          ),
         ),
       ),
       body: SingleChildScrollView(

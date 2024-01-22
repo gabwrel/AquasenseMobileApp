@@ -2,6 +2,7 @@
 import 'package:aquasenseapp/components/firebase_api.dart';
 import 'package:aquasenseapp/components/notifications/pH_correction_error.dart';
 import 'package:aquasenseapp/components/notifications/system_error.dart';
+import 'package:aquasenseapp/components/notifications/temperature_correction.dart';
 import 'package:aquasenseapp/components/notifications/turbidity_correction.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +126,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SystemErrorListener(),
           const PhCorrectionErrorListener(),
           const TurbidityCorrection(),
+          const TemperatureCorrectionListener(),
         ],
       ),
       bottomNavigationBar: Container(

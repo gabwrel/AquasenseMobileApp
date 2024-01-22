@@ -3,12 +3,15 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
   final databaseReference = FirebaseDatabase.instance.ref();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-  void handleMessage(RemoteMessage? message, BuildContext context) {
+  void handleMessage(RemoteMessage? message, BuildContext context) async {
     if (message == null) return;
 
     final notification = message.notification;
@@ -16,32 +19,38 @@ class FirebaseApi {
       print('Title: ${notification.title}');
       print('Body: ${notification.body}');
 
-      // Show dialog only when the app is in the foreground
-      if (MediaQuery.of(context).size.width > 0 &&
-          MediaQuery.of(context).size.height > 0) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(notification.title ?? 'Notification'),
-              content: Text(notification.body ?? ''),
-              actions: [
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
+      // Show system notification
+      await showSystemNotification(
+        title: notification.title ?? 'Notification',
+        body: notification.body ?? '',
+      );
     }
 
-    // Handle the incoming FCM message when the app is in the foreground
+    // Handle the incoming FCM message
     print('FCM Message Received: ${message.data}');
     // Perform custom actions based on the message data
+  }
+
+  Future<void> showSystemNotification({
+    required String title,
+    required String body,
+  }) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'com.example.aquasenseapp.notification_channel', // Replace with your unique channel ID
+      'AquaSense Notifications',
+      channelDescription: 'Channel for AquaSense notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0, // Change this to a unique ID for each notification
+      title,
+      body,
+      platformChannelSpecifics,
+    );
   }
 
   Future<void> initPushNotifications(BuildContext context) async {
@@ -55,29 +64,20 @@ class FirebaseApi {
     await FirebaseMessaging.instance.subscribeToTopic('all');
 
     FirebaseMessaging.onMessage.listen((message) {
-      // Check if the app is in the foreground before handling the message
-      if (MediaQuery.of(context).size.width > 0 &&
-          MediaQuery.of(context).size.height > 0) {
-        handleMessage(message, context);
-      }
+      // Handle the message uniformly regardless of the app's state
+      handleMessage(message, context);
     });
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
+      // Handle the initial message uniformly regardless of the app's state
       if (message != null) {
-        // Check if the app is in the foreground before handling the initial message
-        if (MediaQuery.of(context).size.width > 0 &&
-            MediaQuery.of(context).size.height > 0) {
-          handleMessage(message, context);
-        }
+        handleMessage(message, context);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      // Check if the app is in the foreground before handling the opened app message
-      if (MediaQuery.of(context).size.width > 0 &&
-          MediaQuery.of(context).size.height > 0) {
-        handleMessage(message, context);
-      }
+      // Handle the message uniformly regardless of the app's state
+      handleMessage(message, context);
     });
   }
 

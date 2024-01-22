@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print
 
+import 'package:aquasenseapp/main.dart';
 import 'package:aquasenseapp/pages/about_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -29,6 +30,7 @@ class _DashboardPageState extends State<DashboardPage> {
   String? aerationStatus;
   String? dripStatus;
   String? pumpStatus;
+  String? feedingSchedule;
 
   late DatabaseReference databaseRef;
 
@@ -77,6 +79,16 @@ class _DashboardPageState extends State<DashboardPage> {
         .listen((event) {
       setState(() {
         lightingStatus = event.snapshot.value?.toString() ?? '--';
+      });
+    });
+
+    databaseRef
+        .child('SCHEDULING')
+        .child('feeding_SCHEDULE')
+        .onValue
+        .listen((event) {
+      setState(() {
+        feedingSchedule = event.snapshot.value?.toString() ?? '--';
       });
     });
 
@@ -235,48 +247,49 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/logo2.png'),
-                  fit: BoxFit.cover,
-                ),
+        child: Center(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const SizedBox(height: 32),
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Home'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                  );
+                },
               ),
-              child: Container(
-                color: Colors.blue, // Background color
-                child: const SizedBox(), // Empty SizedBox to remove the text
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('About Page'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AboutPage()),
+                  );
+                },
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About Page'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AboutPage()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.table_chart),
-              title: const Text('Previous Readings'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PreviousReadings()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () async => await _logout(context),
-            ),
-          ],
+              ListTile(
+                leading: const Icon(Icons.table_chart),
+                title: const Text('Previous Readings'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PreviousReadings()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Logout'),
+                onTap: () async => await _logout(context),
+              ),
+            ],
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -366,12 +379,20 @@ class _DashboardPageState extends State<DashboardPage> {
                       value: lightingStatus == "1" ? "Active" : "Inactive",
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: BoxItem(
                       icon: Icons.restaurant,
                       iconColor: Colors.green,
                       title: 'Feeding',
-                      value: '--',
+                      value: feedingSchedule == "6"
+                          ? " 4/DAY"
+                          : feedingSchedule == "8"
+                              ? " 3/DAY"
+                              : feedingSchedule == "12"
+                                  ? " 2/DAY"
+                                  : feedingSchedule == "24"
+                                      ? " 1/DAY"
+                                      : "--",
                     ),
                   ),
                 ],
