@@ -400,7 +400,7 @@ class _DashboardPageState extends State<DashboardPage> {
               const SizedBox(height: 8),
               const Divider(color: Colors.blue, height: 20),
               const Text(
-                'Filtration Status Status',
+                'Filtration Status',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
